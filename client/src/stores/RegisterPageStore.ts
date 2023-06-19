@@ -59,7 +59,7 @@ class RegisterPageStore {
     return result;
   }
 
-  async handleRegister() {
+  async handleRegister(navigate: NavigateFunction) {
     if (!(this.password === this.repeatPassword)) {
       this.setError(true);
       return;
@@ -73,8 +73,7 @@ class RegisterPageStore {
     });
     const data = await response.json();
     const success = data.success as boolean;
-
-    return success;
+    if (success) navigate("/login");
   }
 }
 

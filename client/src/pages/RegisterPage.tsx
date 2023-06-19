@@ -9,12 +9,6 @@ const RegisterPage = () => {
   const [registerPageStore] = useState(new RegisterPageStore());
   const navigate = useNavigate();
 
-  const handleRegisterButtonClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    const success = await registerPageStore.handleRegister();
-    if (success) navigate("/login");
-  };
-
   return (
     <div
       style={{
@@ -66,7 +60,7 @@ const RegisterPage = () => {
           }}
           size="large"
           variant="contained"
-          onClick={handleRegisterButtonClick}
+          onClick={() => registerPageStore.handleRegister(navigate)}
           color="primary">
           Register
         </Button>
