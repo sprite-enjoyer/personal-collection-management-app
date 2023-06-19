@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import AdditionalItemFieldInfo from "./AdditionalItemFieldInfo.js";
 const collectionSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,5 +14,9 @@ const collectionSchema = new mongoose.Schema({
         required: true,
     },
     image: String,
+    additionalCollectionFields: {
+        type: [AdditionalItemFieldInfo],
+        default: [],
+    },
 });
 export default mongoose.model("Collection", collectionSchema);
