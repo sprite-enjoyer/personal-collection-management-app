@@ -1,7 +1,10 @@
+import RoutesManager from "./components/RoutesManager";
+import { routeBaseStyles } from "./misc/styleUtils";
+
 const App = () => {
   return (
-    <div>
-
+    <div style={routeBaseStyles}>
+      <RoutesManager />
     </div>
   );
 };
