@@ -3,9 +3,17 @@ import { routeBaseStyles } from "../misc/styleUtils";
 import RegisterPageStore from "../stores/RegisterPageStore";
 import { observer } from "mobx-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [registerPageStore] = useState(new RegisterPageStore());
+  const navigate = useNavigate();
+
+  const handleRegisterButtonClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    const success = await registerPageStore.handleRegister();
+    if (success) navigate("/login");
+  };
 
   return (
     <div
@@ -58,10 +66,7 @@ const RegisterPage = () => {
           }}
           size="large"
           variant="contained"
-          onClick={(e) => {
-            e.preventDefault();
-            registerPageStore.handleRegister();
-          }}
+          onClick={handleRegisterButtonClick}
           color="primary">
           Register
         </Button>
