@@ -34,9 +34,11 @@ class LoginPageStore {
   }
 
   async handleLogin(navigate: NavigateFunction) {
+    console.log("here");
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
       method: "POST",
       body: JSON.stringify(this.requestBody),
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

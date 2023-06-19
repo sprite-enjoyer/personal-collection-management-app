@@ -45,7 +45,7 @@ const LoginPage = () => {
           variant="contained"
           onClick={() => loginPageStore.handleLogin(navigate)}
           color="primary">
-          Register
+          Login
         </Button>
       </Container>
     </div>
