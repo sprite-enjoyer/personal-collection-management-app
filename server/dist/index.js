@@ -13,7 +13,6 @@ app.use(cors({
 app.use(express.json());
 app.use("/users", userRouter);
 const validateOrigin = (origin, callback) => {
-    console.log(origin);
     if (!origin || origin === "")
         return callback(null, true);
     return callback(null, true);

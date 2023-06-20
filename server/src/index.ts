@@ -17,7 +17,6 @@ app.use(express.json());
 app.use("/users", userRouter);
 
 const validateOrigin = (origin: string, callback: (err: Error | null, origin?: boolean) => void) => {
-  console.log(origin);
   if (!origin || origin === "") return callback(null, true);
   return callback(null, true);
 };
