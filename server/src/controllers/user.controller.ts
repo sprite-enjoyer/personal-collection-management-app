@@ -2,15 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import User from "../schemas/User.js";
 import { compare, genSalt, hash } from "bcrypt";
 import jwt, { decode } from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export const registerUserHandler = async (req: Request, res: Response) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, admin } = req.body;
   const existingUser = await User.findOne({ username: userName });
   if (existingUser) return res.status(409).json({ success: false });
 
   const salt = await genSalt(10);
   const passwordHash = await hash(password, salt);
-  const newUser = await User.create({ username: userName, email: email, password: passwordHash });
+  const newUser = await User.create({ username: userName, email: email, password: passwordHash, isAdmin: !!admin });
   return res.status(200).json({ success: true });
 };
 
@@ -26,12 +27,12 @@ export const logInUserHandler = async (req: Request, res: Response, next: NextFu
   next();
 };
 
-export const sendJWT = async (req: Request, res: Response) => {
+export const sendUserJwtHandler = async (req: Request, res: Response) => {
   const { userId } = res.locals;
   const secret = process.env.JWT_SECRET;
   const user = await User.findById(userId);
   if (!userId || !secret || !user) return res.status(400).json({ message: "token couldn't be created" });
-  const token = jwt.sign({ userID: userId, blocked: user.blocked }, secret);
+  const token = jwt.sign({ userID: userId, blocked: user.blocked, isAdmin: user.isAdmin }, secret);
   const date = new Date();
   date.setTime(date.getTime() + 24 * 60 * 60 * 1000);
 
@@ -48,7 +49,7 @@ export const sendJWT = async (req: Request, res: Response) => {
     .json({ success: true, userName: user.username });
 };
 
-export const checkJWT = (req: Request, res: Response, next: NextFunction) => {
+export const checkUserJwtHandler = (req: Request, res: Response, next: NextFunction) => {
   const { justCheck }: { justCheck: boolean } = req.body;
   const secret = process.env.JWT_SECRET;
   if (!secret) return res.status(500).json({ message: "no jwt secret defined in server" });
@@ -63,9 +64,43 @@ export const checkJWT = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  const decoded = jwt.verify(token, secret) as { userID: string; blocked: boolean; iat: number };
-  const userInfo = { userID: decoded.userID, blocked: decoded.blocked };
-
+  const decoded = jwt.verify(token, secret) as { userID: string; blocked: boolean; iat: number; isAdmin: boolean };
+  const userInfo = { userID: decoded.userID, blocked: decoded.blocked, isAdmin: decoded.isAdmin };
   if (justCheck) return res.status(200).json(userInfo);
   next();
+};
+
+export const getUsersHandler = async (req: Request, res: Response) => {
+  const users = (await User.find({})).map((u) => {
+    const { username, isAdmin, email, password, blocked, collections, _id } = u;
+    const publicUser = {
+      id: _id,
+      userName: username,
+      email: email,
+      blocked: blocked,
+      isAdmin: isAdmin,
+      collections: collections,
+    };
+    return publicUser;
+  });
+  res.json({ users: users });
+};
+
+export const putUsersHandler = async (req: Request, res: Response) => {
+  const { blocked, isAdmin, userIDs }: { blocked: boolean | null; isAdmin: boolean | null; userIDs: string[] } =
+    req.body;
+  const mongoIDs = userIDs.map((id) => new mongoose.Types.ObjectId(id));
+
+  if (blocked !== null) await User.updateMany({ _id: { $in: mongoIDs } }, { blocked: blocked });
+  if (isAdmin !== null) await User.updateMany({ _id: { $in: mongoIDs } }, { isAdmin: isAdmin });
+
+  return res.status(200).json({ success: true });
+};
+
+export const deleteUsersHandler = async (req: Request, res: Response) => {
+  const { userIDs }: { userIDs: string[] } = req.body;
+  const mongoIDs = userIDs.map((id) => new mongoose.Types.ObjectId(id));
+  await User.deleteMany({ _id: { $in: mongoIDs } });
+
+  return res.status(200).json({ success: true });
 };
