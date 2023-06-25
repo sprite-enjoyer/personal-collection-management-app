@@ -3,6 +3,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPage from "../pages/AdminPage";
+import ProfilePage from "../pages/ProfilePage";
 
 const RoutesManager = () => {
   return (
@@ -29,6 +30,10 @@ const RoutesManager = () => {
             element={<AdminPage />}
           />
         </Route>
+        <Route
+          path="/user/:userName"
+          element={<ProfilePage />}
+        />
       </Routes>
     </BrowserRouter>
   );
