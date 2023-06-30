@@ -15,7 +15,14 @@ class CollectionConfigStore {
 
   modalOpen = false;
 
-  constructor() {
+  collectionID?: string;
+
+  userName: string;
+
+  constructor(userName: string, collectionID?: string) {
+    this.collectionID = collectionID;
+    this.userName = userName;
+
     makeObservable(this, {
       collectionName: observable,
       modalOpen: observable,
@@ -87,9 +94,48 @@ class CollectionConfigStore {
     else this.collectionTopic = newValue;
   }
 
-  createCollection() {}
+  async createCollection() {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userName: this.userName,
+        name: this.collectionName,
+        description: this.collectionDescription,
+        topic: this.collectionTopic,
+        image: "", //TODO
+        additionalCollectionFieldNames: this.customFields.map((field) => field.name),
+        additionalCollectionFieldTypes: this.customFields.map((field) => field.type),
+      }),
+    });
 
-  editCollection() {}
+    const data = await response.json();
+    console.log(data);
+  }
+
+  async editCollection() {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: this.collectionID,
+        userName: this.userName,
+        name: this.collectionName,
+        description: this.collectionDescription,
+        topic: this.collectionTopic,
+        image: "", //TODO
+        additionalCollectionFieldNames: this.customFields.map((field) => field.name),
+        additionalCollectionFieldTypes: this.customFields.map((field) => field.type),
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+  }
 }
 
 export default CollectionConfigStore;

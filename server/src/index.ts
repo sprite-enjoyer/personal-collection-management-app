@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import userRouter from "./routers/userRouter.js";
+import collectionRouter from "./routers/collectionRouter.js";
 
 dotenv.config();
 const PORT = 3000;
@@ -15,6 +16,7 @@ app.use(
 );
 app.use(express.json());
 app.use("/users", userRouter);
+app.use("/collections", collectionRouter);
 
 const validateOrigin = (origin: string, callback: (err: Error | null, origin?: boolean) => void) => {
   if (!origin || origin === "") return callback(null, true);

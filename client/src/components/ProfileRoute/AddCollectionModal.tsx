@@ -15,6 +15,7 @@ import { observer } from "mobx-react";
 import { useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { CustomFieldType } from "../../misc/types";
+import { useParams } from "react-router-dom";
 
 export interface AddCollectionModalProps {
   buttonText: string;
@@ -22,7 +23,8 @@ export interface AddCollectionModalProps {
 }
 
 const AddCollectionModal = ({ buttonText, creatingCollection }: AddCollectionModalProps) => {
-  const [collectionConfigStore] = useState(new CollectionConfigStore());
+  const params = useParams();
+  const [collectionConfigStore] = useState(new CollectionConfigStore(params.userName as string));
 
   const handleButtonClick = () => {
     if (creatingCollection) collectionConfigStore.createCollection();

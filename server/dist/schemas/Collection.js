@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import AdditionalItemFieldInfo from "./AdditionalItemFieldInfo.js";
+import mongoose, { Schema } from "mongoose";
 const collectionSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -64,12 +63,14 @@ const collectionSchema = new mongoose.Schema({
             "Vintage Telephones",
             "Vinyl Music Albums",
             "Other",
-        ]
+        ],
     },
     image: String,
-    additionalCollectionFields: {
-        type: [AdditionalItemFieldInfo],
-        default: [],
+    additionalCollectionFieldNames: [String],
+    additionalCollectionFieldTypes: [String],
+    owner: {
+        type: Schema.Types.ObjectId,
+        required: true,
     },
 });
 export default mongoose.model("Collection", collectionSchema);
