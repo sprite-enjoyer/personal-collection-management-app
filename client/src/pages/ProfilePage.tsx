@@ -1,26 +1,17 @@
 import { useParams } from "react-router-dom";
 import { routeBaseStyles } from "../misc/styleUtils";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  Input,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
-import { topics } from "../misc/constants";
-import AddCollectionModal from "../components/ProfileRoute/AddCollectionModal";
+import CollectionConfigModal from "../components/ProfileRoute/CollectionConfigModal";
+import CollectionList from "../components/ProfileRoute/CollectionList";
 
 const ProfilePage = () => {
-  const [profilePageStore] = useState(new ProfilePageStore());
+  const { userName } = useParams();
+  if (!userName) return null;
+  const [profilePageStore] = useState(new ProfilePageStore(userName));
+
   return (
     <div style={{ ...routeBaseStyles, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <Container
@@ -38,8 +29,9 @@ const ProfilePage = () => {
             gap: "20px",
           }}>
           <Typography variant="h3">Your collections</Typography>
-          <AddCollectionModal
+          <CollectionConfigModal
             buttonText="add collection"
+            profilePageStore={profilePageStore}
             creatingCollection={true}
           />
         </Box>
@@ -49,10 +41,7 @@ const ProfilePage = () => {
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr 1fr",
           }}>
-          <div>A</div>
-          <div>B</div>
-          <div>C</div>
-          <div>D</div>
+          <CollectionList profilePageStore={profilePageStore} />
         </Container>
       </Container>
     </div>

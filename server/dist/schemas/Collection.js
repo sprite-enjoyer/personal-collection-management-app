@@ -6,7 +6,7 @@ const collectionSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
+        required: allowEmptyStrings,
     },
     topic: {
         type: String,
@@ -73,4 +73,8 @@ const collectionSchema = new mongoose.Schema({
         required: true,
     },
 });
+function allowEmptyStrings() {
+    //@ts-ignore
+    return typeof this.description === "string" ? false : true;
+}
 export default mongoose.model("Collection", collectionSchema);

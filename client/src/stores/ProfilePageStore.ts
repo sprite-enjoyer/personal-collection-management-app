@@ -1,18 +1,35 @@
 import { action, makeObservable, observable } from "mobx";
-import { topics } from "../misc/constants";
+import { Collection } from "../misc/types";
 
 class ProfilePageStore {
-  modalOpen = false;
+  collections: Collection[] = [];
 
-  constructor() {
+  userName: string;
+
+  constructor(userName: string) {
     makeObservable(this, {
-      modalOpen: observable,
-      setModalOpen: action,
+      collections: observable,
+      fetchCollections: action,
+      setCollections: action,
     });
+
+    this.userName = userName;
+    this.fetchCollections();
   }
 
-  setModalOpen(newValue: boolean) {
-    this.modalOpen = newValue;
+  setCollections(newValue: Collection[]) {
+    this.collections = newValue;
+  }
+
+  async fetchCollections() {
+    console.log("fetched!");
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/get/${this.userName}`, {
+      method: "GET",
+    });
+
+    const responseBody = (await response.json()) as { success: boolean; data: null | Collection[] };
+    const { data } = responseBody;
+    this.setCollections(data ?? []);
   }
 }
 

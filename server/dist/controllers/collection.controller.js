@@ -26,17 +26,24 @@ export const updateCollectionHandler = async (req, res) => {
     const { id, userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes, } = req.body;
     const user = await User.findOne({ username: userName }).populate("collections");
     const collection = await Collection.findById(id);
-    console.log(user, collection, "heyyy");
     if (!collection)
         return res.status(500).json({ success: false });
     if (!user)
         return res.status(500).json({ success: false });
     collection.name = name;
     collection.description = description;
+    //@ts-ignore
     collection.topic = topic;
     collection.image = image;
     collection.additionalCollectionFieldNames = additionalCollectionFieldNames;
     collection.additionalCollectionFieldTypes = additionalCollectionFieldTypes;
     await collection.save();
     return res.status(200).json({ success: true });
+};
+export const getCollectionsHandler = async (req, res) => {
+    const { userName } = req.params;
+    const user = await User.findOne({ username: userName }).populate("collections");
+    if (!user)
+        return res.status(400).json({ success: false, data: null });
+    return res.status(200).json({ success: true, data: user.collections });
 };

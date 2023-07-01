@@ -16,19 +16,28 @@ import { useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { CustomFieldType } from "../../misc/types";
 import { useParams } from "react-router-dom";
+import ProfilePageStore from "../../stores/ProfilePageStore";
 
 export interface AddCollectionModalProps {
   buttonText: string;
   creatingCollection: boolean;
+  profilePageStore?: ProfilePageStore;
 }
 
-const AddCollectionModal = ({ buttonText, creatingCollection }: AddCollectionModalProps) => {
-  const params = useParams();
-  const [collectionConfigStore] = useState(new CollectionConfigStore(params.userName as string));
+const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStore }: AddCollectionModalProps) => {
+  const { userName } = useParams();
+  if (!userName) return null;
+  const [collectionConfigStore] = useState(new CollectionConfigStore(userName));
 
-  const handleButtonClick = () => {
-    if (creatingCollection) collectionConfigStore.createCollection();
-    else collectionConfigStore.editCollection();
+  const handleButtonClick = async () => {
+    if (creatingCollection) {
+      await collectionConfigStore.createCollection();
+      profilePageStore?.fetchCollections();
+    } else {
+      collectionConfigStore.editCollection();
+    }
+
+    collectionConfigStore.handleModalClose();
   };
 
   return (
@@ -148,4 +157,4 @@ const AddCollectionModal = ({ buttonText, creatingCollection }: AddCollectionMod
   );
 };
 
-export default observer(AddCollectionModal);
+export default observer(CollectionConfigModal);

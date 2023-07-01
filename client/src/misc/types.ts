@@ -13,3 +13,13 @@ export interface CustomField {
   name: string;
   type: CustomFieldType;
 }
+
+export interface Collection {
+  name: string;
+  description: string;
+  topic: string;
+  image?: string;
+  additionalCollectionFieldNames: string[];
+  additionalCollectionFieldTypes: string[];
+  owner: string;
+}

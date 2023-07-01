@@ -1,13 +1,12 @@
-import { useEffect } from "react";
-//TODO
-const CollectionList = () => {
-  useEffect(() => {}, []);
+import { observer } from "mobx-react";
+import ProfilePageStore from "../../stores/ProfilePageStore";
 
-  return (
-    <div>
-      <div></div>
-    </div>
-  );
+export interface CollectionListProps {
+  profilePageStore: ProfilePageStore;
+}
+
+const CollectionList = ({ profilePageStore }: CollectionListProps) => {
+  return profilePageStore.collections.map((col, i) => <div key={i}>{col.name}</div>);
 };
 
-export default CollectionList;
+export default observer(CollectionList);
