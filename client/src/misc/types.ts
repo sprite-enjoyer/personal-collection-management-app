@@ -9,9 +9,29 @@ export interface User {
 
 export type CustomFieldType = "string" | "integer" | "multiline" | "boolean" | "date";
 export interface CustomField {
-  _id: number;
+  id: number;
   name: string;
   type: CustomFieldType;
+}
+
+export interface AdditionalFields {
+  stringFieldNames: string[];
+  stringFieldValues: string[];
+  booleanFieldNames: string[];
+  booleanFieldValues: boolean[];
+  multilineTextFieldNames: string[];
+  multilineTextFieldValues: string[];
+  dateFieldNames: string[];
+  dateFieldValues: Date[];
+  integerFieldNames: string[];
+  integerFieldValues: number[];
+}
+export interface Item {
+  _id: string;
+  name: string;
+  tags: string[];
+  owner: string;
+  additionalFields: AdditionalFields;
 }
 
 export interface Collection {
@@ -23,4 +43,5 @@ export interface Collection {
   additionalCollectionFieldNames: string[];
   additionalCollectionFieldTypes: string[];
   owner: string;
+  items: Item[];
 }

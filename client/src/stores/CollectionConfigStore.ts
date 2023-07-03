@@ -112,7 +112,6 @@ class CollectionConfigStore {
     });
 
     const data = await response.json();
-    console.log(data);
   }
 
   async editCollection() {
@@ -134,7 +133,6 @@ class CollectionConfigStore {
     });
 
     const data = await response.json();
-    console.log(data);
   }
 }
 

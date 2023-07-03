@@ -37,7 +37,6 @@ const AdminPage = ({}: AdminPageProps) => {
     const { checked } = e.target;
     if (checked) adminPageStore.setSelectedUsers([...adminPageStore.selectedUsers, user]);
     else adminPageStore.setSelectedUsers(adminPageStore.selectedUsers.filter((u) => u.id !== user.id));
-    console.log(toJS(adminPageStore.selectedUsers));
   };
 
   const handleHeaderCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
