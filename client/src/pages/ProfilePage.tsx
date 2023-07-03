@@ -4,8 +4,8 @@ import { Box, Container, Typography } from "@mui/material";
 import { useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
-import CollectionConfigModal from "../components/ProfileRoute/CollectionConfigModal";
-import CollectionList from "../components/ProfileRoute/CollectionList";
+import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
+import CollectionList from "../components/ProfilePage/CollectionList";
 
 const ProfilePage = () => {
   const { userName } = useParams();

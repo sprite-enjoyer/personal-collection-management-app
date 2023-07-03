@@ -9,12 +9,13 @@ export interface User {
 
 export type CustomFieldType = "string" | "integer" | "multiline" | "boolean" | "date";
 export interface CustomField {
-  id: number;
+  _id: number;
   name: string;
   type: CustomFieldType;
 }
 
 export interface Collection {
+  _id: string;
   name: string;
   description: string;
   topic: string;
