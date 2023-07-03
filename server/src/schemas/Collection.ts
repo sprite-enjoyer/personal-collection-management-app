@@ -69,6 +69,10 @@ const collectionSchema = new mongoose.Schema({
   image: String,
   additionalCollectionFieldNames: [String],
   additionalCollectionFieldTypes: [String],
+  items: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+  },
   owner: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -77,7 +81,7 @@ const collectionSchema = new mongoose.Schema({
 
 function allowEmptyStrings() {
   //@ts-ignore
-  return typeof this.description === "string" ? false : true;
+  return !(typeof this.description === "string");
 }
 
 export default mongoose.model("Collection", collectionSchema);

@@ -4,6 +4,7 @@ import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPage from "../pages/AdminPage";
 import ProfilePage from "../pages/ProfilePage";
+import CollectionPage from "../pages/CollectionPage";
 
 const RoutesManager = () => {
   return (
@@ -33,6 +34,10 @@ const RoutesManager = () => {
         <Route
           path="/user/:userName"
           element={<ProfilePage />}
+        />
+        <Route
+          path="/collection/:collectionID"
+          element={<CollectionPage />}
         />
       </Routes>
     </BrowserRouter>

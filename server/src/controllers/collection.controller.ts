@@ -16,7 +16,6 @@ export const createCollectionHandler = async (
   req: Request<any, any, CreateCollectionHandlerBodyType>,
   res: Response
 ) => {
-  console.log(req.body, "BODY!!!!!!!!");
   const { userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } =
     req.body;
 
@@ -76,11 +75,21 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
   return res.status(200).json({ success: true });
 };
 
-export const getCollectionsHandler = async (req: Request, res: Response) => {
+export const getUserCollectionsHandler = async (req: Request, res: Response) => {
   const { userName } = req.params;
 
   const user = await User.findOne({ username: userName }).populate("collections");
   if (!user) return res.status(400).json({ success: false, data: null });
 
   return res.status(200).json({ success: true, data: user.collections });
+};
+
+export const getCollectionHandler = async (req: Request, res: Response) => {
+  const { collectionID } = req.params;
+  if (!collectionID) return res.status(400).json({ success: false, data: null });
+
+  const collection = await Collection.findById(collectionID);
+  if (!collection) return res.status(404).json({ success: false, data: null });
+
+  return res.status(200).json({ success: true, data: collection });
 };

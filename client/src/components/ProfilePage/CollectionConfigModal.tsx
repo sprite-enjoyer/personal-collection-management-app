@@ -34,7 +34,7 @@ const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStor
       await collectionConfigStore.createCollection();
       profilePageStore?.fetchCollections();
     } else {
-      collectionConfigStore.editCollection();
+      await collectionConfigStore.editCollection();
     }
 
     collectionConfigStore.handleModalClose();

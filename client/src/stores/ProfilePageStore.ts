@@ -22,7 +22,7 @@ class ProfilePageStore {
   }
 
   async fetchCollections() {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/get/${this.userName}`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getUserCollections/${this.userName}`, {
       method: "GET",
     });
 

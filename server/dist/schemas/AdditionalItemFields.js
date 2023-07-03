@@ -1,28 +1,43 @@
 import mongoose from "mongoose";
-import StringField from "./StringField.js";
-import BooleanField from "./BooleanField.js";
-import IntegerField from "./IntegerField.js";
-import MultilineTextField from "./MultilineTextField.js";
-import DateField from "./DateField.js";
 const additionalItemFieldsSchema = new mongoose.Schema({
-    stringFields: {
-        type: [StringField],
+    stringFieldNames: {
+        type: [String],
         default: [],
     },
-    booleanFields: {
-        type: [BooleanField],
+    stringFieldValues: {
+        type: [String],
         default: [],
     },
-    integerFields: {
-        type: [IntegerField],
+    booleanFieldNames: {
+        type: [String],
         default: [],
     },
-    multilineTextFields: {
-        type: [MultilineTextField],
+    booleanFieldValues: {
+        type: [Boolean],
         default: [],
     },
-    dateFields: {
-        type: [DateField],
+    multilineTextFieldNames: {
+        type: [String],
+        default: [],
+    },
+    multilineTextFieldValues: {
+        type: [String],
+        default: [],
+    },
+    dateFieldNames: {
+        type: [String],
+        default: [],
+    },
+    dateFieldValues: {
+        type: [Date],
+        default: [],
+    },
+    integerFieldNames: {
+        type: [String],
+        default: [],
+    },
+    integerFieldValues: {
+        type: [Number],
         default: [],
     },
 });

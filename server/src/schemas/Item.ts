@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import AdditionalItemFields from "./AdditionalItemFields.js";
+import mongoose, { Schema } from "mongoose";
 
 const itemSchema = new mongoose.Schema({
   name: {
@@ -10,7 +9,15 @@ const itemSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  additionalFields: AdditionalItemFields,
+  owner: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  additionalFields: {
+    type: Schema.Types.ObjectId,
+    ref: "AdditionalItemFields",
+  },
 });
 
 export default mongoose.model("Item", itemSchema);
