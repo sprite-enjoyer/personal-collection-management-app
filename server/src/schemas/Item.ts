@@ -14,8 +14,14 @@ const itemSchema = new mongoose.Schema({
     required: true,
     ref: "User",
   },
+  containerCollection: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "ItemCollection",
+  },
   additionalFields: {
     type: Schema.Types.ObjectId,
+    required: true,
     ref: "AdditionalItemFields",
   },
 });

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { AdditionalFields } from "../types.js";
 
-const additionalItemFieldsSchema = new mongoose.Schema({
+const additionalItemFieldsSchema = new mongoose.Schema<AdditionalFields>({
   stringFieldNames: {
     type: [String],
     default: [],

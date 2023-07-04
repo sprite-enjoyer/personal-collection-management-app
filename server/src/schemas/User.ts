@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   collections: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Collection",
+    ref: "ItemCollection",
     default: [],
   },
 });

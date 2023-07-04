@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Collection from "../schemas/Collection.js";
+import ItemCollection from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
 
 interface CreateCollectionHandlerBodyType {
@@ -22,7 +22,7 @@ export const createCollectionHandler = async (
   const user = await User.findOne({ username: userName }).populate("collections");
   if (!user) return res.status(500).json({ success: false });
 
-  const newCollection = new Collection({
+  const newCollection = new ItemCollection({
     name: name,
     description: description,
     topic: topic,
@@ -57,7 +57,7 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
   } = req.body;
 
   const user = await User.findOne({ username: userName }).populate("collections");
-  const collection = await Collection.findById(id);
+  const collection = await ItemCollection.findById(id);
 
   if (!collection) return res.status(500).json({ success: false });
   if (!user) return res.status(500).json({ success: false });
@@ -88,7 +88,7 @@ export const getCollectionHandler = async (req: Request, res: Response) => {
   const { collectionID } = req.params;
   if (!collectionID) return res.status(400).json({ success: false, data: null });
 
-  const collection = await Collection.findById(collectionID);
+  const collection = await ItemCollection.findById(collectionID).populate("items");
   if (!collection) return res.status(404).json({ success: false, data: null });
 
   return res.status(200).json({ success: true, data: collection });

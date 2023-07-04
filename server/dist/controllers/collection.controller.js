@@ -1,11 +1,11 @@
-import Collection from "../schemas/Collection.js";
+import ItemCollection from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
 export const createCollectionHandler = async (req, res) => {
     const { userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } = req.body;
     const user = await User.findOne({ username: userName }).populate("collections");
     if (!user)
         return res.status(500).json({ success: false });
-    const newCollection = new Collection({
+    const newCollection = new ItemCollection({
         name: name,
         description: description,
         topic: topic,
@@ -24,7 +24,7 @@ export const createCollectionHandler = async (req, res) => {
 export const updateCollectionHandler = async (req, res) => {
     const { id, userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes, } = req.body;
     const user = await User.findOne({ username: userName }).populate("collections");
-    const collection = await Collection.findById(id);
+    const collection = await ItemCollection.findById(id);
     if (!collection)
         return res.status(500).json({ success: false });
     if (!user)
@@ -50,7 +50,7 @@ export const getCollectionHandler = async (req, res) => {
     const { collectionID } = req.params;
     if (!collectionID)
         return res.status(400).json({ success: false, data: null });
-    const collection = await Collection.findById(collectionID);
+    const collection = await ItemCollection.findById(collectionID).populate("items");
     if (!collection)
         return res.status(404).json({ success: false, data: null });
     return res.status(200).json({ success: true, data: collection });

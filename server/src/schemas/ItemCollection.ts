@@ -70,7 +70,12 @@ const collectionSchema = new mongoose.Schema({
   additionalCollectionFieldNames: [String],
   additionalCollectionFieldTypes: [String],
   items: {
-    type: [Schema.Types.ObjectId],
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Item",
+      },
+    ],
     default: [],
   },
   owner: {
@@ -84,4 +89,4 @@ function allowEmptyStrings() {
   return !(typeof this.description === "string");
 }
 
-export default mongoose.model("Collection", collectionSchema);
+export default mongoose.model("ItemCollection", collectionSchema);
