@@ -41,7 +41,7 @@ export interface Collection {
   topic: string;
   image?: string;
   additionalCollectionFieldNames: string[];
-  additionalCollectionFieldTypes: string[];
+  additionalCollectionFieldTypes: CustomFieldType[];
   owner: string;
   items: Item[];
 }

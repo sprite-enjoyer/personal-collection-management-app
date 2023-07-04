@@ -5,10 +5,9 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Checkbox,
   Typography,
   TableBody,
-  Button,
+  Container,
 } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
@@ -22,29 +21,29 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
     <TableContainer
       component={Paper}
       sx={{
-        margin: "50px",
-        height: "700px",
-        width: "1500px",
+        margin: "20px 50px 50px 50px",
+        height: "70%",
+        minHeight: "500px",
+        width: "80%",
+        position: "relative",
       }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>
-              <Checkbox onChange={undefined} />
-            </TableCell>
             {collectionPageStore.collectionTableColumns.map((column, i) => (
               <TableCell key={column}>
                 <Typography>{column}</Typography>
               </TableCell>
             ))}
-            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {collectionPageStore.collectionTableRows.map((item, i) => (
-            <TableRow key={item._id}>
+            <TableRow
+              hover
+              key={item._id}>
               {CollectionPageStore.getCollectionTableRowInformationArray(item).map((value, j) => (
-                <TableCell key={i.toString().concat(j.toString())}>
+                <TableCell key={i.toString() + j.toString()}>
                   <Typography>{value.toString()}</Typography>
                 </TableCell>
               ))}

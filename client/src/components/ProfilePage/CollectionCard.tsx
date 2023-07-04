@@ -15,7 +15,9 @@ const CollectionCard = ({ image, name, description, id }: CollectionCardProps) =
   };
 
   return (
-    <Card onClick={handleClick}>
+    <Card
+      onClick={handleClick}
+      sx={{ cursor: "pointer" }}>
       <CardHeader title={name} />
       <CardMedia
         component="img"
