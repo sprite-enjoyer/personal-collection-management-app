@@ -17,24 +17,33 @@ import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { CustomFieldType } from "../../misc/types";
 import { useParams } from "react-router-dom";
 import ProfilePageStore from "../../stores/ProfilePageStore";
+import CollectionPageStore from "../../stores/CollectionPageStore";
 
 export interface AddCollectionModalProps {
   buttonText: string;
   creatingCollection: boolean;
   profilePageStore?: ProfilePageStore;
+  collectionPageStore?: CollectionPageStore;
 }
 
-const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStore }: AddCollectionModalProps) => {
-  const { userName } = useParams();
-  if (!userName) return null;
-  const [collectionConfigStore] = useState(new CollectionConfigStore(userName));
+const CollectionConfigModal = ({
+  buttonText,
+  creatingCollection,
+  profilePageStore,
+  collectionPageStore,
+}: AddCollectionModalProps) => {
+  const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
+  if (!userName && creatingCollection) return null;
+  const [collectionConfigStore] = useState(new CollectionConfigStore(userName, collectionID));
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
       await collectionConfigStore.createCollection();
       profilePageStore?.fetchCollections();
     } else {
+      if (!collectionID) return;
       await collectionConfigStore.editCollection();
+      await collectionPageStore?.fetchCollection(collectionID);
     }
 
     collectionConfigStore.handleModalClose();
@@ -67,12 +76,14 @@ const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStor
               fullWidth
               label="Name"
               type="text"
+              value={collectionConfigStore.collectionName}
               onChange={(e) => collectionConfigStore.setCollectionName(e.target.value)}
             />
             <TextField
               fullWidth
               label="Description"
               multiline
+              value={collectionConfigStore.collectionDescription}
               type="text"
               onChange={(e) => collectionConfigStore.setCollectionDescription(e.target.value)}
             />
@@ -82,6 +93,7 @@ const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStor
                 onChange={(e) => collectionConfigStore.setCollectionTopic(e.target.value)}
                 labelId="select-topic"
                 label="Topic"
+                value={collectionConfigStore.collectionTopic}
                 defaultValue="Other">
                 {topics.map((topic, i) => (
                   <MenuItem
@@ -122,7 +134,7 @@ const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStor
                 </Select>
               </FormControl>
               <Button
-                variant="contained"
+                variant="outlined"
                 onClick={() => collectionConfigStore.addCustomField()}>
                 add custom field
               </Button>
@@ -149,7 +161,11 @@ const CollectionConfigModal = ({ buttonText, creatingCollection, profilePageStor
                 </Box>
               ))}
             </Box>
-            <Button onClick={handleButtonClick}>{buttonText}</Button>
+            <Button
+              variant="contained"
+              onClick={handleButtonClick}>
+              {buttonText}
+            </Button>
           </Container>
         </Box>
       </Modal>

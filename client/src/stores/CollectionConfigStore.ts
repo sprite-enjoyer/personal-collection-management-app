@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import { topics } from "../misc/constants";
-import { CustomField, CustomFieldType } from "../misc/types";
+import { Collection, CustomField, CustomFieldType } from "../misc/types";
 
 class CollectionConfigStore {
   collectionName = "";
@@ -17,9 +17,9 @@ class CollectionConfigStore {
 
   collectionID?: string;
 
-  userName: string;
+  userName?: string;
 
-  constructor(userName: string, collectionID?: string) {
+  constructor(userName?: string, collectionID?: string) {
     this.collectionID = collectionID;
     this.userName = userName;
 
@@ -58,6 +58,7 @@ class CollectionConfigStore {
 
   setModalOpen(newValue: boolean) {
     this.modalOpen = newValue;
+    if (this.modalOpen === true) this.populateFieldsWithExistingCollectionData();
   }
 
   setCustomFieldToBeAddedName(newValue: string) {
@@ -133,6 +134,30 @@ class CollectionConfigStore {
     });
 
     const data = await response.json();
+  }
+
+  async fetchCollection(collectionID: string) {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getCollection/${collectionID}`);
+    const { data } = (await response.json()) as { data: Collection };
+    return data;
+  }
+
+  async populateFieldsWithExistingCollectionData() {
+    if (!this.collectionID) return;
+    const collection = await this.fetchCollection(this.collectionID);
+    const customFields = collection.additionalCollectionFieldNames.map((name, i) => {
+      const result: CustomField = {
+        id: i,
+        name: name,
+        type: collection.additionalCollectionFieldTypes[i],
+      };
+      return result;
+    });
+
+    this.setCollectionName(collection.name);
+    this.setCollectionDescription(collection.description);
+    this.setCollectionTopic(collection.topic);
+    this.setCustomFields(customFields);
   }
 }
 
