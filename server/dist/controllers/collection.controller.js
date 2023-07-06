@@ -22,12 +22,9 @@ export const createCollectionHandler = async (req, res) => {
     res.status(200).json({ success: true });
 };
 export const updateCollectionHandler = async (req, res) => {
-    const { id, userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes, } = req.body;
-    const user = await User.findOne({ username: userName }).populate("collections");
+    const { id, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } = req.body;
     const collection = await ItemCollection.findById(id);
     if (!collection)
-        return res.status(500).json({ success: false });
-    if (!user)
         return res.status(500).json({ success: false });
     collection.name = name;
     collection.description = description;

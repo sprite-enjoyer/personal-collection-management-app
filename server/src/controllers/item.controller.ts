@@ -5,12 +5,13 @@ import AdditionalItemFields from "../schemas/AdditionalItemFields.js";
 import ItemCollection from "../schemas/ItemCollection.js";
 
 interface CreateItemHandlerRequestBodyType {
-  itemName: string;
   ownerID: string;
   collectionID: string;
+  itemName: string;
   additionalFields: AdditionalFields;
   tags?: string[];
 }
+
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
   const { itemName, tags, ownerID, collectionID, additionalFields } = req.body;
 

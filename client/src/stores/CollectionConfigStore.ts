@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import { topics } from "../misc/constants";
-import { Collection, CustomField, CustomFieldType } from "../misc/types";
+import { Collection, CustomFieldInfo, CustomFieldTypeProperty } from "../misc/types";
 
 class CollectionConfigStore {
   collectionName = "";
@@ -9,9 +9,9 @@ class CollectionConfigStore {
 
   collectionTopic = "Other";
 
-  customFields: CustomField[] = [];
+  customFields: CustomFieldInfo[] = [];
 
-  customFieldToBeAdded: CustomField = { id: 0, name: "", type: "string" };
+  customFieldToBeAdded: CustomFieldInfo = { id: 0, name: "", type: "string" };
 
   modalOpen = false;
 
@@ -65,7 +65,7 @@ class CollectionConfigStore {
     this.customFieldToBeAdded.name = newValue;
   }
 
-  setCustomFieldToBeAddedType(newValue: CustomFieldType) {
+  setCustomFieldToBeAddedType(newValue: CustomFieldTypeProperty) {
     this.customFieldToBeAdded.type = newValue;
   }
 
@@ -78,7 +78,7 @@ class CollectionConfigStore {
     this.customFieldToBeAdded = { id: this.customFields.length, name: "", type: "string" };
   }
 
-  setCustomFields(newValue: CustomField[]) {
+  setCustomFields(newValue: CustomFieldInfo[]) {
     this.customFields = newValue;
   }
 
@@ -123,7 +123,6 @@ class CollectionConfigStore {
       },
       body: JSON.stringify({
         id: this.collectionID,
-        userName: this.userName,
         name: this.collectionName,
         description: this.collectionDescription,
         topic: this.collectionTopic,
@@ -146,7 +145,7 @@ class CollectionConfigStore {
     if (!this.collectionID) return;
     const collection = await this.fetchCollection(this.collectionID);
     const customFields = collection.additionalCollectionFieldNames.map((name, i) => {
-      const result: CustomField = {
+      const result: CustomFieldInfo = {
         id: i,
         name: name,
         type: collection.additionalCollectionFieldTypes[i],

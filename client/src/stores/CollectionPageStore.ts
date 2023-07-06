@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Collection, CustomField, Item } from "../misc/types";
+import { Collection, CustomFieldInfo, Item } from "../misc/types";
 
 class CollectionPageStore {
   collection?: Collection;
@@ -63,7 +63,7 @@ class CollectionPageStore {
     if (!this.collection) return null;
     const { additionalCollectionFieldNames, additionalCollectionFieldTypes } = this.collection;
     const customFields = additionalCollectionFieldNames.map((name, i) => {
-      const result: CustomField = {
+      const result: CustomFieldInfo = {
         id: i,
         name: name,
         type: additionalCollectionFieldTypes[i],

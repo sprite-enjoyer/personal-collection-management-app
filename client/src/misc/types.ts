@@ -7,11 +7,16 @@ export interface User {
   collections: Array<any>; // TODO implement collections and change any to the collection type
 }
 
-export type CustomFieldType = "string" | "integer" | "multiline" | "boolean" | "date";
-export interface CustomField {
+export type CustomFieldTypeProperty = "string" | "integer" | "multiline" | "boolean" | "date";
+export type CustomFieldType = string | number | boolean | Date;
+export interface CustomFieldInfo {
   id: number;
   name: string;
-  type: CustomFieldType;
+  type: CustomFieldTypeProperty;
+}
+
+export interface FullCustomField extends CustomFieldInfo {
+  value: string | number | boolean | Date;
 }
 
 export interface AdditionalFields {
@@ -41,7 +46,7 @@ export interface Collection {
   topic: string;
   image?: string;
   additionalCollectionFieldNames: string[];
-  additionalCollectionFieldTypes: CustomFieldType[];
+  additionalCollectionFieldTypes: CustomFieldTypeProperty[];
   owner: string;
   items: Item[];
 }

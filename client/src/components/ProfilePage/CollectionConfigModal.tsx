@@ -14,7 +14,7 @@ import { topics } from "../../misc/constants";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
-import { CustomFieldType } from "../../misc/types";
+import { CustomFieldTypeProperty } from "../../misc/types";
 import { useParams } from "react-router-dom";
 import ProfilePageStore from "../../stores/ProfilePageStore";
 import CollectionPageStore from "../../stores/CollectionPageStore";
@@ -33,8 +33,8 @@ const CollectionConfigModal = ({
   collectionPageStore,
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
-  if (!userName && creatingCollection) return null;
-  const [collectionConfigStore] = useState(new CollectionConfigStore(userName, collectionID));
+  if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
+  const [collectionConfigStore] = useState(new CollectionConfigStore(undefined, collectionID));
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -119,7 +119,9 @@ const CollectionConfigModal = ({
               <FormControl>
                 <InputLabel id="field-type">Type</InputLabel>
                 <Select
-                  onChange={(e) => collectionConfigStore.setCustomFieldToBeAddedType(e.target.value as CustomFieldType)}
+                  onChange={(e) =>
+                    collectionConfigStore.setCustomFieldToBeAddedType(e.target.value as CustomFieldTypeProperty)
+                  }
                   labelId="field-type"
                   label="Type"
                   value={collectionConfigStore.customFieldToBeAdded.type}
