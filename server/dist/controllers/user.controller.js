@@ -43,26 +43,29 @@ export const sendUserJwtHandler = async (req, res) => {
         path: "/",
     })
         .status(200)
-        .json({ success: true, userName: user.username });
+        .json({ success: true, userName: user.username, blocked: user.blocked, isAdmin: user.isAdmin });
 };
-export const checkUserJwtHandler = (req, res, next) => {
+export const checkUserJwtHandler = async (req, res, next) => {
     const { justCheck } = req.body;
     const secret = process.env.JWT_SECRET;
     if (!secret)
         return res.status(500).json({ message: "no jwt secret defined in server" });
     const token = req.headers.cookie?.slice(4) ?? null;
     if (!token) {
-        const userInfo = { userID: null, blocked: false };
+        const userInfo = { userID: null, blocked: false, isAdmin: false };
         if (justCheck)
             return res.status(401).json(userInfo);
         res.locals.userInfo = { ...userInfo };
-        next();
-        return;
+        return next();
     }
     const decoded = jwt.verify(token, secret);
     const userInfo = { userID: decoded.userID, blocked: decoded.blocked, isAdmin: decoded.isAdmin };
-    if (justCheck)
-        return res.status(200).json(userInfo);
+    const user = await User.findById(decoded.userID);
+    if (justCheck) {
+        if (!user)
+            return res.status(500).json({ userID: null, blocked: true, isAdmin: false });
+        return res.status(200).json({ userName: user.username, ...userInfo });
+    }
     next();
 };
 export const getUsersHandler = async (req, res) => {
@@ -79,6 +82,13 @@ export const getUsersHandler = async (req, res) => {
         return publicUser;
     });
     res.json({ users: users });
+};
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user)
+        return res.status(404).json({ success: false, data: null });
+    return res.status(200).json({ success: true, data: user });
 };
 export const putUsersHandler = async (req, res) => {
     const { blocked, isAdmin, userIDs } = req.body;

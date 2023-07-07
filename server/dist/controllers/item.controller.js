@@ -52,7 +52,6 @@ export const editItemHandler = async (req, res) => {
     Object.assign(dbAdditionalFields, additionalFields);
     await dbAdditionalFields.save();
     item.name = name;
-    item.tags = tags;
     await item.save();
     return res.status(200).json({ success: true });
 };

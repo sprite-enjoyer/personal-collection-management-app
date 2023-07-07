@@ -21,7 +21,8 @@ export const createCollectionHandler = async (
     req.body;
 
   const user = await User.findOne({ username: userName }).populate("collections");
-  if (!user) return res.status(500).json({ success: false });
+  console.log(user);
+  if (!user) return res.status(500).json({ success: false }); //
 
   const newCollection = new ItemCollection({
     name: name,

@@ -76,7 +76,6 @@ export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequ
   await dbAdditionalFields.save();
 
   item.name = name;
-  item.tags = tags;
   await item.save();
 
   return res.status(200).json({ success: true });

@@ -3,8 +3,9 @@ import User from "../schemas/User.js";
 export const createCollectionHandler = async (req, res) => {
     const { userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } = req.body;
     const user = await User.findOne({ username: userName }).populate("collections");
+    console.log(user);
     if (!user)
-        return res.status(500).json({ success: false });
+        return res.status(500).json({ success: false }); //
     const newCollection = new ItemCollection({
         name: name,
         description: description,
