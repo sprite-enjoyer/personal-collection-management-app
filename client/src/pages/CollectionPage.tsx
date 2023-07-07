@@ -12,14 +12,9 @@ import { Collection } from "../misc/types";
 
 const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
-  const [collectionPageStore] = useState(new CollectionPageStore());
+  const [collectionPageStore] = useState(new CollectionPageStore(collection, userName));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   globalUserInfoStore.setCurrentlyViewingUser(userName);
-
-  useEffect(() => {
-    collectionPageStore.setUserName(userName);
-    collectionPageStore.setCollection(collection);
-  }, [collectionPageStore, collection, userName]);
 
   return (
     <>
@@ -58,7 +53,10 @@ const CollectionPage = () => {
           </Container>
         )}
       </div>
-      <ItemConfigModal collectionPageStore={collectionPageStore} />
+      <ItemConfigModal
+        creatingItem={true}
+        collectionPageStore={collectionPageStore}
+      />
     </>
   );
 };

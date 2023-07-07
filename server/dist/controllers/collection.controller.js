@@ -48,7 +48,13 @@ export const getCollectionHandler = async (req, res) => {
     const { collectionID } = req.params;
     if (!collectionID)
         return res.status(400).json({ success: false, data: null });
-    const collection = await ItemCollection.findById(collectionID).populate("items");
+    const collection = await ItemCollection.findById(collectionID).populate({
+        path: "items",
+        populate: {
+            path: "additionalFields",
+            model: "AdditionalItemFields",
+        },
+    });
     if (!collection)
         return res.status(404).json({ success: false, data: null });
     return res.status(200).json({ success: true, data: collection });

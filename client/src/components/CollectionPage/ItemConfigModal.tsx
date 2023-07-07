@@ -8,9 +8,10 @@ import { GlobalUserInfoStoreContext } from "../../App";
 
 export interface AddItemModalProps {
   collectionPageStore: CollectionPageStore;
+  creatingItem: boolean;
 }
 
-const ItemConfigModal = ({ collectionPageStore }: AddItemModalProps) => {
+const ItemConfigModal = ({ collectionPageStore, creatingItem }: AddItemModalProps) => {
   const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.itemFields));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
@@ -46,7 +47,12 @@ const ItemConfigModal = ({ collectionPageStore }: AddItemModalProps) => {
           />
         ))}
         <Button
-          onClick={() => itemConfigStore.createItem(collectionPageStore.collection?._id)}
+          onClick={async () => {
+            await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
+            collectionPageStore.setAddItemModalOpen(false);
+            const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
+            collectionPageStore.setCollection(updatedCollection);
+          }}
           variant="contained">
           add item
         </Button>

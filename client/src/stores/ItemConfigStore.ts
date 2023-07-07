@@ -5,7 +5,6 @@ import {
   CustomFieldType,
   CustomFieldTypeProperty,
   FullCustomField,
-  Item,
 } from "../misc/types";
 
 class ItemConfigStore {
@@ -75,8 +74,7 @@ class ItemConfigStore {
     return result;
   }
 
-  async createItem(collectionID?: string, ownerUserName?: string) {
-    if (!collectionID || !ownerUserName) throw new Error("collection ID or owner not found");
+  async createItem(collectionID: string, ownerID: string) {
     const additionalFields: AdditionalFields = {
       stringFieldNames: this.filterFields<string[]>("string", true),
       stringFieldValues: this.filterFields<string[]>("string", false),
@@ -90,13 +88,12 @@ class ItemConfigStore {
       integerFieldValues: this.filterFields<number[]>("integer", false),
     };
 
-    const newItem: Omit<Item, "_id"> = {
-      name: this.name,
-      owner: ownerUserName,
+    const body = {
+      ownerID: ownerID,
+      collectionID: collectionID,
+      itemName: this.name,
       additionalFields: additionalFields,
     };
-
-    const body = { ...newItem, containerCollection: collectionID };
 
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/create`, {
       method: "POST",

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import { AdditionalFields } from "../types.js";
 
 const additionalItemFieldsSchema = new mongoose.Schema<AdditionalFields>({

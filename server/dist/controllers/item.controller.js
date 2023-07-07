@@ -2,7 +2,7 @@ import Item from "../schemas/Item.js";
 import AdditionalItemFields from "../schemas/AdditionalItemFields.js";
 import ItemCollection from "../schemas/ItemCollection.js";
 export const createItemHandler = async (req, res) => {
-    const { itemName, tags, ownerID, collectionID, additionalFields } = req.body;
+    const { itemName, ownerID, collectionID, additionalFields } = req.body;
     const newAdditionalFields = await AdditionalItemFields.create({
         stringFieldNames: additionalFields.stringFieldNames,
         stringFieldValues: additionalFields.stringFieldValues,
@@ -20,7 +20,6 @@ export const createItemHandler = async (req, res) => {
         return res.status(404).json({ success: false });
     const newItem = await Item.create({
         name: itemName,
-        tags: tags,
         owner: ownerID,
         containerCollection: collectionID,
         additionalFields: newAdditionalFields._id,

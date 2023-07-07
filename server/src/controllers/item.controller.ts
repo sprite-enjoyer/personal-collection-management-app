@@ -9,11 +9,10 @@ interface CreateItemHandlerRequestBodyType {
   collectionID: string;
   itemName: string;
   additionalFields: AdditionalFields;
-  tags?: string[];
 }
 
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
-  const { itemName, tags, ownerID, collectionID, additionalFields } = req.body;
+  const { itemName, ownerID, collectionID, additionalFields } = req.body;
 
   const newAdditionalFields = await AdditionalItemFields.create({
     stringFieldNames: additionalFields.stringFieldNames,
@@ -33,7 +32,6 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
 
   const newItem = await Item.create({
     name: itemName,
-    tags: tags,
     owner: ownerID,
     containerCollection: collectionID,
     additionalFields: newAdditionalFields._id,

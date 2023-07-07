@@ -1,14 +1,17 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable, toJS } from "mobx";
 import { Collection, CustomFieldInfo, Item, User } from "../misc/types";
 
 class CollectionPageStore {
-  collection?: Collection;
+  collection: Collection;
 
   addItemModalOpen = false;
 
-  userName?: string;
+  userName: string;
 
-  constructor() {
+  constructor(collection: Collection, userName: string) {
+    this.collection = collection;
+    this.userName = userName;
+
     makeObservable(this, {
       collection: observable,
       addItemModalOpen: observable,
@@ -44,16 +47,15 @@ class CollectionPageStore {
   }
 
   static async fetchUserName(owner: string) {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/user/${owner}`);
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/getUserById/${owner}`);
     const { success, data } = (await response.json()) as { success: boolean; data: User | null };
     return data?.username;
   }
 
   get collectionTableColumns() {
     if (!this.collection || this.collection.items.length === 0) return [];
-    const fixedFieldNames = ["id", "name", "tags"];
+    const fixedFieldNames = ["id", "name"];
     const additionalFields = this.collection.items[0].additionalFields;
-
     const additionalFieldNames = [
       ...(additionalFields.booleanFieldNames ?? []),
       ...(additionalFields.stringFieldNames ?? []),

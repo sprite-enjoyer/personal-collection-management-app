@@ -90,6 +90,13 @@ export const getUserById = async (req, res) => {
         return res.status(404).json({ success: false, data: null });
     return res.status(200).json({ success: true, data: user });
 };
+export const getUserByUserName = async (req, res) => {
+    const { userName } = req.params;
+    const user = await User.findOne({ username: userName });
+    if (!user)
+        return res.status(404).json({ success: false, data: null });
+    return res.status(200).json({ success: true, data: user });
+};
 export const putUsersHandler = async (req, res) => {
     const { blocked, isAdmin, userIDs } = req.body;
     const mongoIDs = userIDs.map((id) => new mongoose.Types.ObjectId(id));

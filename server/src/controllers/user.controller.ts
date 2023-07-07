@@ -96,6 +96,13 @@ export const getUserById = async (req: Request, res: Response) => {
   return res.status(200).json({ success: true, data: user });
 };
 
+export const getUserByUserName = async (req: Request, res: Response) => {
+  const { userName } = req.params;
+  const user = await User.findOne({ username: userName });
+  if (!user) return res.status(404).json({ success: false, data: null });
+  return res.status(200).json({ success: true, data: user });
+};
+
 export const putUsersHandler = async (req: Request, res: Response) => {
   const { blocked, isAdmin, userIDs }: { blocked: boolean | null; isAdmin: boolean | null; userIDs: string[] } =
     req.body;

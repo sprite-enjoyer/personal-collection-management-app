@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { InferSchemaType, Schema } from "mongoose";
 
 const itemSchema = new mongoose.Schema({
   name: {

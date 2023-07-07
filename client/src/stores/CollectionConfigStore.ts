@@ -96,7 +96,6 @@ class CollectionConfigStore {
   }
 
   async createCollection() {
-    console.log(this.userName, "hiiiiiii");
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/create`, {
       method: "POST",
       headers: {
