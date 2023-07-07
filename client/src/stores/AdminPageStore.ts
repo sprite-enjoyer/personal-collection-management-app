@@ -40,7 +40,7 @@ class AdminPageStore {
   }
 
   async changeSelectedUsers(blocked: boolean | null, isAdmin: boolean | null) {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/put`, {
+    await fetch(`${import.meta.env.VITE_SERVER_URL}/users/put`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ class AdminPageStore {
   }
 
   async deleteSelectedUsers() {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/delete`, {
+    await fetch(`${import.meta.env.VITE_SERVER_URL}/users/delete`, {
       method: "DELETE",
       body: JSON.stringify({ userIDs: this.selectedUsers.map((u) => u.id) }),
       headers: {

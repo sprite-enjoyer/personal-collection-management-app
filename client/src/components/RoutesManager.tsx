@@ -1,7 +1,6 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import ProtectedRoute from "./ProtectedRoute";
 import AdminPage from "../pages/AdminPage";
 import ProfilePage from "../pages/ProfilePage";
 import CollectionPage from "../pages/CollectionPage";
@@ -24,20 +23,18 @@ const RoutesManager = () => {
         />
         <Route
           path="/admin"
-          element={
-            <ProtectedRoute
-              adminRequired
-              redirectPath="/login"
-            />
-          }>
-          <Route
-            path="/admin"
-            element={<AdminPage />}
-          />
-        </Route>
+          loader={async () => {
+            if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+            return null;
+          }}
+          element={<AdminPage />}
+        />
         <Route
           path="/user/:userName"
-          loader={async () => await globalUserInfoStore.checkJWTAndSetUserStatus()}
+          loader={async () => {
+            if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+            return null;
+          }}
           element={<ProfilePage />}
         />
         <Route

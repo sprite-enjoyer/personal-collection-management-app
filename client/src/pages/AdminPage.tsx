@@ -1,36 +1,79 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import AdminPageStore from "../stores/AdminPageStore";
 import { observer } from "mobx-react";
-import { toJS } from "mobx";
 import { routeBaseStyles } from "../misc/styleUtils";
 import {
   Button,
   Checkbox,
   Container,
-  Input,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
 import { User } from "../misc/types";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { GlobalUserInfoStoreContext } from "../App";
 
 export interface AdminPageProps {}
 
 const AdminPage = ({}: AdminPageProps) => {
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  if (!globalUserInfoStore.isAdmin) return <Navigate to={"/login"} />;
   const [adminPageStore] = useState(new AdminPageStore());
   const navigate = useNavigate();
-  const columns = useMemo(() => {
+
+  const Columns = useCallback(() => {
     const firstUser = adminPageStore.users[0];
-    if (!firstUser) return [];
-    const keys = Object.keys(firstUser);
-    return keys;
+    if (!firstUser) return null;
+    const keys = Object.keys(firstUser).filter((key) => key !== "collections");
+    return (
+      <>
+        {keys.map((column) => (
+          <TableCell key={column}>
+            <Typography>{column}</Typography>
+          </TableCell>
+        ))}
+      </>
+    );
+  }, [adminPageStore.users]);
+
+  const Rows = useCallback(() => {
+    const users = adminPageStore.users.map((user) => {
+      const { collections, ...rest } = user;
+      return rest;
+    });
+
+    return (
+      <>
+        {adminPageStore.users.map((user, i) => (
+          <TableRow key={user.username + i.toString()}>
+            <TableCell>
+              <Checkbox
+                checked={shouldRowCheckboxBeChecked(user.id)}
+                onChange={(e) => handleUserCheckboxChange(e, user)}
+              />
+            </TableCell>
+            {Object.values(users[i]).map((value, i) => (
+              <TableCell key={user.id + i}>
+                <Typography>{value.toString()}</Typography>
+              </TableCell>
+            ))}
+            <TableCell>
+              <Button
+                variant="outlined"
+                onClick={() => navigate(`/user/${user.username}`)}>
+                Visit User
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </>
+    );
   }, [adminPageStore.users]);
 
   const handleUserCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, user: User) => {
@@ -64,37 +107,12 @@ const AdminPage = ({}: AdminPageProps) => {
               <TableCell>
                 <Checkbox onChange={handleHeaderCheckboxChange} />
               </TableCell>
-              {columns.map((column) => (
-                <TableCell key={column}>
-                  <Typography>{column}</Typography>
-                </TableCell>
-              ))}
+              <Columns />
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {adminPageStore.users.map((user) => (
-              <TableRow key={user.username}>
-                <TableCell>
-                  <Checkbox
-                    checked={shouldRowCheckboxBeChecked(user.id)}
-                    onChange={(e) => handleUserCheckboxChange(e, user)}
-                  />
-                </TableCell>
-                {Object.values(user).map((value, i) => (
-                  <TableCell key={user.id + i}>
-                    <Typography>{value.toString()}</Typography>
-                  </TableCell>
-                ))}
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    onClick={() => navigate(`/user/${user.username}`)}>
-                    Visit User
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            <Rows />
           </TableBody>
         </Table>
       </TableContainer>
