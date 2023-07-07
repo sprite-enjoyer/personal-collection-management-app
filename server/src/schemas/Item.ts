@@ -1,4 +1,37 @@
-import mongoose, { InferSchemaType, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+
+const stringFieldSchema = new mongoose.Schema({
+  name: String,
+  value: String,
+});
+
+const multilineTextFieldSchema = new mongoose.Schema({
+  name: String,
+  value: String,
+});
+
+const booleanFieldSchema = new mongoose.Schema({
+  name: String,
+  value: Boolean,
+});
+
+const integerFieldSchema = new mongoose.Schema({
+  name: String,
+  value: Number,
+});
+
+const dateFieldSchema = new mongoose.Schema({
+  name: String,
+  value: Date,
+});
+
+const additionalItemFieldsSchema = new mongoose.Schema({
+  dateFields: [dateFieldSchema],
+  integerFields: [integerFieldSchema],
+  stringFields: [stringFieldSchema],
+  multilineTextFields: [multilineTextFieldSchema],
+  booleanFields: [booleanFieldSchema],
+});
 
 const itemSchema = new mongoose.Schema({
   name: {
@@ -16,9 +49,8 @@ const itemSchema = new mongoose.Schema({
     ref: "ItemCollection",
   },
   additionalFields: {
-    type: Schema.Types.ObjectId,
+    type: additionalItemFieldsSchema,
     required: true,
-    ref: "AdditionalItemFields",
   },
 });
 
