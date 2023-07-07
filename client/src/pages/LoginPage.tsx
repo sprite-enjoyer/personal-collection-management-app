@@ -1,12 +1,14 @@
 import { Container, TextField, Button } from "@mui/material";
 import { routeBaseStyles } from "../misc/styleUtils";
 import LoginPageStore from "../stores/LoginPageStore";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GlobalUserInfoStoreContext } from "../App";
 
 const LoginPage = () => {
   const [loginPageStore] = useState(new LoginPageStore());
   const navigate = useNavigate();
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   return (
     <div
@@ -43,7 +45,7 @@ const LoginPage = () => {
           }}
           size="large"
           variant="contained"
-          onClick={() => loginPageStore.handleLogin(navigate)}
+          onClick={() => loginPageStore.handleLogin(navigate, globalUserInfoStore)}
           color="primary">
           Login
         </Button>

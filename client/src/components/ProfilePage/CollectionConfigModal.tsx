@@ -34,7 +34,7 @@ const CollectionConfigModal = ({
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
-  const [collectionConfigStore] = useState(new CollectionConfigStore(undefined, collectionID));
+  const [collectionConfigStore] = useState(new CollectionConfigStore(userName, collectionID));
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -43,7 +43,7 @@ const CollectionConfigModal = ({
     } else {
       if (!collectionID) return;
       await collectionConfigStore.editCollection();
-      await collectionPageStore?.fetchCollection(collectionID);
+      collectionPageStore?.setCollection(await CollectionPageStore.fetchCollection(collectionID));
     }
 
     collectionConfigStore.handleModalClose();

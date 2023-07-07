@@ -74,7 +74,7 @@ const AdminPage = ({}: AdminPageProps) => {
           </TableHead>
           <TableBody>
             {adminPageStore.users.map((user) => (
-              <TableRow key={user.userName}>
+              <TableRow key={user.username}>
                 <TableCell>
                   <Checkbox
                     checked={shouldRowCheckboxBeChecked(user.id)}
@@ -89,7 +89,7 @@ const AdminPage = ({}: AdminPageProps) => {
                 <TableCell>
                   <Button
                     variant="outlined"
-                    onClick={() => navigate(`/user/${user.userName}`)}>
+                    onClick={() => navigate(`/user/${user.username}`)}>
                     Visit User
                   </Button>
                 </TableCell>

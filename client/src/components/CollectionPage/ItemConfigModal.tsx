@@ -1,19 +1,21 @@
 import { Box, Button, Modal, TextField } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import CustomField from "./CustomField";
+import { GlobalUserInfoStoreContext } from "../../App";
 
 export interface AddItemModalProps {
   collectionPageStore: CollectionPageStore;
 }
 
-const AddItemModal = ({ collectionPageStore }: AddItemModalProps) => {
-  const [itemConfigStore, setItemConfigStore] = useState(new ItemConfigStore(collectionPageStore.itemFields));
+const ItemConfigModal = ({ collectionPageStore }: AddItemModalProps) => {
+  const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.itemFields));
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   useEffect(() => {
-    setItemConfigStore(new ItemConfigStore(collectionPageStore.itemFields));
+    itemConfigStore.setItemFields(collectionPageStore.itemFields, true);
   }, [collectionPageStore, collectionPageStore.itemFields]);
 
   return (
@@ -30,6 +32,12 @@ const AddItemModal = ({ collectionPageStore }: AddItemModalProps) => {
           flexDirection: "column",
           gap: "10px",
         }}>
+        <TextField
+          value={itemConfigStore.name}
+          placeholder="name"
+          label="name"
+          onChange={(e) => itemConfigStore.setName(e.target.value)}
+        />
         {itemConfigStore.itemFields.map((field) => (
           <CustomField
             key={field.id}
@@ -37,10 +45,14 @@ const AddItemModal = ({ collectionPageStore }: AddItemModalProps) => {
             itemConfigStore={itemConfigStore}
           />
         ))}
-        <Button variant="contained">add item</Button>
+        <Button
+          onClick={() => itemConfigStore.createItem(collectionPageStore.collection?._id)}
+          variant="contained">
+          add item
+        </Button>
       </Box>
     </Modal>
   );
 };
 
-export default observer(AddItemModal);
+export default observer(ItemConfigModal);

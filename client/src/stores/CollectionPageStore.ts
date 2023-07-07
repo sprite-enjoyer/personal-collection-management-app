@@ -1,23 +1,30 @@
-import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Collection, CustomFieldInfo, Item } from "../misc/types";
+import { action, computed, makeObservable, observable } from "mobx";
+import { Collection, CustomFieldInfo, Item, User } from "../misc/types";
 
 class CollectionPageStore {
   collection?: Collection;
+
   addItemModalOpen = false;
 
-  constructor(collectionID: string) {
+  userName?: string;
+
+  constructor() {
     makeObservable(this, {
       collection: observable,
       addItemModalOpen: observable,
       setCollection: action,
-      fetchCollection: action,
+      userName: observable,
       setAddItemModalOpen: action,
+      setUserName: action,
       collectionTableColumns: computed,
       collectionTableRows: computed,
       shouldRenderTable: computed,
       itemFields: computed,
     });
-    this.fetchCollection(collectionID);
+  }
+
+  setUserName(newValue: string) {
+    this.userName = newValue;
   }
 
   setCollection(newValue: Collection) {
@@ -28,12 +35,18 @@ class CollectionPageStore {
     this.addItemModalOpen = newValue;
   }
 
-  async fetchCollection(collectionID: string) {
+  static async fetchCollection(collectionID: string) {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getCollection/${collectionID}`, {
       method: "GET",
     });
     const { data } = (await response.json()) as { success: boolean; data: Collection };
-    this.setCollection(data);
+    return data;
+  }
+
+  static async fetchUserName(owner: string) {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/user/${owner}`);
+    const { success, data } = (await response.json()) as { success: boolean; data: User | null };
+    return data?.username;
   }
 
   get collectionTableColumns() {
@@ -74,7 +87,7 @@ class CollectionPageStore {
   }
 
   static getCollectionTableRowInformationArray(item: Item) {
-    const fixedFieldValues = [item._id, item.name, item.tags];
+    const fixedFieldValues = [item._id, item.name];
     const additionalFields = item.additionalFields;
 
     const additionalFieldValues = [

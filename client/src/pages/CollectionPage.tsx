@@ -1,17 +1,25 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useLoaderData, useParams } from "react-router-dom";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemTable from "../components/CollectionPage/ItemTable";
 import { routeBaseStyles } from "../misc/styleUtils";
 import { observer } from "mobx-react";
 import { Box, Button, Container, Typography } from "@mui/material";
 import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
-import AddItemModal from "../components/CollectionPage/AddItemModal";
+import ItemConfigModal from "../components/CollectionPage/ItemConfigModal";
+import { GlobalUserInfoStoreContext } from "../App";
+import { Collection } from "../misc/types";
 
 const CollectionPage = () => {
-  const { collectionID } = useParams();
-  if (!collectionID) return null;
-  const [collectionPageStore] = useState(new CollectionPageStore(collectionID));
+  const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
+  const [collectionPageStore] = useState(new CollectionPageStore());
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  globalUserInfoStore.setCurrentlyViewingUser(userName);
+
+  useEffect(() => {
+    collectionPageStore.setUserName(userName);
+    collectionPageStore.setCollection(collection);
+  }, [collectionPageStore, collection, userName]);
 
   return (
     <>
@@ -24,15 +32,19 @@ const CollectionPage = () => {
             justifyContent: "flex-end",
             margin: "50px 0 0 0",
           }}>
-          <CollectionConfigModal
-            buttonText="Edit Collection"
-            creatingCollection={false}
-          />
-          <Button
-            variant="contained"
-            onClick={() => collectionPageStore.setAddItemModalOpen(true)}>
-            add item
-          </Button>
+          {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
+            <>
+              <CollectionConfigModal
+                buttonText="Edit Collection"
+                creatingCollection={false}
+              />
+              <Button
+                variant="contained"
+                onClick={() => collectionPageStore.setAddItemModalOpen(true)}>
+                add item
+              </Button>
+            </>
+          )}
         </Box>
         {collectionPageStore.shouldRenderTable ? (
           <ItemTable collectionPageStore={collectionPageStore} />
@@ -46,7 +58,7 @@ const CollectionPage = () => {
           </Container>
         )}
       </div>
-      <AddItemModal collectionPageStore={collectionPageStore} />
+      <ItemConfigModal collectionPageStore={collectionPageStore} />
     </>
   );
 };

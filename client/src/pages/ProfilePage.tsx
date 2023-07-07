@@ -1,15 +1,18 @@
 import { useParams } from "react-router-dom";
 import { routeBaseStyles } from "../misc/styleUtils";
 import { Box, Container, Typography } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
 import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
 import CollectionList from "../components/ProfilePage/CollectionList";
+import { GlobalUserInfoStoreContext } from "../App";
 
 const ProfilePage = () => {
   const { userName } = useParams();
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   if (!userName) return null;
+  globalUserInfoStore.setCurrentlyViewingUser(userName);
   const [profilePageStore] = useState(new ProfilePageStore(userName));
 
   return (
@@ -28,12 +31,14 @@ const ProfilePage = () => {
             padding: "20px",
             gap: "20px",
           }}>
-          <Typography variant="h3">Your collections</Typography>
-          <CollectionConfigModal
-            buttonText="add collection"
-            profilePageStore={profilePageStore}
-            creatingCollection={true}
-          />
+          <Typography variant="h3">{userName}'s collections</Typography>
+          {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
+            <CollectionConfigModal
+              buttonText="add collection"
+              profilePageStore={profilePageStore}
+              creatingCollection={true}
+            />
+          )}
         </Box>
         <Container
           sx={{

@@ -1,10 +1,10 @@
 export interface User {
   id: string;
-  userName: string;
+  username: string;
   email: string;
   blocked: boolean;
   isAdmin: boolean;
-  collections: Array<any>; // TODO implement collections and change any to the collection type
+  collections: Collection[];
 }
 
 export type CustomFieldTypeProperty = "string" | "integer" | "multiline" | "boolean" | "date";
@@ -34,7 +34,6 @@ export interface AdditionalFields {
 export interface Item {
   _id: string;
   name: string;
-  tags: string[];
   owner: string;
   additionalFields: AdditionalFields;
 }

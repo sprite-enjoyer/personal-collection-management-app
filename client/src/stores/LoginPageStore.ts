@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { NavigateFunction } from "react-router-dom";
+import GlobalUserInfoStore from "./GlobalUserInfoStore";
 
 class LoginPageStore {
   userName = "";
@@ -33,7 +34,7 @@ class LoginPageStore {
     return result;
   }
 
-  async handleLogin(navigate: NavigateFunction) {
+  async handleLogin(navigate: NavigateFunction, globalUserInfoStore: GlobalUserInfoStore) {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
       method: "POST",
       body: JSON.stringify(this.requestBody),
@@ -43,8 +44,14 @@ class LoginPageStore {
       },
     });
 
-    const { success, userName } = await response.json();
-    if (success) navigate(`/user/${userName}`);
+    const { success, userName, blocked, isAdmin } = await response.json();
+    if (success) {
+      globalUserInfoStore.setLoggedIn(true);
+      globalUserInfoStore.setUserName(userName);
+      globalUserInfoStore.setBlocked(blocked);
+      globalUserInfoStore.setIsAdmin(isAdmin);
+      navigate(`/user/${userName}`);
+    }
   }
 }
 
