@@ -1,98 +1,64 @@
 import { action, makeObservable, observable } from "mobx";
 import {
-  AdditionalFields,
-  CustomFieldInfo,
-  CustomFieldType,
-  CustomFieldTypeProperty,
-  FullCustomField,
+  Collection,
+  AdditionalField,
+  AdditionalFieldType,
+  AdditionalFieldInfo,
+  AdditionalFieldTypeString,
 } from "../misc/types";
 
 class ItemConfigStore {
   name = "";
 
-  itemFields: FullCustomField[] = [];
+  additionalFields: AdditionalField[] = [];
 
-  constructor(itemFields: CustomFieldInfo[] | null) {
-    this.itemFields = ItemConfigStore.populateFieldsWithDefaultValues(itemFields);
+  collection: Collection;
+
+  constructor(colleciton: Collection) {
+    this.collection = colleciton;
+    console.log("hey yo");
+
     makeObservable(this, {
-      itemFields: observable,
+      additionalFields: observable,
       name: observable,
-      setItemFields: action,
+      collection: observable,
+      setAdditionalFields: action,
       setFieldValue: action,
       setName: action,
+      updateCollectionFromDB: action,
+      setCollection: action,
     });
+    const update = async () => {
+      console.log("before");
+      await this.updateCollectionFromDB();
+      console.log("after");
+    };
+    update();
+  }
+
+  setCollection(newValue: Collection) {
+    this.collection = newValue;
   }
 
   setName(newValue: string) {
     this.name = newValue;
   }
 
-  setItemFields(newValue: CustomFieldInfo[] | FullCustomField[] | null, infoOnly: boolean) {
-    if (infoOnly) {
-      const processedNewValue = ItemConfigStore.populateFieldsWithDefaultValues(newValue);
-      this.itemFields = processedNewValue;
-    } else {
-      const fields = newValue as FullCustomField[];
-      this.itemFields = fields;
-    }
+  setAdditionalFields(newValue: AdditionalField[]) {
+    this.additionalFields = newValue;
   }
 
-  static populateFieldsWithDefaultValues(itemFields: CustomFieldInfo[] | null) {
-    const itemFieldsWithValues =
-      itemFields?.map((field) => {
-        let value;
-        switch (field.type) {
-          case "boolean":
-            value = false;
-            break;
-          case "date":
-            value = new Date();
-            break;
-          case "integer":
-            value = 0;
-            break;
-          case "string":
-          case "multiline":
-            value = "";
-            break;
-        }
-        return { value, ...field };
-      }) ?? [];
-
-    return itemFieldsWithValues;
-  }
-
-  setFieldValue(id: number, newValue: CustomFieldType) {
-    const itemToChange = this.itemFields.find((item) => item.id === id);
+  setFieldValue(name: string, newValue: AdditionalFieldType) {
+    const itemToChange = this.additionalFields.find((field) => field.name === name);
     if (itemToChange) itemToChange.value = newValue;
   }
 
-  filterFields<T>(type: CustomFieldTypeProperty, name: boolean) {
-    const result = this.itemFields
-      .filter((item) => item.type === type)
-      .map((item) => (name ? item.name : item.value)) as T;
-    return result;
-  }
-
   async createItem(collectionID: string, ownerID: string) {
-    const additionalFields: AdditionalFields = {
-      stringFieldNames: this.filterFields<string[]>("string", true),
-      stringFieldValues: this.filterFields<string[]>("string", false),
-      booleanFieldNames: this.filterFields<string[]>("boolean", true),
-      booleanFieldValues: this.filterFields<boolean[]>("boolean", false),
-      multilineTextFieldNames: this.filterFields<string[]>("multiline", true),
-      multilineTextFieldValues: this.filterFields<string[]>("multiline", false),
-      dateFieldNames: this.filterFields<string[]>("date", true),
-      dateFieldValues: this.filterFields<Date[]>("date", false),
-      integerFieldNames: this.filterFields<string[]>("integer", true),
-      integerFieldValues: this.filterFields<number[]>("integer", false),
-    };
-
     const body = {
       ownerID: ownerID,
       collectionID: collectionID,
       itemName: this.name,
-      additionalFields: additionalFields,
+      additionalFields: this.additionalFields,
     };
 
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/create`, {
@@ -105,6 +71,41 @@ class ItemConfigStore {
     });
 
     const data = await response.json();
+  }
+
+  static getFieldDefaultValue(type: AdditionalFieldTypeString, date: Date) {
+    switch (type) {
+      case "boolean":
+        return false;
+      case "date":
+        return date;
+      case "integer":
+        return 0;
+      case "multiline":
+      case "string":
+        return "";
+    }
+  }
+
+  static fillAdditionalFieldsWithEmptyValues(customFieldsInfo: AdditionalFieldInfo[]) {
+    const date = new Date();
+    const additionalFieldsWithDefaultValues = customFieldsInfo.map((field) => {
+      return { ...field, value: this.getFieldDefaultValue(field.type, date) };
+    });
+
+    return additionalFieldsWithDefaultValues;
+  }
+
+  async fetchCollection(collectionID: string) {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getCollection/${collectionID}`);
+    const { data } = (await response.json()) as { data: Collection };
+    return data;
+  }
+
+  async updateCollectionFromDB() {
+    const collection = await this.fetchCollection(this.collection._id);
+    this.setCollection(collection);
+    this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.customFieldsInfo));
   }
 }
 

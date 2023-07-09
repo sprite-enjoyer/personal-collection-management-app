@@ -14,10 +14,11 @@ import { topics } from "../../misc/constants";
 import { observer } from "mobx-react";
 import { useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
-import { CustomFieldTypeProperty } from "../../misc/types";
+import { AdditionalFieldTypeString } from "../../misc/types";
 import { useParams } from "react-router-dom";
 import ProfilePageStore from "../../stores/ProfilePageStore";
 import CollectionPageStore from "../../stores/CollectionPageStore";
+import CustomFieldsList from "./CustomFieldsList";
 
 export interface AddCollectionModalProps {
   buttonText: string;
@@ -34,7 +35,7 @@ const CollectionConfigModal = ({
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
-  const [collectionConfigStore] = useState(new CollectionConfigStore(userName, collectionID));
+  const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -114,19 +115,19 @@ const CollectionConfigModal = ({
               <TextField
                 onChange={(e) => collectionConfigStore.setCustomFieldToBeAddedName(e.target.value)}
                 placeholder="Name"
-                value={collectionConfigStore.customFieldToBeAdded.name}
+                value={collectionConfigStore.additionalFieldToBeAdded.name}
               />
               <FormControl>
                 <InputLabel id="field-type">Type</InputLabel>
                 <Select
                   onChange={(e) =>
-                    collectionConfigStore.setCustomFieldToBeAddedType(e.target.value as CustomFieldTypeProperty)
+                    collectionConfigStore.setCustomFieldToBeAddedType(e.target.value as AdditionalFieldTypeString)
                   }
                   labelId="field-type"
                   label="Type"
-                  value={collectionConfigStore.customFieldToBeAdded.type}
+                  value={collectionConfigStore.additionalFieldToBeAdded.type}
                   defaultValue="string">
-                  {["string", "multiline", "number", "boolean", "date"].map((type, i) => (
+                  {["string", "multiline", "integer", "boolean", "date"].map((type, i) => (
                     <MenuItem
                       value={type}
                       key={i}>
@@ -147,21 +148,7 @@ const CollectionConfigModal = ({
                 maxHeight: "200px",
                 overflow: "auto",
               }}>
-              {collectionConfigStore.customFields.map((field, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}>
-                  <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-                    <Typography fontSize={"1.2em"}>{field.name}:</Typography>
-                  </Box>
-                  <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Typography fontSize={"1.2em"}>{field.type}</Typography>
-                  </Box>
-                </Box>
-              ))}
+              <CustomFieldsList collectionConfigStore={collectionConfigStore} />
             </Box>
             <Button
               variant="contained"

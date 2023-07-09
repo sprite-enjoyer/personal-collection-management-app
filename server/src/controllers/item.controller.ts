@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { AdditionalFields } from "../types.js";
-import Item from "../schemas/Item.js";
-import AdditionalItemFields from "../schemas/AdditionalItemFields.js";
+import Item, { AdditionalFields } from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
+import { Types } from "mongoose";
 
 interface CreateItemHandlerRequestBodyType {
   ownerID: string;
@@ -13,20 +12,6 @@ interface CreateItemHandlerRequestBodyType {
 
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
   const { itemName, ownerID, collectionID, additionalFields } = req.body;
-
-  const newAdditionalFields = await AdditionalItemFields.create({
-    stringFieldNames: additionalFields.stringFieldNames,
-    stringFieldValues: additionalFields.stringFieldValues,
-    booleanFieldNames: additionalFields.booleanFieldNames,
-    booleanFieldValues: additionalFields.booleanFieldValues,
-    integerFieldNames: additionalFields.integerFieldNames,
-    integerFieldValues: additionalFields.integerFieldValues,
-    multilineTextFieldNames: additionalFields.multilineTextFieldNames,
-    multilineTextFieldValues: additionalFields.multilineTextFieldValues,
-    dateFieldNames: additionalFields.dateFieldNames,
-    dateFieldValues: additionalFields.dateFieldValues,
-  });
-
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
 
@@ -34,12 +19,11 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
     name: itemName,
     owner: ownerID,
     containerCollection: collectionID,
-    additionalFields: newAdditionalFields._id,
+    additionalFields: additionalFields,
   });
 
   collection.items.push(newItem._id);
   await collection.save();
-
   return res.status(200).json({ success: true });
 };
 
@@ -55,24 +39,18 @@ export const getItemHandler = async (req: Request, res: Response) => {
 
 interface EditItemHandlerRequestBodyType {
   name: string;
-  additionalFields: AdditionalFields;
-  tags: string[];
+  additionalFields: AdditionalFields[];
 }
 
 export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequestBodyType>, res: Response) => {
   const { itemID } = req.params;
-  const { name, additionalFields, tags } = req.body;
-  if (!itemID || !name || !additionalFields || !tags) return res.status(400).json({ success: false });
+  const { name, additionalFields } = req.body;
+  if (!itemID || !name || !additionalFields) return res.status(400).json({ success: false });
 
   const item = await Item.findById(itemID);
   if (!item) return res.status(404).json({ success: false });
 
-  const dbAdditionalFields = await AdditionalItemFields.findById(item.additionalFields._id);
-  if (!dbAdditionalFields) return res.status(404).json({ success: false });
-
-  Object.assign(dbAdditionalFields, additionalFields);
-  await dbAdditionalFields.save();
-
+  item.additionalFields = new Types.DocumentArray<AdditionalFields>(additionalFields);
   item.name = name;
   await item.save();
 

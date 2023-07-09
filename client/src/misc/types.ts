@@ -7,35 +7,27 @@ export interface User {
   collections: Collection[];
 }
 
-export type CustomFieldTypeProperty = "string" | "integer" | "multiline" | "boolean" | "date";
-export type CustomFieldType = string | number | boolean | Date;
-export interface CustomFieldInfo {
-  id: number;
+export type AdditionalFieldTypeString = "string" | "multiline" | "boolean" | "integer" | "date";
+export type AdditionalFieldType = string | number | boolean | Date;
+export interface GenericAdditionalField<T> {
   name: string;
-  type: CustomFieldTypeProperty;
+  value: T;
+  type: AdditionalFieldTypeString;
 }
 
-export interface FullCustomField extends CustomFieldInfo {
-  value: string | number | boolean | Date;
+export type AdditionalField = GenericAdditionalField<AdditionalFieldType>;
+
+export interface AdditionalFieldInfo {
+  name: string;
+  type: AdditionalFieldTypeString;
 }
 
-export interface AdditionalFields {
-  stringFieldNames: string[];
-  stringFieldValues: string[];
-  booleanFieldNames: string[];
-  booleanFieldValues: boolean[];
-  multilineTextFieldNames: string[];
-  multilineTextFieldValues: string[];
-  dateFieldNames: string[];
-  dateFieldValues: Date[];
-  integerFieldNames: string[];
-  integerFieldValues: number[];
-}
 export interface Item {
   _id: string;
   name: string;
   owner: string;
-  additionalFields: AdditionalFields;
+  containerCollection: string;
+  additionalFields: AdditionalField[];
 }
 
 export interface Collection {
@@ -44,8 +36,7 @@ export interface Collection {
   description: string;
   topic: string;
   image?: string;
-  additionalCollectionFieldNames: string[];
-  additionalCollectionFieldTypes: CustomFieldTypeProperty[];
+  customFieldsInfo: AdditionalFieldInfo[];
   owner: string;
   items: Item[];
 }

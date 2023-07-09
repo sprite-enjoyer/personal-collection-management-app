@@ -54,6 +54,7 @@ const CollectionPage = () => {
         )}
       </div>
       <ItemConfigModal
+        collection={collection}
         creatingItem={true}
         collectionPageStore={collectionPageStore}
       />

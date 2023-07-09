@@ -3,21 +3,32 @@ import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
 import { useContext, useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
-import CustomField from "./CustomField";
 import { GlobalUserInfoStoreContext } from "../../App";
+import { Collection } from "../../misc/types";
+import CustomFieldsInputList from "./CustomFieldsInputList";
 
 export interface AddItemModalProps {
   collectionPageStore: CollectionPageStore;
   creatingItem: boolean;
+  collection: Collection;
 }
 
-const ItemConfigModal = ({ collectionPageStore, creatingItem }: AddItemModalProps) => {
-  const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.itemFields));
+const ItemConfigModal = ({ collectionPageStore, creatingItem, collection }: AddItemModalProps) => {
+  const [itemConfigStore] = useState(new ItemConfigStore(collection));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   useEffect(() => {
-    itemConfigStore.setItemFields(collectionPageStore.itemFields, true);
-  }, [collectionPageStore, collectionPageStore.itemFields]);
+    itemConfigStore.setAdditionalFields(
+      ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collectionPageStore.collection.customFieldsInfo)
+    );
+  }, [collectionPageStore, collectionPageStore.collection.customFieldsInfo]);
+
+  const handleClick = async () => {
+    await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
+    collectionPageStore.setAddItemModalOpen(false);
+    const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
+    collectionPageStore.setCollection(updatedCollection);
+  };
 
   return (
     <Modal
@@ -32,6 +43,9 @@ const ItemConfigModal = ({ collectionPageStore, creatingItem }: AddItemModalProp
           display: "flex",
           flexDirection: "column",
           gap: "10px",
+          overflow: "auto",
+          maxHeight: "500px",
+          width: "500px",
         }}>
         <TextField
           value={itemConfigStore.name}
@@ -39,20 +53,9 @@ const ItemConfigModal = ({ collectionPageStore, creatingItem }: AddItemModalProp
           label="name"
           onChange={(e) => itemConfigStore.setName(e.target.value)}
         />
-        {itemConfigStore.itemFields.map((field) => (
-          <CustomField
-            key={field.id}
-            field={field}
-            itemConfigStore={itemConfigStore}
-          />
-        ))}
+        <CustomFieldsInputList itemConfigStore={itemConfigStore} />
         <Button
-          onClick={async () => {
-            await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
-            collectionPageStore.setAddItemModalOpen(false);
-            const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
-            collectionPageStore.setCollection(updatedCollection);
-          }}
+          onClick={handleClick}
           variant="contained">
           add item
         </Button>

@@ -1,36 +1,18 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { InferSchemaType, Schema, SchemaTypes } from "mongoose";
 
-const stringFieldSchema = new mongoose.Schema({
-  name: String,
-  value: String,
-});
-
-const multilineTextFieldSchema = new mongoose.Schema({
-  name: String,
-  value: String,
-});
-
-const booleanFieldSchema = new mongoose.Schema({
-  name: String,
-  value: Boolean,
-});
-
-const integerFieldSchema = new mongoose.Schema({
-  name: String,
-  value: Number,
-});
-
-const dateFieldSchema = new mongoose.Schema({
-  name: String,
-  value: Date,
-});
-
-const additionalItemFieldsSchema = new mongoose.Schema({
-  dateFields: [dateFieldSchema],
-  integerFields: [integerFieldSchema],
-  stringFields: [stringFieldSchema],
-  multilineTextFields: [multilineTextFieldSchema],
-  booleanFields: [booleanFieldSchema],
+const additionalItemFieldSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: SchemaTypes.Mixed,
+    required: true,
+  },
 });
 
 const itemSchema = new mongoose.Schema({
@@ -49,9 +31,12 @@ const itemSchema = new mongoose.Schema({
     ref: "ItemCollection",
   },
   additionalFields: {
-    type: additionalItemFieldsSchema,
+    type: [additionalItemFieldSchema],
     required: true,
+    default: [],
   },
 });
+
+export type AdditionalFields = InferSchemaType<typeof additionalItemFieldSchema>;
 
 export default mongoose.model("Item", itemSchema);

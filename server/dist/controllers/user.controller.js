@@ -15,7 +15,9 @@ export const registerUserHandler = async (req, res) => {
 export const logInUserHandler = async (req, res, next) => {
     const { userName, password } = req.body;
     const user = await User.findOne({ username: userName });
-    const hashedPassword = user?.password;
+    if (!user)
+        return res.status(404).json({ success: false });
+    const hashedPassword = user.password;
     if (!hashedPassword)
         return res.status(500).json({ success: false });
     const equal = await compare(password, hashedPassword);

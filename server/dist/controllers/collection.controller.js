@@ -1,9 +1,9 @@
 import ItemCollection from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
+import { Types } from "mongoose";
 export const createCollectionHandler = async (req, res) => {
-    const { userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } = req.body;
+    const { userName, name, description, topic, image, customFieldsInfo } = req.body;
     const user = await User.findOne({ username: userName }).populate("collections");
-    console.log(user);
     if (!user)
         return res.status(500).json({ success: false }); //
     const newCollection = new ItemCollection({
@@ -11,8 +11,7 @@ export const createCollectionHandler = async (req, res) => {
         description: description,
         topic: topic,
         image: image,
-        additionalCollectionFieldNames: additionalCollectionFieldNames,
-        additionalCollectionFieldTypes: additionalCollectionFieldTypes,
+        customFieldsInfo: customFieldsInfo,
         owner: user?._id,
     });
     if (user.collections.includes(newCollection._id))
@@ -23,7 +22,7 @@ export const createCollectionHandler = async (req, res) => {
     res.status(200).json({ success: true });
 };
 export const updateCollectionHandler = async (req, res) => {
-    const { id, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } = req.body;
+    const { id, name, description, topic, image, customFieldsInfo } = req.body;
     const collection = await ItemCollection.findById(id);
     if (!collection)
         return res.status(500).json({ success: false });
@@ -32,8 +31,7 @@ export const updateCollectionHandler = async (req, res) => {
     //@ts-ignore
     collection.topic = topic;
     collection.image = image;
-    collection.additionalCollectionFieldNames = additionalCollectionFieldNames;
-    collection.additionalCollectionFieldTypes = additionalCollectionFieldTypes;
+    collection.customFieldsInfo = new Types.DocumentArray(customFieldsInfo);
     await collection.save();
     return res.status(200).json({ success: true });
 };
@@ -48,13 +46,7 @@ export const getCollectionHandler = async (req, res) => {
     const { collectionID } = req.params;
     if (!collectionID)
         return res.status(400).json({ success: false, data: null });
-    const collection = await ItemCollection.findById(collectionID).populate({
-        path: "items",
-        populate: {
-            path: "additionalFields",
-            model: "AdditionalItemFields",
-        },
-    });
+    const collection = await ItemCollection.findById(collectionID).populate("items");
     if (!collection)
         return res.status(404).json({ success: false, data: null });
     return res.status(200).json({ success: true, data: collection });

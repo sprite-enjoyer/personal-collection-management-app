@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import ItemCollection from "../schemas/ItemCollection.js";
+import ItemCollection, { CustomFieldInfo } from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
+import mongoose, { Schema, Types } from "mongoose";
 
 interface CreateCollectionHandlerBodyType {
   userName: string;
@@ -8,19 +9,16 @@ interface CreateCollectionHandlerBodyType {
   description: string;
   topic: string;
   image: string;
-  additionalCollectionFieldNames: string[];
-  additionalCollectionFieldTypes: string[];
+  customFieldsInfo: CustomFieldInfo[];
 }
 
 export const createCollectionHandler = async (
   req: Request<any, any, CreateCollectionHandlerBodyType>,
   res: Response
 ) => {
-  const { userName, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } =
-    req.body;
+  const { userName, name, description, topic, image, customFieldsInfo } = req.body;
 
   const user = await User.findOne({ username: userName }).populate("collections");
-  console.log(user);
   if (!user) return res.status(500).json({ success: false }); //
 
   const newCollection = new ItemCollection({
@@ -28,8 +26,7 @@ export const createCollectionHandler = async (
     description: description,
     topic: topic,
     image: image,
-    additionalCollectionFieldNames: additionalCollectionFieldNames,
-    additionalCollectionFieldTypes: additionalCollectionFieldTypes,
+    customFieldsInfo: customFieldsInfo,
     owner: user?._id,
   });
 
@@ -46,9 +43,7 @@ interface EditCollectionHandlerBodyType extends CreateCollectionHandlerBodyType 
 }
 
 export const updateCollectionHandler = async (req: Request<any, any, EditCollectionHandlerBodyType>, res: Response) => {
-  const { id, name, description, topic, image, additionalCollectionFieldNames, additionalCollectionFieldTypes } =
-    req.body;
-
+  const { id, name, description, topic, image, customFieldsInfo } = req.body;
   const collection = await ItemCollection.findById(id);
   if (!collection) return res.status(500).json({ success: false });
 
@@ -57,8 +52,7 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
   //@ts-ignore
   collection.topic = topic;
   collection.image = image;
-  collection.additionalCollectionFieldNames = additionalCollectionFieldNames;
-  collection.additionalCollectionFieldTypes = additionalCollectionFieldTypes;
+  collection.customFieldsInfo = new Types.DocumentArray<CustomFieldInfo[]>(customFieldsInfo);
 
   await collection.save();
 
@@ -78,13 +72,7 @@ export const getCollectionHandler = async (req: Request, res: Response) => {
   const { collectionID } = req.params;
   if (!collectionID) return res.status(400).json({ success: false, data: null });
 
-  const collection = await ItemCollection.findById(collectionID).populate({
-    path: "items",
-    populate: {
-      path: "additionalFields",
-      model: "AdditionalItemFields",
-    },
-  });
+  const collection = await ItemCollection.findById(collectionID).populate("items");
 
   if (!collection) return res.status(404).json({ success: false, data: null });
 

@@ -1,20 +1,8 @@
 import Item from "../schemas/Item.js";
-import AdditionalItemFields from "../schemas/AdditionalItemFields.js";
 import ItemCollection from "../schemas/ItemCollection.js";
+import { Types } from "mongoose";
 export const createItemHandler = async (req, res) => {
     const { itemName, ownerID, collectionID, additionalFields } = req.body;
-    const newAdditionalFields = await AdditionalItemFields.create({
-        stringFieldNames: additionalFields.stringFieldNames,
-        stringFieldValues: additionalFields.stringFieldValues,
-        booleanFieldNames: additionalFields.booleanFieldNames,
-        booleanFieldValues: additionalFields.booleanFieldValues,
-        integerFieldNames: additionalFields.integerFieldNames,
-        integerFieldValues: additionalFields.integerFieldValues,
-        multilineTextFieldNames: additionalFields.multilineTextFieldNames,
-        multilineTextFieldValues: additionalFields.multilineTextFieldValues,
-        dateFieldNames: additionalFields.dateFieldNames,
-        dateFieldValues: additionalFields.dateFieldValues,
-    });
     const collection = await ItemCollection.findById(collectionID);
     if (!collection)
         return res.status(404).json({ success: false });
@@ -22,7 +10,7 @@ export const createItemHandler = async (req, res) => {
         name: itemName,
         owner: ownerID,
         containerCollection: collectionID,
-        additionalFields: newAdditionalFields._id,
+        additionalFields: additionalFields,
     });
     collection.items.push(newItem._id);
     await collection.save();
@@ -39,17 +27,13 @@ export const getItemHandler = async (req, res) => {
 };
 export const editItemHandler = async (req, res) => {
     const { itemID } = req.params;
-    const { name, additionalFields, tags } = req.body;
-    if (!itemID || !name || !additionalFields || !tags)
+    const { name, additionalFields } = req.body;
+    if (!itemID || !name || !additionalFields)
         return res.status(400).json({ success: false });
     const item = await Item.findById(itemID);
     if (!item)
         return res.status(404).json({ success: false });
-    const dbAdditionalFields = await AdditionalItemFields.findById(item.additionalFields._id);
-    if (!dbAdditionalFields)
-        return res.status(404).json({ success: false });
-    Object.assign(dbAdditionalFields, additionalFields);
-    await dbAdditionalFields.save();
+    item.additionalFields = new Types.DocumentArray(additionalFields);
     item.name = name;
     await item.save();
     return res.status(200).json({ success: true });

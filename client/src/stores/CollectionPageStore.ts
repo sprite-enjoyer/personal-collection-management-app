@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Collection, CustomFieldInfo, Item, User } from "../misc/types";
+import { Collection, AdditionalField, Item, User } from "../misc/types";
 
 class CollectionPageStore {
   collection: Collection;
@@ -20,9 +20,7 @@ class CollectionPageStore {
       setAddItemModalOpen: action,
       setUserName: action,
       collectionTableColumns: computed,
-      collectionTableRows: computed,
       shouldRenderTable: computed,
-      itemFields: computed,
     });
   }
 
@@ -55,51 +53,17 @@ class CollectionPageStore {
   get collectionTableColumns() {
     if (!this.collection || this.collection.items.length === 0) return [];
     const fixedFieldNames = ["id", "name"];
-    const additionalFields = this.collection.items[0].additionalFields;
-    const additionalFieldNames = [
-      ...(additionalFields.booleanFieldNames ?? []),
-      ...(additionalFields.stringFieldNames ?? []),
-      ...(additionalFields.multilineTextFieldNames ?? []),
-      ...(additionalFields.integerFieldNames ?? []),
-      ...(additionalFields.dateFieldNames ?? []),
-    ];
+    const additionalFieldNames = this.collection.customFieldsInfo.map((info) => info.name);
     return [...fixedFieldNames, ...additionalFieldNames];
-  }
-
-  get collectionTableRows() {
-    return this.collection?.items ?? [];
   }
 
   get shouldRenderTable() {
     return this.collection && this.collection?.items.length !== 0;
   }
 
-  get itemFields() {
-    if (!this.collection) return null;
-    const { additionalCollectionFieldNames, additionalCollectionFieldTypes } = this.collection;
-    const customFields = additionalCollectionFieldNames.map((name, i) => {
-      const result: CustomFieldInfo = {
-        id: i,
-        name: name,
-        type: additionalCollectionFieldTypes[i],
-      };
-      return result;
-    });
-    return customFields;
-  }
-
   static getCollectionTableRowInformationArray(item: Item) {
     const fixedFieldValues = [item._id, item.name];
-    const additionalFields = item.additionalFields;
-
-    const additionalFieldValues = [
-      ...(additionalFields.booleanFieldValues ?? []),
-      ...(additionalFields.stringFieldValues ?? []),
-      ...(additionalFields.multilineTextFieldValues ?? []),
-      ...(additionalFields.integerFieldValues ?? []),
-      ...(additionalFields.dateFieldValues ?? []),
-    ];
-
+    const additionalFieldValues = item.additionalFields.map((field) => field.value);
     return [...fixedFieldValues, ...additionalFieldValues];
   }
 }

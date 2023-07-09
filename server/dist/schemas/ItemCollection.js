@@ -1,4 +1,11 @@
 import mongoose, { Schema } from "mongoose";
+const cutsomFieldInfoSchema = new mongoose.Schema({
+    name: String,
+    type: {
+        type: String,
+        enum: ["string", "multiline", "integer", "date", "boolean"],
+    },
+});
 const collectionSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -66,8 +73,10 @@ const collectionSchema = new mongoose.Schema({
         ],
     },
     image: String,
-    additionalCollectionFieldNames: [String],
-    additionalCollectionFieldTypes: [String],
+    customFieldsInfo: {
+        type: [cutsomFieldInfoSchema],
+        default: [],
+    },
     items: {
         type: [
             {

@@ -1,16 +1,7 @@
-import {
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Typography,
-  TableBody,
-  Container,
-} from "@mui/material";
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
+import { toJS } from "mobx";
 
 interface ItemTableProps {
   collectionPageStore: CollectionPageStore;
@@ -38,7 +29,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {collectionPageStore.collectionTableRows.map((item, i) => (
+          {collectionPageStore.collection.items.map((item, i) => (
             <TableRow
               hover
               key={item._id}>
@@ -56,3 +47,6 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
 };
 
 export default observer(ItemTable);
+function tosJS(items: import("../../misc/types").Item[]): any {
+  throw new Error("Function not implemented.");
+}
