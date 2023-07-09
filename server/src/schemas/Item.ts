@@ -37,6 +37,6 @@ const itemSchema = new mongoose.Schema({
   },
 });
 
-export type AdditionalFields = InferSchemaType<typeof additionalItemFieldSchema>;
+export type AdditionalField = InferSchemaType<typeof additionalItemFieldSchema>;
 
 export default mongoose.model("Item", itemSchema);

@@ -19,9 +19,9 @@ const ItemConfigModal = ({ collectionPageStore, creatingItem, collection }: AddI
 
   useEffect(() => {
     itemConfigStore.setAdditionalFields(
-      ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collectionPageStore.collection.customFieldsInfo)
+      ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collectionPageStore.collection.additionalFieldsInfo)
     );
-  }, [collectionPageStore, collectionPageStore.collection.customFieldsInfo]);
+  }, [collectionPageStore, collectionPageStore.collection.additionalFieldsInfo]);
 
   const handleClick = async () => {
     await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);

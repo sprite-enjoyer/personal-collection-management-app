@@ -28,11 +28,7 @@ class ItemConfigStore {
       updateCollectionFromDB: action,
       setCollection: action,
     });
-    const update = async () => {
-      console.log("before");
-      await this.updateCollectionFromDB();
-      console.log("after");
-    };
+    const update = async () => await this.updateCollectionFromDB();
     update();
   }
 
@@ -88,6 +84,7 @@ class ItemConfigStore {
   }
 
   static fillAdditionalFieldsWithEmptyValues(customFieldsInfo: AdditionalFieldInfo[]) {
+    console.log(customFieldsInfo, "hi");
     const date = new Date();
     const additionalFieldsWithDefaultValues = customFieldsInfo.map((field) => {
       return { ...field, value: this.getFieldDefaultValue(field.type, date) };
@@ -104,8 +101,9 @@ class ItemConfigStore {
 
   async updateCollectionFromDB() {
     const collection = await this.fetchCollection(this.collection._id);
+    console.log(collection);
     this.setCollection(collection);
-    this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.customFieldsInfo));
+    this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.additionalFieldsInfo));
   }
 }
 

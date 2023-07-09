@@ -53,7 +53,7 @@ class CollectionPageStore {
   get collectionTableColumns() {
     if (!this.collection || this.collection.items.length === 0) return [];
     const fixedFieldNames = ["id", "name"];
-    const additionalFieldNames = this.collection.customFieldsInfo.map((info) => info.name);
+    const additionalFieldNames = this.collection.additionalFieldsInfo.map((info) => info.name);
     return [...fixedFieldNames, ...additionalFieldNames];
   }
 

@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import ItemCollection, { CustomFieldInfo } from "../schemas/ItemCollection.js";
+import ItemCollection, { AdditionalFieldInfo } from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
-import mongoose, { Schema, Types } from "mongoose";
+import { Types } from "mongoose";
+import Item, { AdditionalField } from "../schemas/Item.js";
+import { Type } from "typescript";
 
 interface CreateCollectionHandlerBodyType {
   userName: string;
@@ -9,24 +11,24 @@ interface CreateCollectionHandlerBodyType {
   description: string;
   topic: string;
   image: string;
-  customFieldsInfo: CustomFieldInfo[];
+  additionalFieldsInfo: AdditionalFieldInfo[];
 }
 
 export const createCollectionHandler = async (
   req: Request<any, any, CreateCollectionHandlerBodyType>,
   res: Response
 ) => {
-  const { userName, name, description, topic, image, customFieldsInfo } = req.body;
+  const { userName, name, description, topic, image, additionalFieldsInfo } = req.body;
 
   const user = await User.findOne({ username: userName }).populate("collections");
-  if (!user) return res.status(500).json({ success: false }); //
+  if (!user) return res.status(500).json({ success: false });
 
   const newCollection = new ItemCollection({
     name: name,
     description: description,
     topic: topic,
     image: image,
-    customFieldsInfo: customFieldsInfo,
+    additionalFieldsInfo: additionalFieldsInfo,
     owner: user?._id,
   });
 
@@ -43,16 +45,43 @@ interface EditCollectionHandlerBodyType extends CreateCollectionHandlerBodyType 
 }
 
 export const updateCollectionHandler = async (req: Request<any, any, EditCollectionHandlerBodyType>, res: Response) => {
-  const { id, name, description, topic, image, customFieldsInfo } = req.body;
+  const { id, name, description, topic, image, additionalFieldsInfo } = req.body;
   const collection = await ItemCollection.findById(id);
   if (!collection) return res.status(500).json({ success: false });
+
+  // const getFieldDefaultValue = (type: string, date: Date) => {
+  //   switch (type) {
+  //     case "boolean":
+  //       return false;
+  //     case "string":
+  //     case "multiline":
+  //       return "";
+  //     case "date":
+  //       return date;
+  //     case "integer":
+  //       return 0;
+  //   }
+  // };
+
+  const date = new Date();
+  const newFields = new Types.DocumentArray<AdditionalField>(
+    additionalFieldsInfo
+      .filter((info) => !collection.additionalFieldsInfo.map((info) => info.name).includes(info.name))
+      .map((info) => {
+        return { value: null, ...info };
+      })
+  );
+
+  console.log("new fields:", newFields, "ayoooooo");
+
+  await Item.updateMany({}, { $addToSet: { additionalFields: newFields } });
 
   collection.name = name;
   collection.description = description;
   //@ts-ignore
   collection.topic = topic;
   collection.image = image;
-  collection.customFieldsInfo = new Types.DocumentArray<CustomFieldInfo[]>(customFieldsInfo);
+  collection.additionalFieldsInfo = new Types.DocumentArray<AdditionalFieldInfo>(additionalFieldsInfo);
 
   await collection.save();
 

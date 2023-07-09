@@ -35,7 +35,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
               key={item._id}>
               {CollectionPageStore.getCollectionTableRowInformationArray(item).map((value, j) => (
                 <TableCell key={i.toString() + j.toString()}>
-                  <Typography>{value.toString()}</Typography>
+                  <Typography>{value ? value.toString() : "null"}</Typography>
                 </TableCell>
               ))}
             </TableRow>

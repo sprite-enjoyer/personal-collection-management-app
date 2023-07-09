@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Item, { AdditionalFields } from "../schemas/Item.js";
+import Item, { AdditionalField } from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
 import { Types } from "mongoose";
 
@@ -7,10 +7,11 @@ interface CreateItemHandlerRequestBodyType {
   ownerID: string;
   collectionID: string;
   itemName: string;
-  additionalFields: AdditionalFields;
+  additionalFields: AdditionalField;
 }
 
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
+  console.log(req.body, "body!");
   const { itemName, ownerID, collectionID, additionalFields } = req.body;
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
@@ -39,7 +40,7 @@ export const getItemHandler = async (req: Request, res: Response) => {
 
 interface EditItemHandlerRequestBodyType {
   name: string;
-  additionalFields: AdditionalFields[];
+  additionalFields: AdditionalField[];
 }
 
 export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequestBodyType>, res: Response) => {
@@ -50,7 +51,7 @@ export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequ
   const item = await Item.findById(itemID);
   if (!item) return res.status(404).json({ success: false });
 
-  item.additionalFields = new Types.DocumentArray<AdditionalFields>(additionalFields);
+  item.additionalFields = new Types.DocumentArray<AdditionalField>(additionalFields);
   item.name = name;
   await item.save();
 

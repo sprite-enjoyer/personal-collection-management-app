@@ -112,7 +112,7 @@ class CollectionConfigStore {
         description: this.collectionDescription,
         topic: this.collectionTopic,
         image: "", //TODO
-        customFieldsInfo: this.additionalFieldsInfo,
+        additionalFieldsInfo: this.additionalFieldsInfo,
       }),
     });
 
@@ -131,7 +131,7 @@ class CollectionConfigStore {
         description: this.collectionDescription,
         topic: this.collectionTopic,
         image: "", //TODO
-        customFieldsInfo: this.additionalFieldsInfo,
+        additionalFieldsInfo: this.additionalFieldsInfo,
       }),
     });
 
@@ -151,7 +151,7 @@ class CollectionConfigStore {
     this.setCollectionName(collection.name);
     this.setCollectionDescription(collection.description);
     this.setCollectionTopic(collection.topic);
-    this.setAdditionalFieldsInfo(collection.customFieldsInfo);
+    this.setAdditionalFieldsInfo(collection.additionalFieldsInfo);
   }
 }
 

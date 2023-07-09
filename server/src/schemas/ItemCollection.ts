@@ -1,10 +1,14 @@
 import mongoose, { InferSchemaType, Schema } from "mongoose";
 
-const cutsomFieldInfoSchema = new mongoose.Schema({
-  name: String,
+const additionalFieldInfoSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   type: {
     type: String,
     enum: ["string", "multiline", "integer", "date", "boolean"],
+    required: true,
   },
 });
 
@@ -75,9 +79,10 @@ const collectionSchema = new mongoose.Schema({
     ],
   },
   image: String,
-  customFieldsInfo: {
-    type: [cutsomFieldInfoSchema],
+  additionalFieldsInfo: {
+    type: [additionalFieldInfoSchema],
     default: [],
+    required: true,
   },
   items: {
     type: [
@@ -99,6 +104,6 @@ function allowEmptyStrings() {
   return !(typeof this.description === "string");
 }
 
-export type CustomFieldInfo = InferSchemaType<typeof cutsomFieldInfoSchema>;
+export type AdditionalFieldInfo = InferSchemaType<typeof additionalFieldInfoSchema>;
 
 export default mongoose.model("ItemCollection", collectionSchema);
