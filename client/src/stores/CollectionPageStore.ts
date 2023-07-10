@@ -4,7 +4,7 @@ import { Collection, AdditionalField, Item, User } from "../misc/types";
 class CollectionPageStore {
   collection: Collection;
 
-  addItemModalOpen = false;
+  itemConfigModalOpen = false;
 
   userName: string;
 
@@ -14,10 +14,10 @@ class CollectionPageStore {
 
     makeObservable(this, {
       collection: observable,
-      addItemModalOpen: observable,
+      itemConfigModalOpen: observable,
       setCollection: action,
       userName: observable,
-      setAddItemModalOpen: action,
+      setItemConfigModalOpen: action,
       setUserName: action,
       shouldRenderTable: computed,
     });
@@ -31,8 +31,8 @@ class CollectionPageStore {
     this.collection = newValue;
   }
 
-  setAddItemModalOpen(newValue: boolean) {
-    this.addItemModalOpen = newValue;
+  setItemConfigModalOpen(newValue: boolean) {
+    this.itemConfigModalOpen = newValue;
   }
 
   static async fetchCollection(collectionID: string) {

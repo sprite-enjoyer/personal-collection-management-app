@@ -11,7 +11,6 @@ const additionalItemFieldSchema = new mongoose.Schema({
   },
   value: {
     type: SchemaTypes.Mixed,
-    required: true,
   },
 });
 

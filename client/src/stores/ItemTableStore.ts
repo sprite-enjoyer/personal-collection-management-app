@@ -1,20 +1,31 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { Collection, Item } from "../misc/types";
+import CollectionPageStore from "./CollectionPageStore";
 
 class ItemTableStore {
   collection: Collection;
+
+  itemConfigModalShown = false;
+
   constructor(collection: Collection) {
     this.collection = collection;
+
     makeObservable(this, {
       collection: observable,
+      itemConfigModalShown: observable,
       setCollection: action,
       deleteItem: action,
+      setItemConfigModalShown: action,
       collectionTableColumns: computed,
     });
   }
 
   setCollection(newValue: Collection) {
     this.collection = newValue;
+  }
+
+  setItemConfigModalShown(newValue: boolean) {
+    this.itemConfigModalShown = newValue;
   }
 
   get collectionTableColumns() {
@@ -31,9 +42,15 @@ class ItemTableStore {
   }
 
   async deleteItem(id: string) {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/delete/${id}`);
+    const deletePromise = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/delete/${id}`, { method: "DELETE" });
+    const { success } = (await deletePromise.json()) as { success: boolean };
+    const collection = await CollectionPageStore.fetchCollection(this.collection._id);
+
+    if (success) {
+      console.log("item deleted sucessfully");
+      this.setCollection(collection);
+    }
   }
-  async editItem(id: string) {}
 }
 
 export default ItemTableStore;

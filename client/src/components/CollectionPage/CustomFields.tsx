@@ -5,52 +5,60 @@ import { observer } from "mobx-react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdditionalFieldType, GenericAdditionalField } from "../../misc/types";
+import { useEffect } from "react";
 
 interface SpecificInputFieldTypeProps<T> {
   field: GenericAdditionalField<T>;
   itemConfigStore: ItemConfigStore;
 }
 
-const BooleanInputField = ({ itemConfigStore, field }: SpecificInputFieldTypeProps<boolean>) => {
+const BooleanInputField = observer(({ itemConfigStore, field }: SpecificInputFieldTypeProps<boolean>) => {
   return (
     <FormControlLabel
       control={<Switch onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.checked)} />}
       label={field.name}
+      value={field.value}
     />
   );
-};
+});
 
-const DateInputField = ({ itemConfigStore, field }: SpecificInputFieldTypeProps<Date>) => {
+const DateInputField = observer(({ itemConfigStore, field }: SpecificInputFieldTypeProps<Date>) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
         label={field.name}
         //@ts-ignore
         onAccept={(e: { $d: Date }) => itemConfigStore.setFieldValue(field.name, e.$d)}
+        value={{ $d: field.value }}
       />
     </LocalizationProvider>
   );
-};
+});
 
-const IntegerInputField = ({ field, itemConfigStore }: SpecificInputFieldTypeProps<number>) => {
+const IntegerInputField = observer(({ field, itemConfigStore }: SpecificInputFieldTypeProps<number>) => {
   return (
     <TextField
       type="integer"
       label={field.name}
-      onChange={(e) => itemConfigStore.setFieldValue(field.name, parseInt(e.target.value))}
+      onChange={(e) => {
+        const unparsable = isNaN(parseInt(e.target.value));
+        itemConfigStore.setFieldValue(field.name, unparsable ? 0 : parseInt(e.target.value));
+      }}
+      value={field.value}
     />
   );
-};
+});
 
-const StringOrIntegerInputField = ({ field, itemConfigStore }: SpecificInputFieldTypeProps<string>) => {
+const StringInputField = observer(({ field, itemConfigStore }: SpecificInputFieldTypeProps<string>) => {
   return (
     <TextField
       label={field.name}
       multiline={field.value.length > 40}
       onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.value)}
+      value={field.value}
     />
   );
-};
+});
 
 const AdditionalFieldInput = ({ field, itemConfigStore }: SpecificInputFieldTypeProps<AdditionalFieldType>) => {
   switch (field.type) {
@@ -78,7 +86,7 @@ const AdditionalFieldInput = ({ field, itemConfigStore }: SpecificInputFieldType
     case "multiline":
     case "string":
       return (
-        <StringOrIntegerInputField
+        <StringInputField
           field={field as unknown as GenericAdditionalField<string>}
           itemConfigStore={itemConfigStore}
         />

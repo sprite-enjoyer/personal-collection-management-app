@@ -1,39 +1,56 @@
 import { Box, Button, Modal, TextField } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
-import { GlobalUserInfoStoreContext } from "../../App";
-import { Collection } from "../../misc/types";
 import CustomFieldsInputList from "./CustomFieldsInputList";
+import ItemTableStore from "../../stores/ItemTableStore";
 
-export interface AddItemModalProps {
-  collectionPageStore: CollectionPageStore;
+export interface ItemConfigModalProps {
+  itemConfigStore: ItemConfigStore;
   creatingItem: boolean;
-  collection: Collection;
+  editingItemID: string | null;
+  collectionPageStore?: CollectionPageStore;
+  itemTableStore?: ItemTableStore;
 }
 
-const ItemConfigModal = ({ collectionPageStore, creatingItem, collection }: AddItemModalProps) => {
-  const [itemConfigStore] = useState(new ItemConfigStore(collection));
-  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
-
+const ItemConfigModal = ({
+  collectionPageStore,
+  creatingItem,
+  editingItemID,
+  itemTableStore,
+  itemConfigStore,
+}: ItemConfigModalProps) => {
   useEffect(() => {
-    itemConfigStore.setAdditionalFields(
-      ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collectionPageStore.collection.additionalFieldsInfo)
-    );
-  }, [collectionPageStore, collectionPageStore.collection.additionalFieldsInfo]);
+    if (creatingItem && collectionPageStore)
+      itemConfigStore.setAdditionalFields(
+        ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collectionPageStore.collection.additionalFieldsInfo)
+      );
+  }, [collectionPageStore, collectionPageStore?.collection.additionalFieldsInfo]);
 
   const handleClick = async () => {
-    await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
-    collectionPageStore.setAddItemModalOpen(false);
-    const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
-    collectionPageStore.setCollection(updatedCollection);
+    if (creatingItem && collectionPageStore) {
+      await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
+      collectionPageStore.setItemConfigModalOpen(false);
+      const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
+      collectionPageStore.setCollection(updatedCollection);
+      itemTableStore?.setCollection(updatedCollection);
+    } else if (editingItemID !== null && itemTableStore) {
+      await itemConfigStore.editItem(editingItemID);
+      const updatedCollection = await CollectionPageStore.fetchCollection(itemTableStore?.collection._id);
+      itemConfigStore.setCollection(updatedCollection);
+      itemTableStore.setCollection(updatedCollection);
+      itemTableStore.setItemConfigModalShown(false);
+    }
   };
 
   return (
     <Modal
-      open={collectionPageStore.addItemModalOpen}
-      onClose={() => collectionPageStore.setAddItemModalOpen(false)}
+      open={collectionPageStore?.itemConfigModalOpen ?? itemTableStore?.itemConfigModalShown ?? false}
+      onClose={() => {
+        collectionPageStore?.setItemConfigModalOpen(false);
+        itemTableStore?.setItemConfigModalShown(false);
+      }}
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <Box
         sx={{
@@ -57,7 +74,7 @@ const ItemConfigModal = ({ collectionPageStore, creatingItem, collection }: AddI
         <Button
           onClick={handleClick}
           variant="contained">
-          add item
+          {creatingItem ? "add item" : "edit item"}
         </Button>
       </Box>
     </Modal>

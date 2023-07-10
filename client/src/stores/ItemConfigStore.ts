@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import {
   Collection,
   AdditionalField,
@@ -14,22 +14,31 @@ class ItemConfigStore {
 
   collection: Collection;
 
+  editingItemID: string | null = null;
+
   constructor(colleciton: Collection) {
     this.collection = colleciton;
 
     makeObservable(this, {
       additionalFields: observable,
       name: observable,
+      editingItemID: observable,
       collection: observable,
       setAdditionalFields: action,
       setFieldValue: action,
       setName: action,
+      setEditingItemID: action,
       updateCollectionFromDB: action,
       setCollection: action,
       resetUserInputs: action,
+      editItem: action,
     });
     const update = async () => await this.updateCollectionFromDB();
     update();
+  }
+
+  setEditingItemID(newValue: string) {
+    this.editingItemID = newValue;
   }
 
   resetUserInputs() {
@@ -108,6 +117,27 @@ class ItemConfigStore {
     const collection = await this.fetchCollection(this.collection._id);
     this.setCollection(collection);
     this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.additionalFieldsInfo));
+  }
+
+  async editItem(itemID: string) {
+    const body = {
+      name: this.name,
+      additionalFields: toJS(this.additionalFields),
+    };
+
+    console.log(body);
+
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/edit/${itemID}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      credentials: "include",
+    });
+
+    const { success } = await response.json();
+    if (success) console.log("successfully edited an item");
   }
 }
 

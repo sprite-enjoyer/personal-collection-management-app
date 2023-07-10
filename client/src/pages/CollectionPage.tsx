@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemTable from "../components/CollectionPage/ItemTable";
@@ -9,13 +9,15 @@ import CollectionConfigModal from "../components/ProfilePage/CollectionConfigMod
 import ItemConfigModal from "../components/CollectionPage/ItemConfigModal";
 import { GlobalUserInfoStoreContext } from "../App";
 import { Collection } from "../misc/types";
+import ItemConfigStore from "../stores/ItemConfigStore";
 
 const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
   const [collectionPageStore] = useState(new CollectionPageStore(collection, userName));
+  const [itemConfigStore] = useState(new ItemConfigStore(collection));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
-  globalUserInfoStore.setCurrentlyViewingUser(userName);
 
+  useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
   return (
     <>
       <div style={{ ...routeBaseStyles, display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -35,7 +37,7 @@ const CollectionPage = () => {
               />
               <Button
                 variant="contained"
-                onClick={() => collectionPageStore.setAddItemModalOpen(true)}>
+                onClick={() => collectionPageStore.setItemConfigModalOpen(true)}>
                 add item
               </Button>
             </>
@@ -54,9 +56,10 @@ const CollectionPage = () => {
         )}
       </div>
       <ItemConfigModal
-        collection={collection}
+        itemConfigStore={itemConfigStore}
         creatingItem={true}
         collectionPageStore={collectionPageStore}
+        editingItemID={null}
       />
     </>
   );

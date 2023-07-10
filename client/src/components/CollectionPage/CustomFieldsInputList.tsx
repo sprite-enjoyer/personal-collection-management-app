@@ -11,8 +11,12 @@ const CustomFieldsInputList = ({ itemConfigStore }: CustomFieldsInputListProps) 
     <>
       {itemConfigStore.additionalFields.map((field) => (
         <AdditionalFieldInput
-          key={field.name}
-          field={field}
+          key={field._id}
+          field={
+            field.value !== null
+              ? field
+              : { ...field, value: ItemConfigStore.getFieldDefaultValue(field.type, new Date()) }
+          }
           itemConfigStore={itemConfigStore}
         />
       ))}
