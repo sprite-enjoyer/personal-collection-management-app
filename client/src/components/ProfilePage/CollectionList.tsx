@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import ProfilePageStore from "../../stores/ProfilePageStore";
 import CollectionCard from "./CollectionCard";
-import { ReactElement } from "react";
 
 export interface CollectionListProps {
   profilePageStore: ProfilePageStore;

@@ -46,7 +46,6 @@ export const updateCollectionHandler = async (req, res) => {
         .map((info) => {
         return { value: null, ...info };
     }));
-    console.log("new fields:", newFields, "ayoooooo");
     await Item.updateMany({}, { $addToSet: { additionalFields: newFields } });
     collection.name = name;
     collection.description = description;

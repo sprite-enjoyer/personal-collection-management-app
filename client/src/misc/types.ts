@@ -10,6 +10,7 @@ export interface User {
 export type AdditionalFieldTypeString = "string" | "multiline" | "boolean" | "integer" | "date";
 export type AdditionalFieldType = string | number | boolean | Date | null;
 export interface GenericAdditionalField<T> {
+  _id: string;
   name: string;
   value: T;
   type: AdditionalFieldTypeString;
@@ -18,7 +19,7 @@ export interface GenericAdditionalField<T> {
 export type AdditionalField = GenericAdditionalField<AdditionalFieldType>;
 
 export interface AdditionalFieldInfo {
-  _id?: string;
+  _id: string;
   name: string;
   type: AdditionalFieldTypeString;
 }

@@ -2,7 +2,6 @@ import Item from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
 import { Types } from "mongoose";
 export const createItemHandler = async (req, res) => {
-    console.log(req.body, "body!");
     const { itemName, ownerID, collectionID, additionalFields } = req.body;
     const collection = await ItemCollection.findById(collectionID);
     if (!collection)

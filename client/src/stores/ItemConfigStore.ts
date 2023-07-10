@@ -16,7 +16,6 @@ class ItemConfigStore {
 
   constructor(colleciton: Collection) {
     this.collection = colleciton;
-    console.log("hey yo");
 
     makeObservable(this, {
       additionalFields: observable,
@@ -84,7 +83,6 @@ class ItemConfigStore {
   }
 
   static fillAdditionalFieldsWithEmptyValues(customFieldsInfo: AdditionalFieldInfo[]) {
-    console.log(customFieldsInfo, "hi");
     const date = new Date();
     const additionalFieldsWithDefaultValues = customFieldsInfo.map((field) => {
       return { ...field, value: this.getFieldDefaultValue(field.type, date) };
@@ -101,7 +99,6 @@ class ItemConfigStore {
 
   async updateCollectionFromDB() {
     const collection = await this.fetchCollection(this.collection._id);
-    console.log(collection);
     this.setCollection(collection);
     this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.additionalFieldsInfo));
   }

@@ -17,19 +17,21 @@ const ProfilePage = () => {
 
   return (
     <div style={{ ...routeBaseStyles, display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Container
+      <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: "80%",
-          outline: "2px solid plum",
+          alignItems: "center",
+          width: "100%",
         }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            padding: "20px",
-            gap: "20px",
+            padding: "40px 0 40px 0",
+            width: "80%",
+            justifyContent: "space-between",
+            outline: "2px solid black",
           }}>
           <Typography variant="h3">{userName}'s collections</Typography>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
@@ -40,15 +42,16 @@ const ProfilePage = () => {
             />
           )}
         </Box>
-        <Container
+        <Box
           sx={{
-            width: "100%",
+            outline: "2px solid black",
+            width: "80%",
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr 1fr",
+            gridTemplateColumns: "1fr 1fr max-content",
           }}>
           <CollectionList profilePageStore={profilePageStore} />
-        </Container>
-      </Container>
+        </Box>
+      </Box>
     </div>
   );
 };

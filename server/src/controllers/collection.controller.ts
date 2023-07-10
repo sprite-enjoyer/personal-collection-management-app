@@ -72,8 +72,6 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
       })
   );
 
-  console.log("new fields:", newFields, "ayoooooo");
-
   await Item.updateMany({}, { $addToSet: { additionalFields: newFields } });
 
   collection.name = name;

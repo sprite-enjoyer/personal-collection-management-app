@@ -9,7 +9,7 @@ class CollectionConfigStore {
 
   collectionTopic = "Other";
 
-  additionalFieldToBeAdded: AdditionalFieldInfo = { name: "", type: "string" };
+  additionalFieldToBeAdded: AdditionalFieldInfo = { name: "", type: "string", _id: "" };
 
   additionalFieldsInfo: AdditionalFieldInfo[] = [];
 
@@ -61,7 +61,7 @@ class CollectionConfigStore {
     this.collectionDescription = "";
     this.collectionTopic = "Other";
     this.additionalFieldsInfo = [];
-    this.additionalFieldToBeAdded = { name: "", type: "string" };
+    this.additionalFieldToBeAdded = { name: "", type: "string", _id: "" };
     this.modalOpen = false;
   }
 
@@ -83,8 +83,8 @@ class CollectionConfigStore {
 
   addCustomField() {
     const { name, type } = this.additionalFieldToBeAdded;
-    this.additionalFieldsInfo.push({ name: name, type: type });
-    this.additionalFieldToBeAdded = { name: "", type: "string" };
+    this.additionalFieldsInfo.push({ name: name, type: type, _id: "" });
+    this.additionalFieldToBeAdded = { name: "", type: "string", _id: "" };
   }
 
   setCollectionName(newValue: string) {
@@ -112,7 +112,9 @@ class CollectionConfigStore {
         description: this.collectionDescription,
         topic: this.collectionTopic,
         image: "", //TODO
-        additionalFieldsInfo: this.additionalFieldsInfo,
+        additionalFieldsInfo: this.additionalFieldsInfo.map((field) => {
+          return { name: field.name, type: field.type };
+        }),
       }),
     });
 
@@ -131,7 +133,9 @@ class CollectionConfigStore {
         description: this.collectionDescription,
         topic: this.collectionTopic,
         image: "", //TODO
-        additionalFieldsInfo: this.additionalFieldsInfo,
+        additionalFieldsInfo: this.additionalFieldsInfo.map((field) => {
+          return { name: field.name, type: field.type };
+        }),
       }),
     });
 

@@ -11,7 +11,6 @@ interface CreateItemHandlerRequestBodyType {
 }
 
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
-  console.log(req.body, "body!");
   const { itemName, ownerID, collectionID, additionalFields } = req.body;
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
