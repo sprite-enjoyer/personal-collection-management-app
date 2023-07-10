@@ -1,11 +1,13 @@
-import { FormControlLabel, Switch, TextField } from "@mui/material";
+import { FormControlLabel, Input, Switch, TextField, Typography } from "@mui/material";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { observer } from "mobx-react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdditionalFieldType, GenericAdditionalField } from "../../misc/types";
-import { useEffect } from "react";
+import { useRef } from "react";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import MDEditor from "@uiw/react-md-editor";
 
 interface SpecificInputFieldTypeProps<T> {
   field: GenericAdditionalField<T>;
@@ -14,11 +16,15 @@ interface SpecificInputFieldTypeProps<T> {
 
 const BooleanInputField = observer(({ itemConfigStore, field }: SpecificInputFieldTypeProps<boolean>) => {
   return (
-    <FormControlLabel
-      control={<Switch onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.checked)} />}
-      label={field.name}
-      value={field.value}
-    />
+    <>
+      <label htmlFor="switch">
+        <Typography variant="h6">{field.name}:</Typography>
+      </label>
+      <Switch
+        id="switch"
+        onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.checked)}
+      />
+    </>
   );
 });
 
@@ -51,12 +57,30 @@ const IntegerInputField = observer(({ field, itemConfigStore }: SpecificInputFie
 
 const StringInputField = observer(({ field, itemConfigStore }: SpecificInputFieldTypeProps<string>) => {
   return (
-    <TextField
-      label={field.name}
-      multiline={field.value.length > 40}
-      onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.value)}
-      value={field.value}
-    />
+    <>
+      {field.type === "multiline" ? (
+        <>
+          <label htmlFor="md-editor">
+            <Typography variant="h6">{field.name}:</Typography>
+          </label>
+          <MDEditor
+            id="md-editor"
+            overflow={true}
+            value={field.value}
+            onChange={(e) => itemConfigStore.setFieldValue(field.name, e ?? "")}
+            data-color-mode="light"
+            style={{ minHeight: "200px" }}
+          />
+        </>
+      ) : (
+        <TextField
+          label={field.name}
+          multiline={false}
+          onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.value)}
+          value={field.value}
+        />
+      )}
+    </>
   );
 });
 

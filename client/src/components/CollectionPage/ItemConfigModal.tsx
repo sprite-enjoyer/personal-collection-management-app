@@ -51,7 +51,7 @@ const ItemConfigModal = ({
         collectionPageStore?.setItemConfigModalOpen(false);
         itemTableStore?.setItemConfigModalShown(false);
       }}
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center", overflow: "auto" }}>
       <Box
         sx={{
           backgroundColor: "white",
@@ -61,8 +61,9 @@ const ItemConfigModal = ({
           flexDirection: "column",
           gap: "10px",
           overflow: "auto",
-          maxHeight: "500px",
-          width: "500px",
+          maxHeight: "80%",
+          minWidth: "900px",
+          width: "60%",
         }}>
         <TextField
           value={itemConfigStore.name}
