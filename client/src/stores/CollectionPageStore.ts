@@ -19,7 +19,6 @@ class CollectionPageStore {
       userName: observable,
       setAddItemModalOpen: action,
       setUserName: action,
-      collectionTableColumns: computed,
       shouldRenderTable: computed,
     });
   }
@@ -50,21 +49,8 @@ class CollectionPageStore {
     return data?.username;
   }
 
-  get collectionTableColumns() {
-    if (!this.collection || this.collection.items.length === 0) return [];
-    const fixedFieldNames = ["id", "name"];
-    const additionalFieldNames = this.collection.additionalFieldsInfo.map((info) => info.name);
-    return [...fixedFieldNames, ...additionalFieldNames];
-  }
-
   get shouldRenderTable() {
     return this.collection && this.collection?.items.length !== 0;
-  }
-
-  static getCollectionTableRowInformationArray(item: Item) {
-    const fixedFieldValues = [item._id, item.name];
-    const additionalFieldValues = item.additionalFields.map((field) => field.value);
-    return [...fixedFieldValues, ...additionalFieldValues];
   }
 }
 

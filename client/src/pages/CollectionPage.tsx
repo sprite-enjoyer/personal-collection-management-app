@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useLoaderData } from "react-router-dom";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemTable from "../components/CollectionPage/ItemTable";
 import { routeBaseStyles } from "../misc/styleUtils";
@@ -42,7 +42,7 @@ const CollectionPage = () => {
           )}
         </Box>
         {collectionPageStore.shouldRenderTable ? (
-          <ItemTable collectionPageStore={collectionPageStore} />
+          <ItemTable collection={collectionPageStore.collection} />
         ) : (
           <Container sx={{ marginTop: "100px" }}>
             <Typography

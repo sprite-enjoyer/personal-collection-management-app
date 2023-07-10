@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardHeader, CardMedia, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export interface CollectionCardProps {
@@ -7,6 +7,9 @@ export interface CollectionCardProps {
   id: string;
   image?: string;
 }
+
+const NO_IMAGE =
+  "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=";
 
 const CollectionCard = ({ image, name, description, id }: CollectionCardProps) => {
   const navigate = useNavigate();
@@ -29,33 +32,19 @@ const CollectionCard = ({ image, name, description, id }: CollectionCardProps) =
         maxWidth: "550px",
         marginLeft: "auto",
         marginRight: "auto",
+        justifyContent: "space-between",
       }}>
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%" }}>
-        <Typography
-          margin={"20px"}
-          variant="h4">
-          {name}
-        </Typography>
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", height: "80%" }}>
-        {image && (
-          <Box width={"50%"}>
-            <img
-              src={image}
-              loading="lazy"
-              alt={`${name} collection image`}
-              style={{ height: "100%", width: "auto" }}
-            />
-          </Box>
-        )}
-        <Box width={image ? "50%" : "100%"}>
-          <Typography
-            padding={"20px"}
-            variant="h6">
-            {description.length > 120 ? description.slice(0, 120) + "..." : description}
-          </Typography>
-        </Box>
-      </Box>
+      <CardHeader
+        title={name}
+        component="h2"
+        titleTypographyProps={{ variant: "h4", textAlign: "center" }}
+      />
+      <CardMedia
+        sx={{ borderBottomLeftRadius: "5px", borderBottomRightRadius: "5px" }}
+        component={"img"}
+        height={"80%"}
+        image={!image || image.length === 0 ? NO_IMAGE : image}
+      />
     </Card>
   );
 };

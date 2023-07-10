@@ -26,9 +26,15 @@ class ItemConfigStore {
       setName: action,
       updateCollectionFromDB: action,
       setCollection: action,
+      resetUserInputs: action,
     });
     const update = async () => await this.updateCollectionFromDB();
     update();
+  }
+
+  resetUserInputs() {
+    this.name = "";
+    this.additionalFields = [];
   }
 
   setCollection(newValue: Collection) {
@@ -66,6 +72,7 @@ class ItemConfigStore {
     });
 
     const data = await response.json();
+    this.resetUserInputs();
   }
 
   static getFieldDefaultValue(type: AdditionalFieldTypeString, date: Date) {
