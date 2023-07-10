@@ -21,6 +21,7 @@ import CollectionPageStore from "../../stores/CollectionPageStore";
 import CustomFieldsList from "./CustomFieldsList";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 import { GlobalUserInfoStoreContext } from "../../App";
+import DeleteCollectionDialog from "../CollectionPage/DeleteCollectionDialog";
 export interface AddCollectionModalProps {
   buttonText: string;
   creatingCollection: boolean;
@@ -175,25 +176,7 @@ const CollectionConfigModal = ({
                 </Button>
               )}
             </Box>
-            {collectionConfigStore.deleteCollectionDialogOpen && (
-              <Box marginTop={"20px"}>
-                <Typography>Are you sure that you want to delete this collection?</Typography>
-                <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px" }}>
-                  <Button
-                    onClick={() => collectionConfigStore.deleteCollection(navigate, globalUserName)}
-                    size="small"
-                    variant="contained">
-                    yes
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={() => collectionConfigStore.setDeleteCollectionDialogOpen(false)}>
-                    no
-                  </Button>
-                </Box>
-              </Box>
-            )}
+            <DeleteCollectionDialog collectionConfigStore={collectionConfigStore} />
           </Container>
         </Box>
       </Modal>
