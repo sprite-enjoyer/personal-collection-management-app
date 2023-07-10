@@ -12,14 +12,15 @@ import {
 } from "@mui/material";
 import { topics } from "../../misc/constants";
 import { observer } from "mobx-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { AdditionalFieldTypeString } from "../../misc/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProfilePageStore from "../../stores/ProfilePageStore";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import CustomFieldsList from "./CustomFieldsList";
-
+import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
+import { GlobalUserInfoStoreContext } from "../../App";
 export interface AddCollectionModalProps {
   buttonText: string;
   creatingCollection: boolean;
@@ -36,6 +37,9 @@ const CollectionConfigModal = ({
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  const globalUserName = globalUserInfoStore.userName;
+  const navigate = useNavigate();
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -63,7 +67,7 @@ const CollectionConfigModal = ({
       <Modal
         open={collectionConfigStore.modalOpen}
         onClose={() => collectionConfigStore.handleModalClose()}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
         <Box sx={{ backgroundColor: "white", borderRadius: "10px", padding: "50px" }}>
           <Container
             sx={{
@@ -150,11 +154,46 @@ const CollectionConfigModal = ({
               }}>
               <CustomFieldsList collectionConfigStore={collectionConfigStore} />
             </Box>
-            <Button
-              variant="contained"
-              onClick={handleButtonClick}>
-              {buttonText}
-            </Button>
+            <Box
+              sx={{
+                position: "relative",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}>
+              <Button
+                variant="contained"
+                onClick={handleButtonClick}>
+                {buttonText}
+              </Button>
+              {!creatingCollection && (
+                <Button
+                  variant="contained"
+                  onClick={() => collectionConfigStore.setDeleteCollectionDialogOpen(true)}
+                  sx={{ position: "absolute", right: "0" }}>
+                  <DeleteSharpIcon />
+                </Button>
+              )}
+            </Box>
+            {collectionConfigStore.deleteCollectionDialogOpen && (
+              <Box marginTop={"20px"}>
+                <Typography>Are you sure that you want to delete this collection?</Typography>
+                <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px" }}>
+                  <Button
+                    onClick={() => collectionConfigStore.deleteCollection(navigate, globalUserName)}
+                    size="small"
+                    variant="contained">
+                    yes
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={() => collectionConfigStore.setDeleteCollectionDialogOpen(false)}>
+                    no
+                  </Button>
+                </Box>
+              </Box>
+            )}
           </Container>
         </Box>
       </Modal>

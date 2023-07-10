@@ -31,7 +31,6 @@ const ProfilePage = () => {
             padding: "40px 0 40px 0",
             width: "80%",
             justifyContent: "space-between",
-            outline: "2px solid black",
           }}>
           <Typography variant="h3">{userName}'s collections</Typography>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
@@ -44,10 +43,10 @@ const ProfilePage = () => {
         </Box>
         <Box
           sx={{
-            outline: "2px solid black",
             width: "80%",
             display: "grid",
-            gridTemplateColumns: "1fr 1fr max-content",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "50px",
           }}>
           <CollectionList profilePageStore={profilePageStore} />
         </Box>

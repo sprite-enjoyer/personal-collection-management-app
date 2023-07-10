@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ItemCollection, { AdditionalFieldInfo } from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
-import { Types } from "mongoose";
+import { Collection, Types } from "mongoose";
 import Item, { AdditionalField } from "../schemas/Item.js";
 import { Type } from "typescript";
 
@@ -104,4 +104,11 @@ export const getCollectionHandler = async (req: Request, res: Response) => {
   if (!collection) return res.status(404).json({ success: false, data: null });
 
   return res.status(200).json({ success: true, data: collection });
+};
+
+export const deleteCollectionHandler = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const collectionRemoval = await ItemCollection.deleteOne({ _id: id });
+  if (collectionRemoval.acknowledged) return res.status(200).json({ success: true });
+  return res.status(500).json({ success: false });
 };

@@ -1,6 +1,8 @@
 import { action, makeObservable, observable } from "mobx";
 import { topics } from "../misc/constants";
 import { Collection, AdditionalFieldInfo, AdditionalFieldTypeString } from "../misc/types";
+import GlobalUserInfoStore from "./GlobalUserInfoStore";
+import { NavigateFunction } from "react-router-dom";
 
 class CollectionConfigStore {
   collectionName = "";
@@ -17,6 +19,8 @@ class CollectionConfigStore {
 
   creatingCollection: boolean;
 
+  deleteCollectionDialogOpen = false;
+
   collectionID?: string;
 
   userName?: string;
@@ -29,6 +33,7 @@ class CollectionConfigStore {
     makeObservable(this, {
       collectionName: observable,
       modalOpen: observable,
+      deleteCollectionDialogOpen: observable,
       additionalFieldsInfo: observable,
       additionalFieldToBeAdded: observable,
       collectionDescription: observable,
@@ -42,7 +47,9 @@ class CollectionConfigStore {
       setCustomFieldToBeAddedName: action,
       setCustomFieldToBeAddedType: action,
       resetUserInputs: action,
+      setDeleteCollectionDialogOpen: action,
       setAdditionalFieldsInfo: action,
+      deleteCollection: action,
     });
 
     const fillValues = async () => {
@@ -50,6 +57,10 @@ class CollectionConfigStore {
     };
 
     fillValues();
+  }
+
+  setDeleteCollectionDialogOpen(newValue: boolean) {
+    this.deleteCollectionDialogOpen = newValue;
   }
 
   setAdditionalFieldsInfo(newValue: AdditionalFieldInfo[]) {
@@ -156,6 +167,15 @@ class CollectionConfigStore {
     this.setCollectionDescription(collection.description);
     this.setCollectionTopic(collection.topic);
     this.setAdditionalFieldsInfo(collection.additionalFieldsInfo);
+  }
+
+  async deleteCollection(navigate: NavigateFunction, globalUserName?: string) {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/delete/${this.collectionID}`, {
+      method: "DELETE",
+    })
+      .then(async (res) => await res.json())
+      .then(() => navigate(`/user/${globalUserName}`));
+    this.setModalOpen(false);
   }
 }
 
