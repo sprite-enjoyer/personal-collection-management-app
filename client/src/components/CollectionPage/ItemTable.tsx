@@ -96,7 +96,7 @@ const ItemTable = ({ collection }: ItemTableProps) => {
                 </TableCell>
                 {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
                   <TableCell
-                    sx={{ maxWidth: "100px", overflow: "auto" }}
+                    sx={{ maxWidth: "300px", overflow: "auto" }}
                     key={i.toString() + j.toString()}>
                     {info.type !== "multiline" ? (
                       <Typography maxHeight={"200px"}>
