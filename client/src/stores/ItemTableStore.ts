@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { Collection, Item } from "../misc/types";
+import { AdditionalFieldType, AdditionalFieldTypeString, Collection, Item } from "../misc/types";
 import CollectionPageStore from "./CollectionPageStore";
 
 class ItemTableStore {
@@ -35,9 +35,24 @@ class ItemTableStore {
     return [...fixedFieldNames, ...additionalFieldNames];
   }
 
-  static getCollectionTableRowInformationArray(item: Item) {
-    const fixedFieldValues = [item._id, item.name];
-    const additionalFieldValues = item.additionalFields.map((field) => field.value);
+  static getCollectionTableRowInformationArray(item: Item): {
+    type: AdditionalFieldTypeString;
+    value: AdditionalFieldType;
+  }[] {
+    const fixedFieldValues: {
+      type: AdditionalFieldTypeString;
+      value: AdditionalFieldType;
+    }[] = [
+      { value: item._id, type: "string" },
+      { value: item.name, type: "string" },
+    ];
+    const additionalFieldValues = item.additionalFields.map((field) => {
+      const res: {
+        type: AdditionalFieldTypeString;
+        value: AdditionalFieldType;
+      } = { value: field.value, type: field.type };
+      return res;
+    });
     return [...fixedFieldValues, ...additionalFieldValues];
   }
 

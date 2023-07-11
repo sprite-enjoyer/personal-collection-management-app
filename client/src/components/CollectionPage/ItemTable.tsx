@@ -18,6 +18,7 @@ import { Collection, Item } from "../../misc/types";
 import { useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
+import MDEditor from "@uiw/react-md-editor";
 
 interface ItemTableProps {
   collection: Collection;
@@ -93,11 +94,17 @@ const ItemTable = ({ collection }: ItemTableProps) => {
                     <EditIcon />
                   </Button>
                 </TableCell>
-                {ItemTableStore.getCollectionTableRowInformationArray(item).map((value, j) => (
+                {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
                   <TableCell
                     sx={{ maxWidth: "100px", overflow: "auto" }}
                     key={i.toString() + j.toString()}>
-                    <Typography maxHeight={"200px"}>{value !== null ? value.toString() : "null"}</Typography>
+                    {info.type !== "multiline" ? (
+                      <Typography maxHeight={"200px"}>
+                        {info.value !== null ? info.value.toString() : "null"}
+                      </Typography>
+                    ) : (
+                      <MDEditor.Markdown source={info.value as string} />
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
