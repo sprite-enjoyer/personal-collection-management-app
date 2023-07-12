@@ -79,7 +79,7 @@ const ItemTable = ({ collection }: ItemTableProps) => {
               <TableRow
                 key={item._id}
                 hover
-                sx={{ maxHeight: "100px", overflowY: "auto", lineHeight: "100px" }}>
+                sx={{ maxHeight: "100px", overflowY: "auto", lineHeight: "100px", cursor: "pointer" }}>
                 <TableCell width={"30px"}>
                   <Button
                     sx={{ padding: "0", minWidth: "50px", height: "50px" }}

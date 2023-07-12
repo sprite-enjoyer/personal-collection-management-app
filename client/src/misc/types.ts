@@ -29,6 +29,7 @@ export interface Item {
   name: string;
   owner: string;
   containerCollection: string;
+  tags: string[];
   additionalFields: AdditionalField[];
 }
 

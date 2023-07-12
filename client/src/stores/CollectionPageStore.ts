@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Collection, AdditionalField, Item, User } from "../misc/types";
+import { Collection, User } from "../misc/types";
 
 class CollectionPageStore {
   collection: Collection;
@@ -20,6 +20,7 @@ class CollectionPageStore {
       setItemConfigModalOpen: action,
       setUserName: action,
       shouldRenderTable: computed,
+      tags: computed,
     });
   }
 
@@ -51,6 +52,10 @@ class CollectionPageStore {
 
   get shouldRenderTable() {
     return this.collection && this.collection?.items.length !== 0;
+  }
+
+  get tags() {
+    return [...new Set(this.collection.items.map((item) => item.tags).flat())];
   }
 }
 

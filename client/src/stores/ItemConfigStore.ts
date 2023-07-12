@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, toJS } from "mobx";
+import { action, computed, makeObservable, observable, toJS } from "mobx";
 import {
   Collection,
   AdditionalField,
@@ -12,6 +12,8 @@ class ItemConfigStore {
 
   additionalFields: AdditionalField[] = [];
 
+  chosenTags: string[] = [];
+
   collection: Collection;
 
   editingItemID: string | null = null;
@@ -22,6 +24,7 @@ class ItemConfigStore {
     makeObservable(this, {
       additionalFields: observable,
       name: observable,
+      chosenTags: observable,
       editingItemID: observable,
       collection: observable,
       setAdditionalFields: action,
@@ -32,9 +35,22 @@ class ItemConfigStore {
       setCollection: action,
       resetUserInputs: action,
       editItem: action,
+      setChosenTags: action,
+      createItem: action,
+      fetchCollection: action,
+      addChosenTag: action,
     });
     const update = async () => await this.updateCollectionFromDB();
     update();
+  }
+
+  addChosenTag(tag: string) {
+    if (this.chosenTags.includes(tag) || tag.length === 0) return;
+    this.chosenTags = [...this.chosenTags, tag];
+  }
+
+  setChosenTags(newValue: string[]) {
+    this.chosenTags = newValue;
   }
 
   setEditingItemID(newValue: string) {
@@ -44,6 +60,7 @@ class ItemConfigStore {
   resetUserInputs() {
     this.name = "";
     this.additionalFields = [];
+    this.chosenTags = [];
   }
 
   setCollection(newValue: Collection) {
@@ -69,6 +86,7 @@ class ItemConfigStore {
       collectionID: collectionID,
       itemName: this.name,
       additionalFields: this.additionalFields,
+      tags: this.chosenTags,
     };
 
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/create`, {
@@ -123,9 +141,8 @@ class ItemConfigStore {
     const body = {
       name: this.name,
       additionalFields: toJS(this.additionalFields),
+      tags: this.chosenTags,
     };
-
-    console.log(body);
 
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/items/edit/${itemID}`, {
       method: "POST",

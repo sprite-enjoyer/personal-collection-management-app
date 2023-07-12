@@ -1,10 +1,13 @@
-import { Box, Button, Modal, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, InputAdornment, Modal, TextField } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import CustomFieldsInputList from "./CustomFieldsInputList";
 import ItemTableStore from "../../stores/ItemTableStore";
+
+import { toJS } from "mobx";
+import FixedFieldsInputList from "./FixedFieldsInputList";
 
 export interface ItemConfigModalProps {
   itemConfigStore: ItemConfigStore;
@@ -65,11 +68,9 @@ const ItemConfigModal = ({
           minWidth: "900px",
           width: "60%",
         }}>
-        <TextField
-          value={itemConfigStore.name}
-          placeholder="name"
-          label="name"
-          onChange={(e) => itemConfigStore.setName(e.target.value)}
+        <FixedFieldsInputList
+          itemConfigStore={itemConfigStore}
+          collectionPageStore={collectionPageStore}
         />
         <CustomFieldsInputList itemConfigStore={itemConfigStore} />
         <Button

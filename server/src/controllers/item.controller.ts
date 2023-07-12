@@ -8,10 +8,11 @@ interface CreateItemHandlerRequestBodyType {
   collectionID: string;
   itemName: string;
   additionalFields: AdditionalField;
+  tags: string[];
 }
 
 export const createItemHandler = async (req: Request<any, any, CreateItemHandlerRequestBodyType>, res: Response) => {
-  const { itemName, ownerID, collectionID, additionalFields } = req.body;
+  const { itemName, ownerID, collectionID, additionalFields, tags } = req.body;
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
 
@@ -20,6 +21,7 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
     owner: ownerID,
     containerCollection: collectionID,
     additionalFields: additionalFields,
+    tags: tags,
   });
 
   collection.items.push(newItem._id);
@@ -40,11 +42,12 @@ export const getItemHandler = async (req: Request, res: Response) => {
 interface EditItemHandlerRequestBodyType {
   name: string;
   additionalFields: AdditionalField[];
+  tags: string[];
 }
 
 export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequestBodyType>, res: Response) => {
   const { itemID } = req.params;
-  const { name, additionalFields } = req.body;
+  const { name, additionalFields, tags } = req.body;
   if (!itemID || !name || !additionalFields) return res.status(400).json({ success: false });
 
   const item = await Item.findById(itemID);
@@ -52,6 +55,7 @@ export const editItemHandler = async (req: Request<any, any, EditItemHandlerRequ
 
   item.additionalFields = new Types.DocumentArray<AdditionalField>(additionalFields);
   item.name = name;
+  item.tags = tags;
   await item.save();
 
   return res.status(200).json({ success: true });

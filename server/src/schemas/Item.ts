@@ -34,6 +34,10 @@ const itemSchema = new mongoose.Schema({
     required: true,
     default: [],
   },
+  tags: {
+    type: [String],
+    default: [],
+  },
 });
 
 export type AdditionalField = InferSchemaType<typeof additionalItemFieldSchema>;
