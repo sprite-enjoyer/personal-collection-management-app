@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import CustomFieldsInputList from "./CustomFieldsInputList";
 import ItemTableStore from "../../stores/ItemTableStore";
-
 import { toJS } from "mobx";
 import FixedFieldsInputList from "./FixedFieldsInputList";
 
@@ -13,7 +12,7 @@ export interface ItemConfigModalProps {
   itemConfigStore: ItemConfigStore;
   creatingItem: boolean;
   editingItemID: string | null;
-  collectionPageStore?: CollectionPageStore;
+  collectionPageStore: CollectionPageStore;
   itemTableStore?: ItemTableStore;
 }
 
@@ -41,6 +40,7 @@ const ItemConfigModal = ({
     } else if (editingItemID !== null && itemTableStore) {
       await itemConfigStore.editItem(editingItemID);
       const updatedCollection = await CollectionPageStore.fetchCollection(itemTableStore?.collection._id);
+      collectionPageStore.setCollection(updatedCollection);
       itemConfigStore.setCollection(updatedCollection);
       itemTableStore.setCollection(updatedCollection);
       itemTableStore.setItemConfigModalShown(false);

@@ -14,23 +14,27 @@ import { toJS } from "mobx";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ItemTableStore from "../../stores/ItemTableStore";
-import { Collection, Item } from "../../misc/types";
+import { Item } from "../../misc/types";
 import { useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
-import MDEditor from "@uiw/react-md-editor";
+import CollectionPageStore from "../../stores/CollectionPageStore";
 
 interface ItemTableProps {
-  collection: Collection;
+  collectionPageStore: CollectionPageStore;
 }
 
-const ItemTable = ({ collection }: ItemTableProps) => {
-  const [itemTableStore] = useState(new ItemTableStore(collection));
-  const [itemConfigStore] = useState(new ItemConfigStore(collection));
+const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
+  const [itemTableStore] = useState(new ItemTableStore(collectionPageStore.collection ?? []));
+  const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection ?? []));
 
   const deleteButtonHandler = async (id: string) => {
     await itemTableStore.deleteItem(id);
   };
+
+  useEffect(() => {
+    itemTableStore.setCollection(collectionPageStore.collection);
+  }, [collectionPageStore.collection]);
 
   const editButtonHandler = (item: Item) => {
     itemTableStore.setItemConfigModalShown(true);
@@ -94,19 +98,17 @@ const ItemTable = ({ collection }: ItemTableProps) => {
                     <EditIcon />
                   </Button>
                 </TableCell>
-                {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
-                  <TableCell
-                    sx={{ maxWidth: "300px", overflow: "auto" }}
-                    key={i.toString() + j.toString()}>
-                    {info.type !== "multiline" ? (
+                {ItemTableStore.getCollectionTableRowInformationArray(item)
+                  .filter((info) => info.type !== "multiline")
+                  .map((info, j) => (
+                    <TableCell
+                      sx={{ maxWidth: "300px", overflow: "auto" }}
+                      key={i.toString() + j.toString()}>
                       <Typography maxHeight={"200px"}>
                         {info.value !== null ? info.value.toString() : "null"}
                       </Typography>
-                    ) : (
-                      <MDEditor.Markdown source={info.value as string} />
-                    )}
-                  </TableCell>
-                ))}
+                    </TableCell>
+                  ))}
               </TableRow>
             ))}
           </TableBody>
@@ -117,6 +119,7 @@ const ItemTable = ({ collection }: ItemTableProps) => {
         itemConfigStore={itemConfigStore}
         creatingItem={false}
         itemTableStore={itemTableStore}
+        collectionPageStore={collectionPageStore}
       />
     </>
   );

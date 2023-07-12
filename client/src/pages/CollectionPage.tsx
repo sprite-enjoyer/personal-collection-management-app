@@ -44,7 +44,7 @@ const CollectionPage = () => {
           )}
         </Box>
         {collectionPageStore.shouldRenderTable ? (
-          <ItemTable collection={collectionPageStore.collection} />
+          <ItemTable collectionPageStore={collectionPageStore} />
         ) : (
           <Container sx={{ marginTop: "100px" }}>
             <Typography
