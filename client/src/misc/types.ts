@@ -43,3 +43,9 @@ export interface Collection {
   owner: string;
   items: Item[];
 }
+
+export interface Comment {
+  commentedItemID: string;
+  comentAuthorID: string;
+  commentText: string;
+}

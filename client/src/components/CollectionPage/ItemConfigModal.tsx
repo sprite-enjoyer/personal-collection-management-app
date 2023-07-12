@@ -49,7 +49,7 @@ const ItemConfigModal = ({
 
   return (
     <Modal
-      open={collectionPageStore?.itemConfigModalOpen ?? itemTableStore?.itemConfigModalShown ?? false}
+      open={itemTableStore?.itemConfigModalShown ?? collectionPageStore?.itemConfigModalOpen ?? false}
       onClose={() => {
         collectionPageStore?.setItemConfigModalOpen(false);
         itemTableStore?.setItemConfigModalShown(false);

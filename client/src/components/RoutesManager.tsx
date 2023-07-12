@@ -7,12 +7,27 @@ import CollectionPage from "../pages/CollectionPage";
 import { useContext } from "react";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
+import ItemPageStore from "../stores/ItemPageStore";
+import ItemPage from "../pages/ItemPage";
 
 const RoutesManager = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/">
+      <>
+        <Route
+          path="/item/:itemID"
+          loader={async ({ params }) => {
+            if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+            const { itemID } = params;
+            if (!itemID) return Promise.reject("item ID not provided!");
+            const item = await ItemPageStore.fetchItem(itemID);
+            const userName = await CollectionPageStore.fetchUserName(item.owner);
+            const collection = await CollectionPageStore.fetchCollection(item.containerCollection);
+            return Promise.resolve({ item, userName, collection });
+          }}
+          element={<ItemPage />}
+        />
         <Route
           path="/login"
           element={<LoginPage />}
@@ -49,7 +64,7 @@ const RoutesManager = () => {
           }}
           element={<CollectionPage />}
         />
-      </Route>
+      </>
     )
   );
   return <RouterProvider router={router} />;

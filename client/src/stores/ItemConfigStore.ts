@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, toJS } from "mobx";
+import { action, makeObservable, observable, toJS } from "mobx";
 import {
   Collection,
   AdditionalField,
@@ -14,13 +14,20 @@ class ItemConfigStore {
 
   chosenTags: string[] = [];
 
-  collection: Collection;
+  collection: Collection = {
+    _id: "",
+    name: "",
+    description: "",
+    topic: "",
+    image: "",
+    additionalFieldsInfo: [],
+    owner: "",
+    items: [],
+  };
 
   editingItemID: string | null = null;
 
-  constructor(colleciton: Collection) {
-    this.collection = colleciton;
-
+  constructor(collecitonID: string) {
     makeObservable(this, {
       additionalFields: observable,
       name: observable,
@@ -40,13 +47,14 @@ class ItemConfigStore {
       fetchCollection: action,
       addChosenTag: action,
     });
-    const update = async () => await this.updateCollectionFromDB();
-    update();
+
+    const getCollection = async () => await this.updateCollectionFromDB(collecitonID);
+    getCollection();
   }
 
-  addChosenTag(tag: string) {
-    if (this.chosenTags.includes(tag) || tag.length === 0) return;
-    this.chosenTags = [...this.chosenTags, tag];
+  addChosenTag(newValue: string) {
+    if (this.chosenTags.includes(newValue) || newValue.length === 0) return;
+    this.chosenTags = [...this.chosenTags, newValue];
   }
 
   setChosenTags(newValue: string[]) {
@@ -131,8 +139,8 @@ class ItemConfigStore {
     return data;
   }
 
-  async updateCollectionFromDB() {
-    const collection = await this.fetchCollection(this.collection._id);
+  async updateCollectionFromDB(collectionID?: string) {
+    const collection = await this.fetchCollection(collectionID ?? this.collection._id);
     this.setCollection(collection);
     this.setAdditionalFields(ItemConfigStore.fillAdditionalFieldsWithEmptyValues(collection.additionalFieldsInfo));
   }

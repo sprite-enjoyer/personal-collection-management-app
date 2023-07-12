@@ -14,7 +14,7 @@ import ItemConfigStore from "../stores/ItemConfigStore";
 const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
   const [collectionPageStore] = useState(new CollectionPageStore(collection, userName));
-  const [itemConfigStore] = useState(new ItemConfigStore(collection));
+  const [itemConfigStore] = useState(new ItemConfigStore(collection._id));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);

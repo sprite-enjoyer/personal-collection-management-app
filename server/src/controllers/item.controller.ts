@@ -36,7 +36,7 @@ export const getItemHandler = async (req: Request, res: Response) => {
   const item = await Item.findById(itemID);
   if (!item) return res.status(404).json({ success: false });
 
-  return res.status(404).json({ success: true, data: item });
+  return res.status(200).json({ success: true, data: item });
 };
 
 interface EditItemHandlerRequestBodyType {

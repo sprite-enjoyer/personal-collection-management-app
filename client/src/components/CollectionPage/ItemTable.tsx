@@ -19,14 +19,16 @@ import { useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
 import CollectionPageStore from "../../stores/CollectionPageStore";
+import { useNavigate } from "react-router-dom";
 
 interface ItemTableProps {
   collectionPageStore: CollectionPageStore;
 }
 
 const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
+  const navigate = useNavigate();
   const [itemTableStore] = useState(new ItemTableStore(collectionPageStore.collection ?? []));
-  const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection ?? []));
+  const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection._id));
 
   const deleteButtonHandler = async (id: string) => {
     await itemTableStore.deleteItem(id);
@@ -38,6 +40,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
 
   const editButtonHandler = (item: Item) => {
     itemTableStore.setItemConfigModalShown(true);
+    console.log(itemTableStore.itemConfigModalShown);
     itemConfigStore.setName(item.name);
     itemConfigStore.setAdditionalFields([
       ...item.additionalFields.map((field) => {
@@ -102,6 +105,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
                   .filter((info) => info.type !== "multiline")
                   .map((info, j) => (
                     <TableCell
+                      onClick={() => navigate(`/item/${item._id}`)}
                       sx={{ maxWidth: "300px", overflow: "auto" }}
                       key={i.toString() + j.toString()}>
                       <Typography maxHeight={"200px"}>
