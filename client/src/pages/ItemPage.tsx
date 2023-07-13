@@ -1,11 +1,11 @@
-import { Typography, Chip, List, ListItem, ListItemText, Box } from "@mui/material";
-import { AdditionalField, Collection, Item } from "../misc/types";
+import { Collection, Item } from "../misc/types";
 import { useState } from "react";
 import ItemConfigStore from "../stores/ItemConfigStore";
 import { useLoaderData } from "react-router-dom";
 import { routeBaseStyles } from "../misc/styleUtils";
 import { observer } from "mobx-react";
 import ItemFullInformation from "../components/ItemPage/ItemFullInformation";
+import CommentSection from "../components/ItemPage/CommentSection";
 
 interface ItemPageProps {}
 
@@ -15,12 +15,13 @@ const ItemPage = () => {
   const [itemConfigStore] = useState(new ItemConfigStore(item.containerCollection));
 
   return (
-    <div style={{ ...routeBaseStyles, display: "flex" }}>
+    <div style={{ ...routeBaseStyles, display: "flex", justifyContent: "space-between" }}>
       <ItemFullInformation
         item={item}
         collectionName={itemConfigStore.collection.name}
         ownerUserName={userName}
       />
+      <CommentSection itemID={item._id} />
     </div>
   );
 };

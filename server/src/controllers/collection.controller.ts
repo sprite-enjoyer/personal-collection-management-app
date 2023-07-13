@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import ItemCollection, { AdditionalFieldInfo } from "../schemas/ItemCollection.js";
 import User from "../schemas/User.js";
-import { Collection, Types } from "mongoose";
+import { Types } from "mongoose";
 import Item, { AdditionalField } from "../schemas/Item.js";
-import { Type } from "typescript";
 
 interface CreateCollectionHandlerBodyType {
   userName: string;

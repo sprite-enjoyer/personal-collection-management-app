@@ -45,7 +45,8 @@ export interface Collection {
 }
 
 export interface Comment {
-  commentedItemID: string;
-  comentAuthorID: string;
-  commentText: string;
+  _id: string;
+  item: string;
+  author: string;
+  text: string;
 }
