@@ -162,7 +162,6 @@ class ItemConfigStore {
     });
 
     const { success } = await response.json();
-    if (success) console.log("successfully edited an item");
   }
 }
 

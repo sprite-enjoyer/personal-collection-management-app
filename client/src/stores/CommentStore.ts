@@ -22,6 +22,7 @@ class CommentStore {
       setCommentFieldValue: action,
       fetchComments: action,
       postComment: action,
+      addComment: action,
     });
   }
 
@@ -33,15 +34,19 @@ class CommentStore {
     this.comments = newValue;
   }
 
+  addComment(comment: Comment) {
+    this.setComments([...this.comments, comment]);
+  }
+
   async fetchComments() {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/comments/itemComments/${this.itemID}`);
     const { success, data } = (await response.json()) as { data: Comment[]; success: boolean };
     if (success) this.setComments(data);
-    else console.log("couldn't fetch comments");
   }
 
   async postComment() {
-    if (!this.globalUserInfoStore.loggedIn || !this.globalUserInfoStore.userName) return;
+    if (!this.globalUserInfoStore.loggedIn || !this.globalUserInfoStore.userName || this.commentFieldValue.length === 0)
+      return;
     const comment: Omit<Comment, "_id"> = {
       item: this.itemID,
       author: this.globalUserInfoStore.userName,
@@ -58,7 +63,6 @@ class CommentStore {
     });
 
     const { data, success } = (await response.json()) as { data: Comment; success: boolean };
-    if (success) this.setComments([...this.comments, data]);
   }
 }
 

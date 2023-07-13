@@ -22,6 +22,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
         <Typography
           variant={item.name.length > 70 ? "h5" : "h3"}
+          maxHeight={"150px"}
           overflow="auto">
           {item.name}
         </Typography>

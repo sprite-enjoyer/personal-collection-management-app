@@ -40,7 +40,6 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
 
   const editButtonHandler = (item: Item) => {
     itemTableStore.setItemConfigModalShown(true);
-    console.log(itemTableStore.itemConfigModalShown);
     itemConfigStore.setName(item.name);
     itemConfigStore.setAdditionalFields([
       ...item.additionalFields.map((field) => {

@@ -4,6 +4,8 @@ import CommentStore from "../../stores/CommentStore";
 import { useState, useContext, useEffect } from "react";
 import { GlobalUserInfoStoreContext } from "../../App";
 import AddCommentIcon from "@mui/icons-material/AddComment";
+import { io } from "socket.io-client";
+
 interface CommentSectionProps {
   itemID: string;
 }
@@ -15,6 +17,18 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
   useEffect(() => {
     const loadComments = async () => await commentStore.fetchComments();
     loadComments();
+
+    const socket = io(import.meta.env.VITE_SERVER_URL)
+      .connect()
+      .emit("join-room", itemID);
+
+    socket.on("new-comment", (newComment) => {
+      commentStore.addComment(newComment);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return (

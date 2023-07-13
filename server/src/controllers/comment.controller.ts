@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Comment from "../schemas/Comment.js";
+import { io } from "../index.js";
 
 export const getItemCommentsHandler = async (req: Request, res: Response) => {
   const { itemID } = req.params;
@@ -29,6 +30,6 @@ export const postCommentHandler = async (req: Request<any, any, PostCommentHandl
     text: text,
   }).save();
   if (!newComment) return res.status(500).json({ success: false, data: null });
-
+  io.in(item).emit("new-comment", newComment);
   return res.status(200).json({ success: true, data: newComment });
 };

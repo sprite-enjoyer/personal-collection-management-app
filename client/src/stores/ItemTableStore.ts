@@ -63,10 +63,7 @@ class ItemTableStore {
     const { success } = (await deletePromise.json()) as { success: boolean };
     const collection = await CollectionPageStore.fetchCollection(this.collection._id);
 
-    if (success) {
-      console.log("item deleted sucessfully");
-      this.setCollection(collection);
-    }
+    if (success) this.setCollection(collection);
   }
 }
 
