@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../schemas/User.js";
 import { compare, genSalt, hash } from "bcrypt";
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const registerUserHandler = async (req: Request, res: Response) => {

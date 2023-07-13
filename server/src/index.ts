@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import userRouter from "./routers/userRouter.js";
 import collectionRouter from "./routers/collectionRouter.js";
 import itemRouter from "./routers/itemRouter.js";
+import commentRouter from "./routers/commentRouter.js";
 
 dotenv.config();
 const PORT = 3000;
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/collections", collectionRouter);
 app.use("/items", itemRouter);
+app.use("/comments", commentRouter);
 
 const validateOrigin = (origin: string, callback: (err: Error | null, origin?: boolean) => void) => {
   if (!origin || origin === "") return callback(null, true);
