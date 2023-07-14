@@ -10,7 +10,11 @@ import CommentSection from "../components/ItemPage/CommentSection";
 interface ItemPageProps {}
 
 const ItemPage = () => {
-  const { item, userName, collection } = useLoaderData() as { item: Item; userName: string; collection: Collection };
+  const { item, userName, collection } = useLoaderData() as {
+    item: Item;
+    userName: string;
+    collection: Collection;
+  };
   if (!item || !userName || !collection) return null;
   const [itemConfigStore] = useState(new ItemConfigStore(item.containerCollection));
 

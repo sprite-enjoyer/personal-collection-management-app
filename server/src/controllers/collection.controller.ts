@@ -48,21 +48,6 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
   const collection = await ItemCollection.findById(id);
   if (!collection) return res.status(500).json({ success: false });
 
-  // const getFieldDefaultValue = (type: string, date: Date) => {
-  //   switch (type) {
-  //     case "boolean":
-  //       return false;
-  //     case "string":
-  //     case "multiline":
-  //       return "";
-  //     case "date":
-  //       return date;
-  //     case "integer":
-  //       return 0;
-  //   }
-  // };
-
-  const date = new Date();
   const newFields = new Types.DocumentArray<AdditionalField>(
     additionalFieldsInfo
       .filter((info) => !collection.additionalFieldsInfo.map((info) => info.name).includes(info.name))
@@ -110,4 +95,17 @@ export const deleteCollectionHandler = async (req: Request, res: Response) => {
   const collectionRemoval = await ItemCollection.deleteOne({ _id: id });
   if (collectionRemoval.acknowledged) return res.status(200).json({ success: true });
   return res.status(500).json({ success: false });
+};
+
+export const getLargestCollectionsHandler = async (req: Request, res: Response) => {
+  const { count } = req.params;
+  const countNumber = parseInt(count);
+  if (isNaN(countNumber)) return res.status(400).json({ success: false, data: [] });
+  const biggestCollections = await ItemCollection.aggregate([
+    { $project: { items: 1, image: 1, topic: 1, description: 1, name: 1, length: { $size: "$items" } } },
+    { $sort: { length: -1 } },
+    { $limit: countNumber },
+  ]);
+
+  return res.status(200).json({ success: true, data: biggestCollections });
 };

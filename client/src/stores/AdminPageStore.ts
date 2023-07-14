@@ -1,6 +1,5 @@
 import { action, makeObservable, observable, toJS } from "mobx";
 import { User } from "../misc/types";
-import { NavigateFunction } from "react-router-dom";
 
 class AdminPageStore {
   users: User[] = [];

@@ -22,6 +22,7 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
     containerCollection: collectionID,
     additionalFields: additionalFields,
     tags: tags,
+    createdAt: new Date(),
   });
 
   collection.items.push(newItem._id);
@@ -68,4 +69,24 @@ export const deleteItemHandler = async (req: Request, res: Response) => {
   await Item.deleteOne({ _id: itemID });
 
   return res.status(200).json({ success: true });
+};
+
+export const getLatestItemsHandler = async (req: Request, res: Response) => {
+  const { count } = req.params;
+  const countNumber = parseInt(count);
+  if (isNaN(countNumber)) return res.status(400).json({ success: false, data: [] });
+  const latestItems = await Item.find()
+    .sort({ createdAt: -1 })
+    .limit(countNumber)
+    .populate(["owner", "containerCollection"]);
+
+  return res.status(200).json({ success: true, data: latestItems });
+};
+
+export const getAllTagsHandler = async (req: Request, res: Response) => {
+  const itemTags: string[][] = (await Item.find({}, "tags")).map((e) => e.tags);
+  if (!itemTags) return res.status(500).json({ success: false, data: [] });
+
+  const uniqueTags = [...new Set(itemTags.flat())];
+  return res.status(200).json({ success: true, data: uniqueTags });
 };

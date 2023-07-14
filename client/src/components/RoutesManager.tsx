@@ -9,12 +9,23 @@ import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemPageStore from "../stores/ItemPageStore";
 import ItemPage from "../pages/ItemPage";
+import MainPage, { fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
 
 const RoutesManager = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        <Route
+          path="/"
+          element={<MainPage />}
+          loader={async () => {
+            if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+            const latestItems = fetchLatestItems();
+            const largestCollections = fetchLargestCollection();
+            return await Promise.all([latestItems, largestCollections]);
+          }}
+        />
         <Route
           path="/item/:itemID"
           loader={async ({ params }) => {

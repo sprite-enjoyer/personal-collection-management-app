@@ -33,6 +33,15 @@ export interface Item {
   additionalFields: AdditionalField[];
 }
 
+export interface ItemCardItem {
+  _id: string;
+  name: string;
+  owner: User;
+  containerCollection: Collection;
+  tags: string[];
+  additionalFields: AdditionalField[];
+}
+
 export interface Collection {
   _id: string;
   name: string;

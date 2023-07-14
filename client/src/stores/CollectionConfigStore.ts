@@ -1,7 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import { topics } from "../misc/constants";
 import { Collection, AdditionalFieldInfo, AdditionalFieldTypeString } from "../misc/types";
-import GlobalUserInfoStore from "./GlobalUserInfoStore";
 import { NavigateFunction } from "react-router-dom";
 
 class CollectionConfigStore {

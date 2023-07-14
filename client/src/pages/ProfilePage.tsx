@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
 import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
-import CollectionList from "../components/ProfilePage/CollectionList";
+import CollectionList from "../components/CollectionList";
 import { GlobalUserInfoStoreContext } from "../App";
 
 const ProfilePage = () => {
@@ -48,7 +48,7 @@ const ProfilePage = () => {
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: "50px",
           }}>
-          <CollectionList profilePageStore={profilePageStore} />
+          <CollectionList collections={profilePageStore.collections} />
         </Box>
       </Box>
     </div>
