@@ -6,7 +6,6 @@ export interface CollectionListProps {
 }
 
 const CollectionList = ({ collections }: CollectionListProps) => {
-  console.log(collections);
   return (
     <>
       {collections.map((collection, i) => (

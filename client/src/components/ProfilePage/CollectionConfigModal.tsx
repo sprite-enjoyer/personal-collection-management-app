@@ -39,8 +39,6 @@ const CollectionConfigModal = ({
   if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
-  const globalUserName = globalUserInfoStore.userName;
-  const navigate = useNavigate();
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -62,7 +60,10 @@ const CollectionConfigModal = ({
         sx={{
           alignSelf: "flex-end",
         }}
-        onClick={() => collectionConfigStore.setModalOpen(true)}>
+        onClick={async () => {
+          await collectionConfigStore.populateFieldsWithExistingCollectionData();
+          collectionConfigStore.setModalOpen(true);
+        }}>
         {buttonText}
       </Button>
       <Modal

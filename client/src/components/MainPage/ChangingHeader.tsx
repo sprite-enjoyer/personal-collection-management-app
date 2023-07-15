@@ -16,7 +16,8 @@ const ChangingHeader = ({ style }: ChangingHeaderProps) => {
     const typed = new Typed(ref.current, {
       strings: strings,
       typeSpeed: 40,
-      backDelay: 2000,
+      loop: true,
+      backDelay: 2500,
       backSpeed: 30,
       shuffle: true,
       smartBackspace: false,

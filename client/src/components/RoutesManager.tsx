@@ -9,7 +9,7 @@ import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemPageStore from "../stores/ItemPageStore";
 import ItemPage from "../pages/ItemPage";
-import MainPage, { fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
+import MainPage, { fetchAllTags, fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
 
 const RoutesManager = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
@@ -23,7 +23,8 @@ const RoutesManager = () => {
             if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
             const latestItems = fetchLatestItems();
             const largestCollections = fetchLargestCollection();
-            return await Promise.all([latestItems, largestCollections]);
+            const tags = fetchAllTags();
+            return await Promise.all([latestItems, largestCollections, tags]);
           }}
         />
         <Route

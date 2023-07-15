@@ -1,7 +1,7 @@
-import { Autocomplete, Box, Button, InputAdornment, Modal, TextField } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { observer } from "mobx-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import CustomFieldsInputList from "./CustomFieldsInputList";
 import ItemTableStore from "../../stores/ItemTableStore";
@@ -66,7 +66,8 @@ const ItemConfigModal = ({
           overflow: "auto",
           maxHeight: "80%",
           minWidth: "900px",
-          width: "60%",
+          maxWidth: "60%",
+          width: "fit-content",
         }}>
         <FixedFieldsInputList
           itemConfigStore={itemConfigStore}

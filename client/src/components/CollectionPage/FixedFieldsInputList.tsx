@@ -26,8 +26,9 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
           sx={{ flex: "1 1" }}
           multiple
           autoComplete
+          autoHighlight
           id="tags"
-          options={[...(collectionPageStore?.tags ?? []), ...itemConfigStore.chosenTags]}
+          options={[...itemConfigStore.chosenTags]}
           value={itemConfigStore.chosenTags}
           onChange={(_, v) => itemConfigStore.setChosenTags(v)}
           getOptionLabel={(v) => v}

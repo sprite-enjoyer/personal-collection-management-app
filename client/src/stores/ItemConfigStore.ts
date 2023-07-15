@@ -5,7 +5,9 @@ import {
   AdditionalFieldType,
   AdditionalFieldInfo,
   AdditionalFieldTypeString,
+  Item,
 } from "../misc/types";
+import axios from "axios";
 
 class ItemConfigStore {
   name = "";
@@ -46,6 +48,7 @@ class ItemConfigStore {
       createItem: action,
       fetchCollection: action,
       addChosenTag: action,
+      fetchItem: action,
     });
 
     const getCollection = async () => await this.updateCollectionFromDB(collecitonID);
@@ -162,6 +165,15 @@ class ItemConfigStore {
     });
 
     const { success } = await response.json();
+  }
+
+  async fetchItem() {
+    if (!this.editingItemID) return;
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/get/${this.editingItemID}`);
+    const { data } = (await response.data) as { data: Item };
+    this.setAdditionalFields(data.additionalFields);
+    this.setChosenTags(data.tags);
+    this.setName(data.name);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardHeader, CardMedia, Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export interface CollectionCardProps {
@@ -20,6 +20,8 @@ const CollectionCard = ({ image, name, topic, id }: CollectionCardProps) => {
 
   return (
     <Card
+      component={Paper}
+      elevation={4}
       onClick={handleClick}
       sx={{
         cursor: "pointer",
@@ -28,7 +30,6 @@ const CollectionCard = ({ image, name, topic, id }: CollectionCardProps) => {
         height: "100%",
         width: "100%",
         flexDirection: "column",
-        boxShadow: "1px 2px 2px 0px #00000091",
         border: "1px solid black",
         maxWidth: "550px",
         marginLeft: "auto",

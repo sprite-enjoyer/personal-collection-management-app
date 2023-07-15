@@ -47,6 +47,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
       }),
     ]);
     itemConfigStore.setEditingItemID(item._id);
+    itemConfigStore.setChosenTags(item.tags);
   };
 
   return (
@@ -57,7 +58,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
           margin: "20px 50px 50px 50px",
           height: "70%",
           minHeight: "500px",
-          width: "80%",
+          maxWidth: "80%",
           position: "relative",
         }}>
         <Table stickyHeader>
