@@ -101,18 +101,14 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
                     <EditIcon />
                   </Button>
                 </TableCell>
-                {ItemTableStore.getCollectionTableRowInformationArray(item)
-                  .filter((info) => info.type !== "multiline")
-                  .map((info, j) => (
-                    <TableCell
-                      onClick={() => navigate(`/item/${item._id}`)}
-                      sx={{ maxWidth: "300px", overflow: "auto" }}
-                      key={i.toString() + j.toString()}>
-                      <Typography maxHeight={"200px"}>
-                        {info.value !== null ? info.value.toString() : "null"}
-                      </Typography>
-                    </TableCell>
-                  ))}
+                {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
+                  <TableCell
+                    onClick={() => navigate(`/item/${item._id}`)}
+                    sx={{ maxWidth: "300px", overflow: "auto" }}
+                    key={i.toString() + j.toString()}>
+                    <Typography maxHeight={"200px"}>{info.value !== null ? info.value.toString() : "null"}</Typography>
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

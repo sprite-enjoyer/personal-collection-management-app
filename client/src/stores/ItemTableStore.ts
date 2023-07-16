@@ -30,7 +30,7 @@ class ItemTableStore {
 
   get collectionTableColumns() {
     if (!this.collection || this.collection.items.length === 0) return [];
-    const fixedFieldNames = ["id", "name"];
+    const fixedFieldNames = ["name"];
     const additionalFieldNames = this.collection.additionalFieldsInfo
       .filter((info) => info.type !== "multiline")
       .map((info) => info.name);
@@ -44,17 +44,16 @@ class ItemTableStore {
     const fixedFieldValues: {
       type: AdditionalFieldTypeString;
       value: AdditionalFieldType;
-    }[] = [
-      { value: item._id, type: "string" },
-      { value: item.name, type: "string" },
-    ];
-    const additionalFieldValues = item.additionalFields.map((field) => {
-      const res: {
-        type: AdditionalFieldTypeString;
-        value: AdditionalFieldType;
-      } = { value: field.value, type: field.type };
-      return res;
-    });
+    }[] = [{ value: item.name, type: "string" }];
+    const additionalFieldValues = item.additionalFields
+      .map((field) => {
+        const res: {
+          type: AdditionalFieldTypeString;
+          value: AdditionalFieldType;
+        } = { value: field.value, type: field.type };
+        return res;
+      })
+      .filter((e) => e.type !== "multiline");
     return [...fixedFieldValues, ...additionalFieldValues];
   }
 
