@@ -1,26 +1,36 @@
-import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { Box, Divider, Paper, Typography } from "@mui/material";
 import { ItemCardItem } from "../../misc/types";
 import { Link } from "react-router-dom";
+import { CSSProperties } from "@mui/material/styles/createMixins";
 
 interface ItemCardProps {
   item: ItemCardItem;
+  styles?: CSSProperties;
 }
 
-const ItemCard = ({ item }: ItemCardProps) => {
+const ItemCard = ({ item, styles }: ItemCardProps) => {
   return (
-    <Link
-      style={{ all: "unset", cursor: "pointer" }}
-      to={`/collection/${item.containerCollection._id}`}>
-      <Card>
-        <CardHeader
-          title={item.name}
-          subheader={`From ${item.containerCollection.name}`}
-        />
-        <CardContent sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-          <Typography>owner: {item.owner.username}</Typography>
-        </CardContent>
-      </Card>
-    </Link>
+    <Box sx={{ maxWidth: "400px", maxHeight: "70px", ...styles }}>
+      <Link
+        style={{ all: "unset", cursor: "pointer", width: "100%", height: "100%" }}
+        to={`/item/${item._id}`}>
+        <Paper sx={{ padding: "10px", display: "flex", flexWrap: "wrap", width: "100%", height: "100%" }}>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            width={"100%"}
+            justifyContent={"space-around"}>
+            <Typography>{`${item.name} from ${item.containerCollection.name}`}</Typography>
+            <Divider
+              orientation="vertical"
+              flexItem
+              sx={{ margin: "0 10px", borderColor: "rgba(0, 0, 0, 0.3)", height: "100%" }}
+            />
+            <Typography>{`owner: ${item.owner.username}`}</Typography>
+          </Box>
+        </Paper>
+      </Link>
+    </Box>
   );
 };
 

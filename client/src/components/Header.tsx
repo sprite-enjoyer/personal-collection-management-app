@@ -1,15 +1,14 @@
-import { AppBar, Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import { AppBar, Box } from "@mui/material";
 import HeaderStore from "../stores/HeaderStore";
 import { useEffect, useState } from "react";
 import { routeBaseStyles } from "../misc/styleUtils";
 import { Outlet, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react";
-import { AccountCircle } from "@mui/icons-material";
 import { GlobalUserInfoStoreContext } from "../App";
 import { useContext } from "react";
-import SearchModal from "./Header/SearchModal";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchModal from "./SearchModal";
 import LeftSide from "./Header/LeftSide";
+import RightSide from "./Header/RightSide";
 
 interface HeaderProps {}
 
@@ -20,8 +19,10 @@ const Header = ({}: HeaderProps) => {
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
-      event.preventDefault();
-      if (event.ctrlKey && event.key === "k") headerStore.setSearchModalOpen(true);
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault();
+        headerStore.setSearchModalOpen(true);
+      }
     };
 
     window.addEventListener("keydown", keyDownHandler);
@@ -31,7 +32,11 @@ const Header = ({}: HeaderProps) => {
 
   return (
     <>
-      <SearchModal headerStore={headerStore} />
+      <SearchModal
+        open={headerStore.searchModalOpen}
+        onCloseCallback={() => headerStore.setSearchModalOpen(false)}
+        initialSearchValues={[]}
+      />
       <Box sx={{ ...routeBaseStyles, display: "flex", flexDirection: "column", gap: "20px" }}>
         <AppBar
           sx={{
@@ -49,13 +54,7 @@ const Header = ({}: HeaderProps) => {
             display={"flex"}
             justifyContent={"space-between"}>
             <LeftSide globalUserInfoStore={globalUserInfoStore} />
-            <Box>
-              <IconButton
-                onClick={() => headerStore.setSearchModalOpen(true)}
-                sx={{ aspectRatio: "1", borderRadius: "50%", width: "50px", height: "50px" }}>
-                <SearchIcon />
-              </IconButton>
-            </Box>
+            <RightSide headerStore={headerStore} />
           </Box>
         </AppBar>
         <Outlet />

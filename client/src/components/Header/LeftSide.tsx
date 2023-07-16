@@ -4,7 +4,7 @@ import { AccountCircle } from "@mui/icons-material";
 import { Box, IconButton, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-
+import LogoutIcon from "@mui/icons-material/Logout";
 interface LeftSideProps {
   globalUserInfoStore: GlobalUserInfoStore;
 }
@@ -19,17 +19,22 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
           display={"flex"}
           gap={"15px"}>
           <IconButton
-            size="large"
-            onClick={() => navigate(`/user/${globalUserInfoStore.userName}`)}
-            sx={{ aspectRatio: "1", borderRadius: "50%", width: "50px", height: "50px" }}>
-            <AccountCircle />
+            sx={{ width: "50px", height: "50px" }}
+            onClick={async () => await globalUserInfoStore.signOut(globalUserInfoStore)}>
+            <LogoutIcon sx={{ width: "50px", aspectRatio: "1" }} />
           </IconButton>
           <IconButton
             size="large"
-            onClick={() => navigate("/")}>
-            <HomeIcon />
+            onClick={() => navigate("/")}
+            sx={{ width: "50px", height: "50px" }}>
+            <HomeIcon sx={{ width: "50px", aspectRatio: "1" }} />
           </IconButton>
-          <Button onClick={async () => await globalUserInfoStore.signOut(globalUserInfoStore)}>sign out</Button>
+          <IconButton
+            size="large"
+            onClick={() => navigate(`/user/${globalUserInfoStore.userName}`)}
+            sx={{ width: "50px", height: "50px" }}>
+            <AccountCircle sx={{ width: "50px", aspectRatio: "1" }} />
+          </IconButton>
         </Box>
       ) : (
         <Box
