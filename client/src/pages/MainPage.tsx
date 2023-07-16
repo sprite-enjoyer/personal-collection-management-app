@@ -1,15 +1,15 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { Collection, ItemCardItem } from "../misc/types";
 import axios from "axios";
-import { routeBaseStyles } from "../misc/styleUtils";
 import LatestItemsList from "../components/MainPage/LatestItemsList";
 import CollectionList from "../components/CollectionList";
 import { Box, Chip, Typography } from "@mui/material";
 import ChangingHeader from "../components/MainPage/ChangingHeader";
 import { CSSProperties } from "@mui/material/styles/createMixins";
+import TagCloud from "../components/MainPage/TagCloud";
 
 export const fetchLatestItems = async () => {
-  const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/getLatest/12`);
+  const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/getLatest/5`);
   const { data } = await response.data;
   return data;
 };
@@ -38,7 +38,7 @@ const MainPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div
+    <Box
       style={{
         padding: "0px 5% 0px 5%",
         boxSizing: "border-box",
@@ -76,14 +76,16 @@ const MainPage = () => {
           </Typography>
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
+              display: "flex",
               gap: "10px",
               flexWrap: "wrap",
               padding: "20px 0",
               maxWidth: "90%",
             }}>
-            <CollectionList collections={largestCollections} />
+            <CollectionList
+              collections={largestCollections}
+              showImage={false}
+            />
           </Box>
           <Typography
             maxWidth={"100%"}
@@ -105,27 +107,13 @@ const MainPage = () => {
             flex: "2 2",
             maxWidth: "50%",
             maxHeight: "100%",
-            padding: "10%",
+            padding: "5%",
             overflow: "clip",
           }}>
-          {tags.map((tag) => (
-            <Chip
-              component={"button"}
-              onClick={() => navigate(`/TODO`)}
-              clickable
-              label={tag}
-              key={tag}
-              size="medium"
-              sx={{
-                color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 40%)`,
-                fontSize: "1.2em",
-                margin: "5px",
-              }}
-            />
-          ))}
+          <TagCloud tags={tags} />
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };
 
