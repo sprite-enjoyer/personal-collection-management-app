@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Item, { AdditionalField } from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
 import { Types } from "mongoose";
+import Comment from "../schemas/Comment.js";
 
 interface CreateItemHandlerRequestBodyType {
   ownerID: string;
@@ -89,4 +90,19 @@ export const getAllTagsHandler = async (req: Request, res: Response) => {
 
   const uniqueTags = [...new Set(itemTags.flat())];
   return res.status(200).json({ success: true, data: uniqueTags });
+};
+
+export const getSearchedItemsHandler = async (req: Request, res: Response) => {
+  const { searchValues } = req.body as { searchValues: string[] };
+  const regularInputs: string[] = [];
+  const tagInputs: string[] = [];
+  searchValues.forEach((input) =>
+    input.startsWith("tag:") ? tagInputs.push(input.substring(4)) : regularInputs.push(input)
+  );
+
+  const [items, comments] = await Promise.all([
+    Item.find({}).populate(["containerCollection", "owner"]),
+    Comment.find({}),
+  ]);
+  return res.status(200).json({ data: items.slice(5) });
 };
