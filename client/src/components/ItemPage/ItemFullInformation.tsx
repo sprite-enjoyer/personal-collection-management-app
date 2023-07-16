@@ -46,19 +46,21 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
             {collectionName}
           </Link>
         </Typography>
-        <Typography variant="h5">Tags:{item.tags}</Typography>
-        <Typography variant="h5">Additional Fields:</Typography>
+        <Typography variant="h5">Tags:</Typography>
+        <Box
+          display={"flex"}
+          flexWrap={"wrap"}
+          gap={0.5}>
+          {item.tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              variant="outlined"
+            />
+          ))}
+        </Box>
+        <Typography variant="h5">Additional Fields: {item.additionalFields.length === 0 && "none"}</Typography>
       </Box>
-      <Box>
-        {item.tags.map((tag) => (
-          <Chip
-            key={tag}
-            label={tag}
-            variant="outlined"
-          />
-        ))}
-      </Box>
-
       <List
         sx={{
           width: "100%",
