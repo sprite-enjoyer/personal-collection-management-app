@@ -10,7 +10,9 @@ class CollectionConfigStore {
 
   collectionTopic = "Other";
 
-  additionalFieldToBeAdded: AdditionalFieldInfo = { name: "", type: "string", _id: "" };
+  additionalFieldToBeAddedName = "";
+
+  additionalFieldToBeAddedType: AdditionalFieldTypeString = "string";
 
   additionalFieldsInfo: AdditionalFieldInfo[] = [];
 
@@ -28,13 +30,15 @@ class CollectionConfigStore {
     this.creatingCollection = creatingCollection;
     this.collectionID = collectionID;
     this.userName = userName;
+    console.log("collectionConfigStore created");
 
     makeObservable(this, {
       collectionName: observable,
       modalOpen: observable,
+      additionalFieldToBeAddedName: observable,
+      additionalFieldToBeAddedType: observable,
       deleteCollectionDialogOpen: observable,
       additionalFieldsInfo: observable,
-      additionalFieldToBeAdded: observable,
       collectionDescription: observable,
       collectionTopic: observable,
       setCollectionDescription: action,
@@ -50,12 +54,6 @@ class CollectionConfigStore {
       setAdditionalFieldsInfo: action,
       deleteCollection: action,
     });
-
-    const fillValues = async () => {
-      if (!this.creatingCollection) await this.populateFieldsWithExistingCollectionData();
-    };
-
-    fillValues();
   }
 
   setDeleteCollectionDialogOpen(newValue: boolean) {
@@ -71,7 +69,8 @@ class CollectionConfigStore {
     this.collectionDescription = "";
     this.collectionTopic = "Other";
     this.additionalFieldsInfo = [];
-    this.additionalFieldToBeAdded = { name: "", type: "string", _id: "" };
+    this.additionalFieldToBeAddedName = "";
+    this.additionalFieldToBeAddedType = "string";
     this.modalOpen = false;
   }
 
@@ -84,17 +83,21 @@ class CollectionConfigStore {
   }
 
   setCustomFieldToBeAddedName(newValue: string) {
-    this.additionalFieldToBeAdded.name = newValue;
+    this.additionalFieldToBeAddedName = newValue;
   }
 
   setCustomFieldToBeAddedType(newValue: AdditionalFieldTypeString) {
-    this.additionalFieldToBeAdded.type = newValue;
+    this.additionalFieldToBeAddedType = newValue;
   }
 
   addCustomField() {
-    const { name, type } = this.additionalFieldToBeAdded;
-    this.additionalFieldsInfo.push({ name: name, type: type, _id: "" });
-    this.additionalFieldToBeAdded = { name: "", type: "string", _id: "" };
+    this.additionalFieldsInfo.push({
+      name: this.additionalFieldToBeAddedName,
+      type: this.additionalFieldToBeAddedType,
+      _id: "",
+    });
+    this.additionalFieldToBeAddedName = "";
+    this.additionalFieldToBeAddedType = "string";
   }
 
   setCollectionName(newValue: string) {
@@ -153,6 +156,7 @@ class CollectionConfigStore {
   }
 
   async fetchCollection(collectionID: string) {
+    console.log("fetching collection");
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getCollection/${collectionID}`);
     const { data } = (await response.json()) as { data: Collection };
     return data;

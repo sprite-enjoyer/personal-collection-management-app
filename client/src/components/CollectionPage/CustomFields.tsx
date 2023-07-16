@@ -1,12 +1,10 @@
-import { FormControlLabel, Input, Switch, TextField, Typography } from "@mui/material";
+import { Switch, TextField, Typography } from "@mui/material";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { observer } from "mobx-react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdditionalFieldType, GenericAdditionalField } from "../../misc/types";
-import { useRef } from "react";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import MDEditor from "@uiw/react-md-editor";
 
 interface SpecificInputFieldTypeProps<T> {

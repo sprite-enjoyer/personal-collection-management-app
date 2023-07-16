@@ -28,6 +28,7 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
           autoComplete
           autoHighlight
           id="tags"
+          limitTags={4}
           options={[...itemConfigStore.chosenTags]}
           value={itemConfigStore.chosenTags}
           onChange={(_, v) => itemConfigStore.setChosenTags(v)}

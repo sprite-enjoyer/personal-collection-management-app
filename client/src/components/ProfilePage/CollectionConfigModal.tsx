@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import { topics } from "../../misc/constants";
 import { observer } from "mobx-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { AdditionalFieldTypeString } from "../../misc/types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ProfilePageStore from "../../stores/ProfilePageStore";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import CustomFieldsList from "./CustomFieldsList";
@@ -39,6 +39,15 @@ const CollectionConfigModal = ({
   if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+
+  useEffect(() => {
+    const fillValues = async () => {
+      if (!collectionConfigStore.creatingCollection)
+        await collectionConfigStore.populateFieldsWithExistingCollectionData();
+    };
+
+    fillValues();
+  }, []);
 
   const handleButtonClick = async () => {
     if (creatingCollection) {
@@ -121,7 +130,7 @@ const CollectionConfigModal = ({
               <TextField
                 onChange={(e) => collectionConfigStore.setCustomFieldToBeAddedName(e.target.value)}
                 placeholder="Name"
-                value={collectionConfigStore.additionalFieldToBeAdded.name}
+                value={collectionConfigStore.additionalFieldToBeAddedName}
               />
               <FormControl>
                 <InputLabel id="field-type">Type</InputLabel>
@@ -131,7 +140,7 @@ const CollectionConfigModal = ({
                   }
                   labelId="field-type"
                   label="Type"
-                  value={collectionConfigStore.additionalFieldToBeAdded.type}
+                  value={collectionConfigStore.additionalFieldToBeAddedType}
                   defaultValue="string">
                   {["string", "multiline", "integer", "boolean", "date"].map((type, i) => (
                     <MenuItem

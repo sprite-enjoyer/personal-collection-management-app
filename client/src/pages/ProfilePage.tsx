@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const [profilePageStore] = useState(new ProfilePageStore(userName));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -44,14 +44,18 @@ const ProfilePage = () => {
         <Box
           sx={{
             width: "80%",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            display: "flex",
+            flexWrap: "wrap",
             gap: "50px",
+            padding: "20px",
           }}>
-          <CollectionList collections={profilePageStore.collections} />
+          <CollectionList
+            collections={profilePageStore.collections}
+            showImage
+          />
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };
 
