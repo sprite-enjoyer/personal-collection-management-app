@@ -19,7 +19,7 @@ const ItemPage = () => {
   const [itemConfigStore] = useState(new ItemConfigStore(item.containerCollection));
 
   return (
-    <div style={{ ...routeBaseStyles, display: "flex", justifyContent: "space-between" }}>
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
       <ItemFullInformation
         item={item}
         collectionName={itemConfigStore.collection.name}

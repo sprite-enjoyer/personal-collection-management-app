@@ -20,7 +20,7 @@ const CollectionPage = () => {
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
   return (
     <>
-      <div style={{ ...routeBaseStyles, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Box
           sx={{
             display: "flex",

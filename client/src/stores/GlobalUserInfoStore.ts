@@ -1,3 +1,4 @@
+import axios from "axios";
 import { action, computed, makeObservable, observable } from "mobx";
 
 class GlobalUserInfoStore {
@@ -40,7 +41,7 @@ class GlobalUserInfoStore {
     this.loggedIn = newValue;
   }
 
-  setUserName(newValue: string) {
+  setUserName(newValue?: string) {
     this.userName = newValue;
   }
 
@@ -77,6 +78,17 @@ class GlobalUserInfoStore {
     }
 
     return null;
+  }
+
+  async signOut(globalUserInfoStore: GlobalUserInfoStore) {
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/signOut`, {
+      withCredentials: true,
+    });
+    const { success } = (await response.data) as { success: boolean };
+    if (success) {
+      globalUserInfoStore.setLoggedIn(false);
+      globalUserInfoStore.setUserName();
+    }
   }
 }
 

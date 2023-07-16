@@ -51,7 +51,7 @@ export const checkUserJwtHandler = async (req, res, next) => {
     const { justCheck } = req.body;
     const secret = process.env.JWT_SECRET;
     if (!secret)
-        return res.status(500).json({ message: "no jwt secret defined in server" });
+        return res.status(500).json({ message: justCheck ? "no jwt secret defined in server" : "" });
     const token = req.headers.cookie?.slice(4) ?? null;
     if (!token) {
         const userInfo = { userID: null, blocked: false, isAdmin: false };
@@ -113,4 +113,8 @@ export const deleteUsersHandler = async (req, res) => {
     const mongoIDs = userIDs.map((id) => new mongoose.Types.ObjectId(id));
     await User.deleteMany({ _id: { $in: mongoIDs } });
     return res.status(200).json({ success: true });
+};
+export const signOutHandler = async (req, res) => {
+    res.clearCookie("jwt");
+    res.status(200).json({ success: true });
 };

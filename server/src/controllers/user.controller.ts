@@ -3,6 +3,7 @@ import User from "../schemas/User.js";
 import { compare, genSalt, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { UserInfo } from "../types.js";
 
 export const registerUserHandler = async (req: Request, res: Response) => {
   const { userName, email, password, admin } = req.body;
@@ -54,7 +55,7 @@ export const sendUserJwtHandler = async (req: Request, res: Response) => {
 export const checkUserJwtHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { justCheck }: { justCheck: boolean } = req.body;
   const secret = process.env.JWT_SECRET;
-  if (!secret) return res.status(500).json({ message: "no jwt secret defined in server" });
+  if (!secret) return res.status(500).json({ message: justCheck ? "no jwt secret defined in server" : "" });
   const token = req.headers.cookie?.slice(4) ?? null;
 
   if (!token) {
@@ -122,4 +123,9 @@ export const deleteUsersHandler = async (req: Request, res: Response) => {
   await User.deleteMany({ _id: { $in: mongoIDs } });
 
   return res.status(200).json({ success: true });
+};
+
+export const signOutHandler = async (req: Request, res: Response) => {
+  res.clearCookie("jwt");
+  res.status(200).json({ success: true });
 };

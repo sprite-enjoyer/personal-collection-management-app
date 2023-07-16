@@ -10,7 +10,6 @@ const additionalItemFieldSchema = new mongoose.Schema({
     },
     value: {
         type: SchemaTypes.Mixed,
-        required: true,
     },
 });
 const itemSchema = new mongoose.Schema({
@@ -32,6 +31,14 @@ const itemSchema = new mongoose.Schema({
         type: [additionalItemFieldSchema],
         required: true,
         default: [],
+    },
+    tags: {
+        type: [String],
+        default: [],
+    },
+    createdAt: {
+        type: Date,
+        required: true,
     },
 });
 export default mongoose.model("Item", itemSchema);

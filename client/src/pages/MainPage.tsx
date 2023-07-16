@@ -40,7 +40,6 @@ const MainPage = () => {
   return (
     <div
       style={{
-        ...routeBaseStyles,
         padding: "0px 5% 0px 5%",
         boxSizing: "border-box",
         overflow: "auto",

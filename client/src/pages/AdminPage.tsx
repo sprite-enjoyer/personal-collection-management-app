@@ -93,7 +93,7 @@ const AdminPage = ({}: AdminPageProps) => {
   };
 
   return (
-    <div style={{ ...routeBaseStyles, display: "flex", alignItems: "center", flexDirection: "column" }}>
+    <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
       <TableContainer
         component={Paper}
         sx={{
