@@ -33,13 +33,6 @@ const ItemConfigModal = ({
   useEffect(() => {
     const fetchItemTemp = async () => await itemConfigStore.fetchItem();
     fetchItemTemp();
-    console.log(toJS(itemConfigStore.additionalFields), "additional fields form itemconfigstore");
-    console.log(
-      "itemTableStore:",
-      itemTableStore?.itemConfigModalShown,
-      "collectionPageStore:",
-      collectionPageStore.itemConfigModalOpen
-    );
   }, [itemTableStore?.itemConfigModalShown, collectionPageStore?.itemConfigModalOpen]);
 
   const handleClick = async () => {

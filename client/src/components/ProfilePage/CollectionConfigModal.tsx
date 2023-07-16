@@ -78,7 +78,7 @@ const CollectionConfigModal = ({
       <Modal
         open={collectionConfigStore.modalOpen}
         onClose={() => collectionConfigStore.handleModalClose()}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
         <Box sx={{ backgroundColor: "white", borderRadius: "10px", padding: "50px" }}>
           <Container
             sx={{

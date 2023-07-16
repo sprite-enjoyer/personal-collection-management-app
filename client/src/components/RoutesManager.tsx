@@ -1,16 +1,17 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
-import AdminPage from "../pages/AdminPage";
-import ProfilePage from "../pages/ProfilePage";
-import CollectionPage from "../pages/CollectionPage";
-import { useContext } from "react";
+import { Suspense, lazy, useContext } from "react";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemPageStore from "../stores/ItemPageStore";
-import ItemPage from "../pages/ItemPage";
 import MainPage, { fetchAllTags, fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
 import Header from "./Header";
+
+const LazyLoginPage = lazy(async () => await import("../pages/LoginPage"));
+const LazyRegisterPage = lazy(async () => await import("../pages/RegisterPage"));
+const LazyAdminPage = lazy(async () => await import("../pages/AdminPage"));
+const LazyProfilePage = lazy(async () => await import("../pages/ProfilePage"));
+const LazyCollectionPage = lazy(async () => await import("../pages/CollectionPage"));
+const LazyItemPage = lazy(async () => await import("../pages/ItemPage"));
 
 const RoutesManager = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
@@ -19,11 +20,19 @@ const RoutesManager = () => {
       <>
         <Route
           path="/login"
-          element={<LoginPage />}
+          element={
+            <Suspense fallback={null}>
+              <LazyLoginPage />
+            </Suspense>
+          }
         />
         <Route
           path="/register"
-          element={<RegisterPage />}
+          element={
+            <Suspense fallback={null}>
+              <LazyRegisterPage />
+            </Suspense>
+          }
         />
         <Route element={<Header />}>
           <Route
@@ -48,7 +57,11 @@ const RoutesManager = () => {
               const collection = await CollectionPageStore.fetchCollection(item.containerCollection);
               return Promise.resolve({ item, userName, collection });
             }}
-            element={<ItemPage />}
+            element={
+              <Suspense fallback={null}>
+                <LazyItemPage />
+              </Suspense>
+            }
           />
           <Route
             path="/admin"
@@ -56,7 +69,11 @@ const RoutesManager = () => {
               if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
               return null;
             }}
-            element={<AdminPage />}
+            element={
+              <Suspense fallback={null}>
+                <LazyAdminPage />
+              </Suspense>
+            }
           />
           <Route
             path="/user/:userName"
@@ -64,7 +81,11 @@ const RoutesManager = () => {
               if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
               return null;
             }}
-            element={<ProfilePage />}
+            element={
+              <Suspense fallback={null}>
+                <LazyProfilePage />
+              </Suspense>
+            }
           />
           <Route
             path="/collection/:collectionID"
@@ -76,7 +97,11 @@ const RoutesManager = () => {
               const userName = await CollectionPageStore.fetchUserName(collection.owner);
               return Promise.resolve({ collection, userName });
             }}
-            element={<CollectionPage />}
+            element={
+              <Suspense fallback={null}>
+                <LazyCollectionPage />
+              </Suspense>
+            }
           />
         </Route>
       </>

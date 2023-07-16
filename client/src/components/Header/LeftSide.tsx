@@ -13,7 +13,15 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
   const navigate = useNavigate();
 
   return (
-    <Box>
+    <Box
+      display={"flex"}
+      gap={"10px"}>
+      <IconButton
+        size="large"
+        onClick={() => navigate("/")}
+        sx={{ width: "50px", height: "50px" }}>
+        <HomeIcon sx={{ width: "50px", aspectRatio: "1" }} />
+      </IconButton>
       {globalUserInfoStore.loggedIn ? (
         <Box
           display={"flex"}
@@ -22,12 +30,6 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
             sx={{ width: "50px", height: "50px" }}
             onClick={async () => await globalUserInfoStore.signOut(globalUserInfoStore)}>
             <LogoutIcon sx={{ width: "50px", aspectRatio: "1" }} />
-          </IconButton>
-          <IconButton
-            size="large"
-            onClick={() => navigate("/")}
-            sx={{ width: "50px", height: "50px" }}>
-            <HomeIcon sx={{ width: "50px", aspectRatio: "1" }} />
           </IconButton>
           <IconButton
             size="large"
