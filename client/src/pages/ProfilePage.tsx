@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { routeBaseStyles } from "../misc/styleUtils";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
@@ -34,11 +34,17 @@ const ProfilePage = () => {
           }}>
           <Typography variant="h3">{userName}'s collections</Typography>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
-            <CollectionConfigModal
-              buttonText="add collection"
-              profilePageStore={profilePageStore}
-              creatingCollection={true}
-            />
+            <>
+              <Button
+                onClick={() => profilePageStore.setCollectionConfigModalOpen(true)}
+                variant="contained">
+                create collection
+              </Button>
+              <CollectionConfigModal
+                profilePageStore={profilePageStore}
+                creatingCollection={true}
+              />
+            </>
           )}
         </Box>
         <Box

@@ -36,15 +36,17 @@ const ItemConfigModal = ({
   }, [itemTableStore?.itemConfigModalShown, collectionPageStore?.itemConfigModalOpen]);
 
   const handleClick = async () => {
+    const updatedCollection = await CollectionPageStore.fetchCollection(
+      itemTableStore?.collection._id ?? collectionPageStore.collection._id
+    );
+
     if (creatingItem && collectionPageStore) {
       await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
       collectionPageStore.setItemConfigModalOpen(false);
-      const updatedCollection = await CollectionPageStore.fetchCollection(collectionPageStore.collection._id);
       collectionPageStore.setCollection(updatedCollection);
       itemTableStore?.setCollection(updatedCollection);
     } else if (editingItemID !== null && itemTableStore) {
       await itemConfigStore.editItem(editingItemID);
-      const updatedCollection = await CollectionPageStore.fetchCollection(itemTableStore?.collection._id);
       collectionPageStore.setCollection(updatedCollection);
       itemConfigStore.setCollection(updatedCollection);
       itemTableStore.setCollection(updatedCollection);
@@ -52,13 +54,15 @@ const ItemConfigModal = ({
     }
   };
 
+  const handleModalClose = () => {
+    collectionPageStore?.setItemConfigModalOpen(false);
+    itemTableStore?.setItemConfigModalShown(false);
+  };
+
   return (
     <Modal
       open={itemTableStore?.itemConfigModalShown ?? collectionPageStore?.itemConfigModalOpen ?? false}
-      onClose={() => {
-        collectionPageStore?.setItemConfigModalOpen(false);
-        itemTableStore?.setItemConfigModalShown(false);
-      }}
+      onClose={handleModalClose}
       sx={{ display: "flex", justifyContent: "center", alignItems: "center", overflow: "auto" }}>
       <Box
         sx={{

@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemTable from "../components/CollectionPage/ItemTable";
-import { routeBaseStyles } from "../misc/styleUtils";
 import { observer } from "mobx-react";
 import { Box, Button, Container, Typography } from "@mui/material";
 import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
@@ -18,9 +17,14 @@ const CollectionPage = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
+
+  const handleCollectionEditButtonClick = async () => {
+    collectionPageStore.setCollectionConfigModalOpen(true);
+  };
+
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -31,9 +35,17 @@ const CollectionPage = () => {
           }}>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
             <>
+              <Button
+                variant="contained"
+                sx={{
+                  alignSelf: "flex-end",
+                }}
+                onClick={handleCollectionEditButtonClick}>
+                edit collection
+              </Button>
               <CollectionConfigModal
-                buttonText="Edit Collection"
                 creatingCollection={false}
+                collectionPageStore={collectionPageStore}
               />
               <Button
                 variant="contained"

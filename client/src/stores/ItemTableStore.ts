@@ -34,7 +34,6 @@ class ItemTableStore {
     const additionalFieldNames = this.collection.additionalFieldsInfo
       .filter((info) => info.type !== "multiline")
       .map((info) => info.name);
-    console.log([...fixedFieldNames, ...additionalFieldNames], "SDIOLFGHJKLSDHFJKL");
     return [...fixedFieldNames, ...additionalFieldNames];
   }
 

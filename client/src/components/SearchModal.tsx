@@ -33,7 +33,11 @@ const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModal
         border: "none",
       }}
       open={open}
-      onClose={onCloseCallback}>
+      onClose={() => {
+        onCloseCallback();
+        searchModalStore.setSearchValues([]);
+        searchModalStore.setResults([]);
+      }}>
       <Box
         sx={{
           borderRadius: "5px",

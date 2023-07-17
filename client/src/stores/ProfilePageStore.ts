@@ -6,15 +6,23 @@ class ProfilePageStore {
 
   userName: string;
 
+  collectionConfigModalOpen = false;
+
   constructor(userName: string) {
     makeObservable(this, {
       collections: observable,
+      collectionConfigModalOpen: observable,
       fetchCollections: action,
       setCollections: action,
+      setCollectionConfigModalOpen: action,
     });
 
     this.userName = userName;
     this.fetchCollections();
+  }
+
+  setCollectionConfigModalOpen(newValue: boolean) {
+    this.collectionConfigModalOpen = newValue;
   }
 
   setCollections(newValue: Collection[]) {

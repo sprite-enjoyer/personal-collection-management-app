@@ -21,7 +21,7 @@ const Header = ({}: HeaderProps) => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
         event.preventDefault();
-        headerStore.setSearchModalOpen(true);
+        headerStore.setSearchModalOpen(!headerStore.searchModalOpen);
       }
     };
 
