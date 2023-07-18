@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { InferSchemaType, Types } from "mongoose";
 
 const commentSchema = new mongoose.Schema({
   item: {
@@ -15,5 +15,7 @@ const commentSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+export type CommentType = InferSchemaType<typeof commentSchema>;
 
 export default mongoose.model("Comment", commentSchema);

@@ -24,7 +24,6 @@ const CollectionConfigModal = ({
   collectionPageStore,
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
-  if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
 
   useEffect(() => {
@@ -36,6 +35,7 @@ const CollectionConfigModal = ({
     fillValues();
   }, []);
 
+  if ((!userName && creatingCollection) || (!collectionID && !creatingCollection)) return null;
   const handleButtonClick = async () => {
     if (creatingCollection) {
       await collectionConfigStore.createCollection();

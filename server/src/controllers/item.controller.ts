@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
-import Item, { AdditionalField } from "../schemas/Item.js";
+import Item, { AdditionalField, ItemType, SearchAdditionalField } from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
-import { Types } from "mongoose";
-import Comment from "../schemas/Comment.js";
+import { ObjectId, Schema, Types } from "mongoose";
+import Comment, { CommentType } from "../schemas/Comment.js";
+import { ProcessedItem } from "../types.js";
+import User from "../schemas/User.js";
 
 interface CreateItemHandlerRequestBodyType {
   ownerID: string;
   collectionID: string;
   itemName: string;
-  additionalFields: AdditionalField;
+  additionalFields: AdditionalField[];
   tags: string[];
 }
 
@@ -17,12 +19,15 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
 
+  const trimStuff = (field: AdditionalField) =>
+    field.value === "string" || field.value === "multiline" ? field.value.tring() : field.value;
+
   const newItem = await Item.create({
-    name: itemName,
+    name: itemName.trim(),
     owner: ownerID,
     containerCollection: collectionID,
-    additionalFields: additionalFields,
-    tags: tags,
+    additionalFields: additionalFields.map(trimStuff),
+    tags: tags.map((tag) => tag.trim()),
     createdAt: new Date(),
   });
 
@@ -92,17 +97,95 @@ export const getAllTagsHandler = async (req: Request, res: Response) => {
   return res.status(200).json({ success: true, data: uniqueTags });
 };
 
+/** The reason this function is so big and ugly is that MongoDB free tier doesn't allow $where queries. */
 export const getSearchedItemsHandler = async (req: Request, res: Response) => {
   const { searchValues } = req.body as { searchValues: string[] };
   const regularInputs: string[] = [];
   const tagInputs: string[] = [];
+  if (searchValues.length === 0) return res.status(200).json({ data: [] });
+
   searchValues.forEach((input) =>
-    input.startsWith("tag:") ? tagInputs.push(input.substring(4)) : regularInputs.push(input)
+    input.startsWith("tag:")
+      ? tagInputs.push(input.substring(4).trim().toLowerCase())
+      : regularInputs.push(input.trim().toLowerCase())
   );
 
-  const [items, comments] = await Promise.all([
-    Item.find({}).populate(["containerCollection", "owner"]),
-    Comment.find({}),
-  ]);
-  return res.status(200).json({ data: items.slice(5) });
+  const [items, comments] = await Promise.all([Item.find({}), Comment.find({})]);
+  const plainItems = items.map((i) => i.toObject());
+  const omitDateAndBooleanFields = (field: AdditionalField) => field.type !== "date" && field.type !== "boolean";
+  const valuesToStrings = (field: AdditionalField) => {
+    return { ...field, value: field.value?.toString().toLowerCase() ?? "" };
+  };
+
+  const processedItems = plainItems.map((item) => {
+    const newAdditionalFields: { value: any; name: string; type: string }[] = item.additionalFields
+      .filter(omitDateAndBooleanFields)
+      .map(valuesToStrings);
+    return { ...item, additionalFields: newAdditionalFields };
+  });
+
+  const itemsFilteredByFieldValues = processedItems.filter((item) => {
+    const data: SearchAdditionalField[] = [
+      ...item.additionalFields,
+      { name: "name", type: "string", value: item.name.trim() },
+    ];
+    for (let i = 0; i < data.length; i++) if (regularInputs.includes(data[i].value.toLowerCase())) return true;
+    return false;
+  });
+
+  const itemsFilteredByTags = processedItems.filter((item) => {
+    for (let i = 0; i < item.tags.length; i++) if (tagInputs.includes(item.tags[i])) return true;
+    return false;
+  });
+
+  const uniqueItemsFilteredByTags = itemsFilteredByTags.filter(
+    (item) => !itemsFilteredByFieldValues.map((item) => item._id).includes(item._id)
+  );
+
+  const finalItems = [...uniqueItemsFilteredByTags, ...itemsFilteredByFieldValues];
+  const populatedItems = await Promise.all(
+    finalItems.map((item) => Item.findById(item._id).populate(["containerCollection", "owner"]).exec())
+  );
+  const populatedItemIDs = populatedItems
+    .filter((item) => !!item)
+    .map((item) => item?._id)
+    .filter((id) => {
+      if (typeof id === "undefined") return false;
+      return true;
+    }) as unknown as Types.ObjectId[];
+
+  const checkSubstringInArray = (str: string, arr: string[]) => {
+    for (let i = 0; i <= str.length - 4; i++) {
+      const substring = str.substring(i, 4);
+      for (let j = 0; j < arr.length; j++) {
+        if (arr[j].includes(substring)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const commentsFromOtherItems = comments.filter((comment) => !populatedItemIDs.includes(comment._id));
+  let commentsContainingSearchValuesItemIDs: string[] = [];
+  if (populatedItems.length < 10) {
+    commentsContainingSearchValuesItemIDs = Array.from(
+      new Set(
+        commentsFromOtherItems
+          .filter((comment) => checkSubstringInArray(comment.text.toLocaleLowerCase(), regularInputs))
+          .map((comment) => comment.item.toString())
+      )
+    );
+  }
+
+  const itemsFromCommentResults: any[] = await Promise.all(
+    commentsContainingSearchValuesItemIDs.map((id) =>
+      Item.findById(id).populate(["containerCollection", "owner"]).exec()
+    )
+  );
+
+  populatedItems.push(...itemsFromCommentResults);
+  const finalIDs = Array.from(new Set(populatedItemIDs.map((item) => item._id)));
+  const uniqueResults: any[] = await Promise.all(finalIDs.map((id) => Item.findById(id).exec()));
+  return res.status(200).json({ data: uniqueResults.filter((item: any) => item !== null) });
 };

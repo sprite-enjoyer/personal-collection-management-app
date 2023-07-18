@@ -18,7 +18,7 @@ export const postCommentHandler = async (req, res) => {
     const newComment = await new Comment({
         item: item,
         author: author,
-        text: text,
+        text: text.trim(),
     }).save();
     if (!newComment)
         return res.status(500).json({ success: false, data: null });

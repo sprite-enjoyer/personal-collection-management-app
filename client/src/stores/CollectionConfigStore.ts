@@ -28,6 +28,7 @@ class CollectionConfigStore {
     this.creatingCollection = creatingCollection;
     this.collectionID = collectionID;
     this.userName = userName;
+
     makeObservable(this, {
       collectionName: observable,
       additionalFieldToBeAddedName: observable,
@@ -140,7 +141,6 @@ class CollectionConfigStore {
   }
 
   async fetchCollection(collectionID: string) {
-    console.log("fetching collection!");
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getCollection/${collectionID}`);
     const { data } = (await response.json()) as { data: Collection };
     return data;

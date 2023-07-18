@@ -27,7 +27,7 @@ export const postCommentHandler = async (req: Request<any, any, PostCommentHandl
   const newComment = await new Comment({
     item: item,
     author: author,
-    text: text,
+    text: text.trim(),
   }).save();
   if (!newComment) return res.status(500).json({ success: false, data: null });
   io.in(item).emit("new-comment", newComment);

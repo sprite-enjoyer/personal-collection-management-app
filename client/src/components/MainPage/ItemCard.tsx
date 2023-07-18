@@ -5,13 +5,15 @@ import { CSSProperties } from "@mui/material/styles/createMixins";
 
 interface ItemCardProps {
   item: ItemCardItem;
+  onCardClick: () => void;
   styles?: CSSProperties;
 }
 
-const ItemCard = ({ item, styles }: ItemCardProps) => {
+const ItemCard = ({ item, styles, onCardClick }: ItemCardProps) => {
   return (
     <Box sx={{ maxWidth: "400px", maxHeight: "70px", ...styles }}>
       <Link
+        onClick={() => onCardClick()}
         style={{ all: "unset", cursor: "pointer", width: "100%", height: "100%" }}
         to={`/item/${item._id}`}>
         <Paper sx={{ padding: "10px", display: "flex", flexWrap: "wrap", width: "100%", height: "100%" }}>

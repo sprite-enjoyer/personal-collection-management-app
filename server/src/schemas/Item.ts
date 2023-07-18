@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, Schema, SchemaTypes } from "mongoose";
+import mongoose, { InferSchemaType, ObjectId, Schema, SchemaTypes } from "mongoose";
 
 const additionalItemFieldSchema = new mongoose.Schema({
   name: {
@@ -45,5 +45,7 @@ const itemSchema = new mongoose.Schema({
 });
 
 export type AdditionalField = InferSchemaType<typeof additionalItemFieldSchema>;
+export type SearchAdditionalField = AdditionalField & { value: string };
+export type ItemType = InferSchemaType<typeof itemSchema> & { _id: ObjectId };
 
 export default mongoose.model("Item", itemSchema);

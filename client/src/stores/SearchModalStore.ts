@@ -1,5 +1,5 @@
-import { action, makeObservable, observable } from "mobx";
-import { Item, ItemCardItem } from "../misc/types";
+import { action, makeObservable, observable, toJS } from "mobx";
+import { ItemCardItem } from "../misc/types";
 import axios from "axios";
 
 class SearchModalStore {
@@ -45,7 +45,7 @@ class SearchModalStore {
 
   async fetchResults() {
     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/items/search`, {
-      searchValues: this.searchValues,
+      searchValues: this.searchValues.map((s) => s.toLowerCase()),
     });
 
     const { data } = (await response.data) as { data: ItemCardItem[] };

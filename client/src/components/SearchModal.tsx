@@ -63,6 +63,7 @@ const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModal
           justifyContent={"center"}>
           {searchModalStore.results.map((item) => (
             <ItemCard
+              onCardClick={() => onCloseCallback()}
               styles={{
                 width: "min(100%, 500px)",
                 maxWidth: "min(100%, 500px)",

@@ -26,6 +26,11 @@ const SearchModalInput = ({ searchModalStore }: SearchModalInputProps) => {
     await search();
   };
 
+  const handleSearchValueRemove = async (value: string) => {
+    searchModalStore.removeSearchValue(value);
+    await searchModalStore.fetchResults();
+  };
+
   const handleTextFieldKeyDown: React.KeyboardEventHandler<HTMLDivElement> = async (e) => {
     if (e.key !== "Enter" || searchModalStore.textFieldValue.length === 0) return;
     await search();
@@ -65,7 +70,7 @@ const SearchModalInput = ({ searchModalStore }: SearchModalInputProps) => {
           <Chip
             key={value}
             label={value}
-            onDelete={() => searchModalStore.removeSearchValue(value)}
+            onDelete={() => handleSearchValueRemove(value)}
           />
         ))}
       </Box>

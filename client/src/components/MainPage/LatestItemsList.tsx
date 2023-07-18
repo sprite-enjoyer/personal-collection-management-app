@@ -12,6 +12,7 @@ const LatestItemsList = ({ items }: LatestItemsListProps) => {
         <ItemCard
           item={item}
           key={item._id}
+          onCardClick={() => undefined}
         />
       ))}
     </>
