@@ -7,6 +7,7 @@ import { Box, Chip, Typography } from "@mui/material";
 import ChangingHeader from "../components/MainPage/ChangingHeader";
 import { CSSProperties } from "@mui/material/styles/createMixins";
 import TagCloud from "../components/MainPage/TagCloud";
+import { useThemeContext } from "../misc/theme";
 
 export const fetchLatestItems = async () => {
   const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/getLatest/5`);
@@ -36,6 +37,7 @@ const headerTextStyles: CSSProperties = {
 const MainPage = () => {
   const [latestItems, largestCollections, tags] = useLoaderData() as [ItemCardItem[], Collection[], string[]];
   const navigate = useNavigate();
+  const { theme } = useThemeContext();
 
   return (
     <Box
@@ -53,6 +55,7 @@ const MainPage = () => {
         gap={"20px"}>
         <Typography
           maxWidth={"100%"}
+          color={theme.palette.text.primary}
           sx={headerTextStyles}>
           Collect and view
         </Typography>
@@ -71,6 +74,7 @@ const MainPage = () => {
           }}>
           <Typography
             maxWidth={"100%"}
+            color={theme.palette.text.primary}
             variant="h4">
             Here are some huge collections:
           </Typography>
@@ -89,6 +93,7 @@ const MainPage = () => {
           </Box>
           <Typography
             maxWidth={"100%"}
+            color={theme.palette.text.primary}
             variant="h4">
             Recently added items:
           </Typography>

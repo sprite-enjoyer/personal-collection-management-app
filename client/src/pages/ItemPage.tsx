@@ -8,6 +8,7 @@ import CommentSection from "../components/ItemPage/CommentSection";
 import { Box } from "@mui/material";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
+import { useThemeContext } from "../misc/theme";
 
 interface ItemPageProps {}
 
@@ -29,7 +30,7 @@ const ItemPage = () => {
 
   if (!item || !userName || !collection) return null;
   return (
-    <Box style={{ display: "flex", justifyContent: "space-between", overflow: "auto" }}>
+    <Box sx={{ display: "flex", justifyContent: "space-between", overflow: "auto" }}>
       <ItemFullInformation
         item={item}
         collectionName={itemConfigStore.collection.name}

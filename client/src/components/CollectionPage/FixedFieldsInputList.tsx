@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { KeyboardEventHandler, useRef, useState } from "react";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
+import { useThemeContext } from "../../misc/theme";
 
 interface FixedFieldsInputListProps {
   itemConfigStore: ItemConfigStore;
@@ -14,6 +15,7 @@ interface FixedFieldsInputListProps {
 const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFieldsInputListProps) => {
   const [textFieldValue, setTextFieldValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useThemeContext();
 
   const handleTagAddition = () => {
     itemConfigStore.addChosenTag(textFieldValue.trim());
@@ -29,9 +31,9 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
     <>
       <TextField
         value={itemConfigStore.name}
-        placeholder="name"
         label="name"
         onChange={(e) => itemConfigStore.setName(e.target.value)}
+        InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
       />
       <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
         <Autocomplete
@@ -51,6 +53,7 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
               variant="outlined"
               placeholder="Item Tags"
               label="Item Tags"
+              InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
             />
           )}
         />
@@ -60,6 +63,7 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
           value={textFieldValue}
           onChange={(e) => setTextFieldValue(e.target.value)}
           label={"Add a new tag"}
+          InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
           sx={{ flex: "1 1" }}
           InputProps={{
             endAdornment: (

@@ -7,6 +7,7 @@ import CollectionConfigModal from "../components/ProfilePage/CollectionConfigMod
 import CollectionList from "../components/CollectionList";
 import { GlobalUserInfoStoreContext } from "../App";
 import { Collection } from "../misc/types";
+import { useThemeContext } from "../misc/theme";
 
 const ProfilePage = () => {
   const { userName } = useParams();
@@ -14,7 +15,7 @@ const ProfilePage = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const [profilePageStore] = useState(new ProfilePageStore(userName ?? "", collections));
   const [collectionConfigModalOpen, setCollectionConfigModalOpen] = useState(false);
-
+  const { theme } = useThemeContext();
   if (!userName) return null;
   globalUserInfoStore.setCurrentlyViewingUser(userName);
 
@@ -35,12 +36,19 @@ const ProfilePage = () => {
             width: "80%",
             justifyContent: "space-between",
           }}>
-          <Typography variant="h3">{userName}'s collections</Typography>
+          <Typography
+            variant="h3"
+            color={theme.palette.text.primary}>
+            {userName}'s collections
+          </Typography>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
             <>
               <Button
                 onClick={() => setCollectionConfigModalOpen(true)}
-                variant="contained">
+                variant="contained"
+                sx={{
+                  color: theme.palette.text.primary,
+                }}>
                 create collection
               </Button>
               <CollectionConfigModal

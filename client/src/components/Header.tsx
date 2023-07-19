@@ -9,13 +9,15 @@ import { useContext } from "react";
 import SearchModal from "./SearchModal";
 import LeftSide from "./Header/LeftSide";
 import RightSide from "./Header/RightSide";
+import useColorTheme from "../misc/useColorTheme";
+import { useThemeContext } from "../misc/theme";
 
 interface HeaderProps {}
 
 const Header = ({}: HeaderProps) => {
   const [headerStore] = useState(new HeaderStore());
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
-  const navigate = useNavigate();
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -37,14 +39,21 @@ const Header = ({}: HeaderProps) => {
         onCloseCallback={() => headerStore.setSearchModalOpen(false)}
         initialSearchValues={[]}
       />
-      <Box sx={{ ...routeBaseStyles, display: "flex", flexDirection: "column", gap: "20px" }}>
+      <Box
+        sx={{
+          ...routeBaseStyles,
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          backgroundColor: theme.palette.background.default,
+        }}>
         <AppBar
           sx={{
             height: "70px",
             margin: "0",
             width: "100vw",
             position: "sticky",
-            backgroundColor: "white",
+            backgroundColor: theme.palette.background.default,
             display: "flex",
             justifyContent: "center",
             padding: "2px 20px 2px 20px",

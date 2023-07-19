@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { observer } from "mobx-react";
 import { toJS } from "mobx";
+import { useThemeContext } from "../../misc/theme";
 
 interface CustomFieldsListProps {
   collectionConfigStore: CollectionConfigStore;
@@ -13,12 +14,14 @@ interface CustomFieldInfoRowProps {
 }
 
 const CustomFieldInfoRow = ({ name, type }: CustomFieldInfoRowProps) => {
+  const { theme } = useThemeContext();
   return (
     <Box
       key={name}
       sx={{
         display: "flex",
         justifyContent: "center",
+        color: theme.palette.text.secondary,
       }}>
       <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
         <Typography fontSize={"1.2em"}>{name}:</Typography>

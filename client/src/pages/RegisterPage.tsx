@@ -1,4 +1,4 @@
-import { Container, TextField, Button } from "@mui/material";
+import { Container, TextField, Button, Box } from "@mui/material";
 import { routeBaseStyles } from "../misc/styleUtils";
 import RegisterPageStore from "../stores/RegisterPageStore";
 import { observer } from "mobx-react";
@@ -10,7 +10,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div
+    <Box
       style={{
         ...routeBaseStyles,
         display: "flex",
@@ -65,7 +65,7 @@ const RegisterPage = () => {
           Register
         </Button>
       </Container>
-    </div>
+    </Box>
   );
 };
 

@@ -1,4 +1,3 @@
-import { SxProps } from "@mui/material";
 import { CSSProperties } from "react";
 
 export const routeBaseStyles: CSSProperties = {

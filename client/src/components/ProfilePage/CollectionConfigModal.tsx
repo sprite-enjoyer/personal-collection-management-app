@@ -11,6 +11,7 @@ import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 import DeleteCollectionDialog from "../CollectionPage/DeleteCollectionDialog";
 import CollectionConfigModalFixedFields from "./CollectionConfigModalFixedFields";
 import CustomFieldCreator from "./CustomFieldCreator";
+import { useThemeContext } from "../../misc/theme";
 
 export interface AddCollectionModalProps {
   creatingCollection: boolean;
@@ -29,6 +30,7 @@ const CollectionConfigModal = ({
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     const fillValues = async () => {
@@ -58,8 +60,12 @@ const CollectionConfigModal = ({
     <Modal
       open={collectionConfigModalOpen}
       onClose={() => setCollectionConfigModalOpen(false)}
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <Box sx={{ backgroundColor: "white", borderRadius: "10px", padding: "50px" }}>
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
+      <Box sx={{ backgroundColor: theme.palette.background.default, borderRadius: "10px", padding: "50px" }}>
         <Container
           sx={{
             display: "flex",

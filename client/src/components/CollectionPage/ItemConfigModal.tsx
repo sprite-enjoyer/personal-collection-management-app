@@ -8,6 +8,7 @@ import ItemTableStore from "../../stores/ItemTableStore";
 import { toJS } from "mobx";
 import FixedFieldsInputList from "./FixedFieldsInputList";
 import { Collection } from "../../misc/types";
+import { useThemeContext } from "../../misc/theme";
 
 export interface ItemConfigModalProps {
   itemConfigStore: ItemConfigStore;
@@ -37,6 +38,8 @@ const ItemConfigModal = ({
       );
   }, [collectionPageStore, collectionPageStore?.collection.additionalFieldsInfo]);
 
+  const { theme } = useThemeContext();
+
   const handleClick = async () => {
     if (creatingItem && collectionPageStore)
       await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
@@ -58,7 +61,7 @@ const ItemConfigModal = ({
       sx={{ display: "flex", justifyContent: "center", alignItems: "center", overflow: "auto" }}>
       <Box
         sx={{
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.default,
           borderRadius: "10px",
           padding: "50px",
           display: "flex",

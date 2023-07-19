@@ -20,6 +20,7 @@ import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { useNavigate } from "react-router-dom";
+import { useThemeContext } from "../../misc/theme";
 
 interface ItemTableProps {
   collectionPageStore: CollectionPageStore;
@@ -30,6 +31,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
   const [itemTableStore] = useState(new ItemTableStore(collectionPageStore.collection ?? []));
   const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection._id));
   const [itemConfigModalOpen, setItemConfigModalOpen] = useState(false);
+  const { theme } = useThemeContext();
 
   const deleteButtonHandler = async (id: string) => {
     await itemTableStore.deleteItem(id);
@@ -68,21 +70,28 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
           minHeight: "500px",
           maxWidth: "80%",
           position: "relative",
+          backgroundColor: theme.palette.background.default,
         }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell
+                sx={{ backgroundColor: theme.palette.background.default }}
                 width={"50px"}
                 height={"50px"}
               />
               <TableCell
+                sx={{ backgroundColor: theme.palette.background.default }}
                 width={"50px"}
                 height={"50px"}
               />
               {itemTableStore.collectionTableColumns.map((column, i) => (
                 <TableCell
-                  sx={{ maxWidth: "100px" }}
+                  sx={{
+                    maxWidth: "100px",
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                  }}
                   key={column}>
                   <Typography>{column}</Typography>
                 </TableCell>
@@ -112,7 +121,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
                 {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
                   <TableCell
                     onClick={() => navigate(`/item/${item._id}`)}
-                    sx={{ maxWidth: "300px", overflow: "auto" }}
+                    sx={{ maxWidth: "300px", overflow: "auto", color: theme.palette.text.primary }}
                     key={i.toString() + j.toString()}>
                     <Typography maxHeight={"200px"}>{info.value !== null ? info.value.toString() : "null"}</Typography>
                   </TableCell>

@@ -1,4 +1,4 @@
-import { Container, TextField, Button } from "@mui/material";
+import { Container, TextField, Button, Box } from "@mui/material";
 import { routeBaseStyles } from "../misc/styleUtils";
 import LoginPageStore from "../stores/LoginPageStore";
 import { useContext, useState } from "react";
@@ -16,7 +16,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div
+    <Box
       style={{
         ...routeBaseStyles,
         display: "flex",
@@ -55,7 +55,7 @@ const LoginPage = () => {
           Login
         </Button>
       </Container>
-    </div>
+    </Box>
   );
 };
 

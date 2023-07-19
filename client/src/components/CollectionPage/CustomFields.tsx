@@ -6,6 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdditionalFieldType, GenericAdditionalField } from "../../misc/types";
 import MDEditor from "@uiw/react-md-editor";
+import { useThemeContext } from "../../misc/theme";
 
 interface SpecificInputFieldTypeProps<T> {
   field: GenericAdditionalField<T>;
@@ -13,10 +14,15 @@ interface SpecificInputFieldTypeProps<T> {
 }
 
 const BooleanInputField = observer(({ itemConfigStore, field }: SpecificInputFieldTypeProps<boolean>) => {
+  const { theme } = useThemeContext();
   return (
     <>
       <label htmlFor="switch">
-        <Typography variant="h6">{field.name}:</Typography>
+        <Typography
+          variant="h6"
+          sx={{ color: theme.palette.text.secondary }}>
+          {field.name}:
+        </Typography>
       </label>
       <Switch
         id="switch"
@@ -27,10 +33,12 @@ const BooleanInputField = observer(({ itemConfigStore, field }: SpecificInputFie
 });
 
 const DateInputField = observer(({ itemConfigStore, field }: SpecificInputFieldTypeProps<Date>) => {
+  const { theme } = useThemeContext();
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
-        label={field.name}
+        label={<Typography color={theme.palette.text.secondary}>{field.name}</Typography>}
         onAccept={(e: { $d: Date } | null) => itemConfigStore.setFieldValue(field.name, e?.$d ?? new Date())}
         value={{ $d: field.value }}
       />
@@ -39,6 +47,8 @@ const DateInputField = observer(({ itemConfigStore, field }: SpecificInputFieldT
 });
 
 const IntegerInputField = observer(({ field, itemConfigStore }: SpecificInputFieldTypeProps<number>) => {
+  const { theme } = useThemeContext();
+
   return (
     <TextField
       type="integer"
@@ -48,33 +58,42 @@ const IntegerInputField = observer(({ field, itemConfigStore }: SpecificInputFie
         itemConfigStore.setFieldValue(field.name, unparsable ? 0 : parseInt(e.target.value));
       }}
       value={field.value}
+      InputProps={{ sx: { color: theme.palette.text.secondary } }}
+      InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
     />
   );
 });
 
 const StringInputField = observer(({ field, itemConfigStore }: SpecificInputFieldTypeProps<string>) => {
+  const { theme } = useThemeContext();
+
   return (
     <>
       {field.type === "multiline" ? (
         <>
           <label htmlFor="md-editor">
-            <Typography variant="h6">{field.name}:</Typography>
+            <Typography
+              variant="h6"
+              sx={{ color: theme.palette.text.secondary }}>
+              {field.name}:
+            </Typography>
           </label>
           <MDEditor
             id="md-editor"
             overflow={true}
             value={field.value}
             onChange={(e) => itemConfigStore.setFieldValue(field.name, e ?? "")}
-            data-color-mode="light"
+            data-color-mode={theme.palette.mode}
             style={{ minHeight: "200px" }}
           />
         </>
       ) : (
         <TextField
           label={field.name}
-          multiline={false}
           onChange={(e) => itemConfigStore.setFieldValue(field.name, e.target.value)}
           value={field.value}
+          InputProps={{ sx: { color: theme.palette.text.secondary } }}
+          InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
         />
       )}
     </>

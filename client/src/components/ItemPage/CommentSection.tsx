@@ -5,6 +5,7 @@ import { useState, useContext, useEffect } from "react";
 import { GlobalUserInfoStoreContext } from "../../App";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { io } from "socket.io-client";
+import { useThemeContext } from "../../misc/theme";
 
 interface CommentSectionProps {
   itemID: string;
@@ -13,6 +14,7 @@ interface CommentSectionProps {
 const CommentSection = ({ itemID }: CommentSectionProps) => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const [commentStore] = useState(new CommentStore(itemID, globalUserInfoStore));
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     const loadComments = async () => await commentStore.fetchComments();
@@ -55,19 +57,22 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
             <ListItem
               key={comment._id}
               sx={{ width: "100%", paddingLeft: "0" }}>
-              <Paper sx={{ width: "100%", padding: "20px 10px 20px 0" }}>
+              <Paper
+                sx={{ width: "100%", padding: "20px 10px 20px 0", backgroundColor: theme.palette.background.paper }}>
                 <ListItemText
                   primary={
                     <Typography
                       marginBottom={"10px"}
-                      variant="h5">
+                      variant="h5"
+                      color={theme.palette.text.primary}>
                       {comment.author}:
                     </Typography>
                   }
                   secondary={
                     <Typography
                       padding={"0 0 5px 30px"}
-                      variant="body1">
+                      variant="body1"
+                      color={theme.palette.text.secondary}>
                       {comment.text}
                     </Typography>
                   }
