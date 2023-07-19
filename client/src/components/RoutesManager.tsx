@@ -1,10 +1,11 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
 import { Suspense, lazy, useContext } from "react";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemPageStore from "../stores/ItemPageStore";
 import MainPage, { fetchAllTags, fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
 import Header from "./Header";
+import ProfilePageStore from "../stores/ProfilePageStore";
 
 const LazyLoginPage = lazy(async () => await import("../pages/LoginPage"));
 const LazyRegisterPage = lazy(async () => await import("../pages/RegisterPage"));
@@ -39,7 +40,9 @@ const RoutesManager = () => {
             path="/"
             element={<MainPage />}
             loader={async () => {
-              if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+                await globalUserInfoStore.checkJWTAndSetUserStatus();
+
               const latestItems = fetchLatestItems();
               const largestCollections = fetchLargestCollection();
               const tags = fetchAllTags();
@@ -49,7 +52,8 @@ const RoutesManager = () => {
           <Route
             path="/item/:itemID"
             loader={async ({ params }) => {
-              if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+                await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { itemID } = params;
               if (!itemID) return Promise.reject("item ID not provided!");
               const item = await ItemPageStore.fetchItem(itemID);
@@ -66,7 +70,9 @@ const RoutesManager = () => {
           <Route
             path="/admin"
             loader={async () => {
-              if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+                await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (!globalUserInfoStore.isAdmin) return redirect("/login");
               return null;
             }}
             element={
@@ -77,9 +83,13 @@ const RoutesManager = () => {
           />
           <Route
             path="/user/:userName"
-            loader={async () => {
-              if (!globalUserInfoStore.loggedIn) await globalUserInfoStore.checkJWTAndSetUserStatus();
-              return null;
+            loader={async ({ params }) => {
+              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+                await globalUserInfoStore.checkJWTAndSetUserStatus();
+              const { userName } = params as { userName: string };
+              if (!userName) return Promise.resolve({ collections: [] });
+              const collections = await ProfilePageStore.fetchCollections(userName);
+              return Promise.resolve({ collections });
             }}
             element={
               <Suspense fallback={null}>
@@ -90,7 +100,8 @@ const RoutesManager = () => {
           <Route
             path="/collection/:collectionID"
             loader={async ({ params }) => {
-              await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+                await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { collectionID } = params;
               if (!collectionID) return Promise.reject("collection ID not provided!");
               const collection = await CollectionPageStore.fetchCollection(collectionID);

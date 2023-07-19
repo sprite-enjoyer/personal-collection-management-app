@@ -2,7 +2,7 @@ import { TextField, Autocomplete, Box, Button } from "@mui/material";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { KeyboardEventHandler, useRef, useState } from "react";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
 
@@ -13,6 +13,18 @@ interface FixedFieldsInputListProps {
 
 const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFieldsInputListProps) => {
   const [textFieldValue, setTextFieldValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleTagAddition = () => {
+    itemConfigStore.addChosenTag(textFieldValue.trim());
+    setTextFieldValue("");
+  };
+
+  const handleInputKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key !== "Enter" || textFieldValue.length === 0) return;
+    handleTagAddition();
+  };
+
   return (
     <>
       <TextField
@@ -43,17 +55,15 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
           )}
         />
         <TextField
+          inputRef={inputRef}
+          onKeyDown={handleInputKeyDown}
           value={textFieldValue}
           onChange={(e) => setTextFieldValue(e.target.value)}
           label={"Add a new tag"}
           sx={{ flex: "1 1" }}
           InputProps={{
             endAdornment: (
-              <Button
-                onClick={() => {
-                  itemConfigStore.addChosenTag(textFieldValue.trim());
-                  setTextFieldValue("");
-                }}>
+              <Button onClick={handleTagAddition}>
                 <AddIcon />
               </Button>
             ),

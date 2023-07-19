@@ -1,19 +1,22 @@
-import { useParams } from "react-router-dom";
-import { routeBaseStyles } from "../misc/styleUtils";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { useLoaderData, useParams } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import { observer } from "mobx-react";
 import CollectionConfigModal from "../components/ProfilePage/CollectionConfigModal";
 import CollectionList from "../components/CollectionList";
 import { GlobalUserInfoStoreContext } from "../App";
+import { Collection } from "../misc/types";
 
 const ProfilePage = () => {
   const { userName } = useParams();
+  const { collections } = useLoaderData() as { collections: Collection[] };
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  const [profilePageStore] = useState(new ProfilePageStore(userName ?? "", collections));
+  const [collectionConfigModalOpen, setCollectionConfigModalOpen] = useState(false);
+
   if (!userName) return null;
   globalUserInfoStore.setCurrentlyViewingUser(userName);
-  const [profilePageStore] = useState(new ProfilePageStore(userName));
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "auto" }}>
@@ -36,13 +39,15 @@ const ProfilePage = () => {
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
             <>
               <Button
-                onClick={() => profilePageStore.setCollectionConfigModalOpen(true)}
+                onClick={() => setCollectionConfigModalOpen(true)}
                 variant="contained">
                 create collection
               </Button>
               <CollectionConfigModal
                 profilePageStore={profilePageStore}
                 creatingCollection={true}
+                collectionConfigModalOpen={collectionConfigModalOpen}
+                setCollectionConfigModalOpen={setCollectionConfigModalOpen}
               />
             </>
           )}

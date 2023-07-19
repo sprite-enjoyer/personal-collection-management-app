@@ -31,8 +31,7 @@ const DateInputField = observer(({ itemConfigStore, field }: SpecificInputFieldT
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
         label={field.name}
-        //@ts-ignore
-        onAccept={(e: { $d: Date }) => itemConfigStore.setFieldValue(field.name, e.$d)}
+        onAccept={(e: { $d: Date } | null) => itemConfigStore.setFieldValue(field.name, e?.$d ?? new Date())}
         value={{ $d: field.value }}
       />
     </LocalizationProvider>

@@ -4,39 +4,37 @@ import { Collection, AdditionalFieldInfo, AdditionalFieldTypeString } from "../m
 import { NavigateFunction } from "react-router-dom";
 
 class CollectionConfigStore {
-  collectionName = "";
-
-  collectionDescription = "";
-
-  collectionTopic = "Other";
+  collection: Collection = {
+    _id: "",
+    name: "",
+    description: "",
+    topic: "Other",
+    image: "",
+    additionalFieldsInfo: [],
+    owner: "",
+    items: [],
+  };
 
   additionalFieldToBeAddedName = "";
 
   additionalFieldToBeAddedType: AdditionalFieldTypeString = "string";
 
-  additionalFieldsInfo: AdditionalFieldInfo[] = [];
-
   creatingCollection: boolean;
 
   deleteCollectionDialogOpen = false;
-
-  collectionID?: string;
 
   userName?: string;
 
   constructor(creatingCollection: boolean, userName?: string, collectionID?: string) {
     this.creatingCollection = creatingCollection;
-    this.collectionID = collectionID;
+    this.collection._id = collectionID ?? "";
     this.userName = userName;
 
     makeObservable(this, {
-      collectionName: observable,
+      collection: observable,
       additionalFieldToBeAddedName: observable,
       additionalFieldToBeAddedType: observable,
       deleteCollectionDialogOpen: observable,
-      additionalFieldsInfo: observable,
-      collectionDescription: observable,
-      collectionTopic: observable,
       setCollectionDescription: action,
       setCollectionName: action,
       setCollectionTopic: action,
@@ -55,14 +53,20 @@ class CollectionConfigStore {
   }
 
   setAdditionalFieldsInfo(newValue: AdditionalFieldInfo[]) {
-    this.additionalFieldsInfo = newValue;
+    this.collection.additionalFieldsInfo = newValue;
   }
 
   resetUserInputs() {
-    this.collectionName = "";
-    this.collectionDescription = "";
-    this.collectionTopic = "Other";
-    this.additionalFieldsInfo = [];
+    this.collection = {
+      _id: "",
+      name: "",
+      description: "",
+      topic: "Other",
+      image: "",
+      additionalFieldsInfo: [],
+      owner: "",
+      items: [],
+    };
     this.additionalFieldToBeAddedName = "";
     this.additionalFieldToBeAddedType = "string";
   }
@@ -76,7 +80,7 @@ class CollectionConfigStore {
   }
 
   addCustomField() {
-    this.additionalFieldsInfo.push({
+    this.collection.additionalFieldsInfo.push({
       name: this.additionalFieldToBeAddedName,
       type: this.additionalFieldToBeAddedType,
       _id: "",
@@ -86,16 +90,16 @@ class CollectionConfigStore {
   }
 
   setCollectionName(newValue: string) {
-    this.collectionName = newValue;
+    this.collection.name = newValue;
   }
 
   setCollectionDescription(newValue: string) {
-    this.collectionDescription = newValue;
+    this.collection.description = newValue;
   }
 
   setCollectionTopic(newValue: string) {
     if (!topics.includes(newValue)) throw new Error("Not in the list of predefined topics!");
-    else this.collectionTopic = newValue;
+    else this.collection.topic = newValue;
   }
 
   async createCollection() {
@@ -106,11 +110,11 @@ class CollectionConfigStore {
       },
       body: JSON.stringify({
         userName: this.userName,
-        name: this.collectionName,
-        description: this.collectionDescription,
-        topic: this.collectionTopic,
+        name: this.collection.name,
+        description: this.collection.description,
+        topic: this.collection.topic,
         image: "", //TODO
-        additionalFieldsInfo: this.additionalFieldsInfo.map((field) => {
+        additionalFieldsInfo: this.collection.additionalFieldsInfo.map((field) => {
           return { name: field.name, type: field.type };
         }),
       }),
@@ -126,12 +130,12 @@ class CollectionConfigStore {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: this.collectionID,
-        name: this.collectionName,
-        description: this.collectionDescription,
-        topic: this.collectionTopic,
+        id: this.collection._id,
+        name: this.collection.name,
+        description: this.collection.description,
+        topic: this.collection.topic,
         image: "", //TODO
-        additionalFieldsInfo: this.additionalFieldsInfo.map((field) => {
+        additionalFieldsInfo: this.collection.additionalFieldsInfo.map((field) => {
           return { name: field.name, type: field.type };
         }),
       }),
@@ -147,8 +151,8 @@ class CollectionConfigStore {
   }
 
   async populateFieldsWithExistingCollectionData() {
-    if (!this.collectionID) return;
-    const collection = await this.fetchCollection(this.collectionID);
+    if (this.collection._id.length === 0) return;
+    const collection = await this.fetchCollection(this.collection._id);
 
     this.setCollectionName(collection.name);
     this.setCollectionDescription(collection.description);
@@ -157,7 +161,7 @@ class CollectionConfigStore {
   }
 
   async deleteCollection(navigate: NavigateFunction, globalUserName?: string) {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/delete/${this.collectionID}`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/delete/${this.collection._id}`, {
       method: "DELETE",
     })
       .then(async (res) => await res.json())

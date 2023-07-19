@@ -10,6 +10,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
+  const hanldeLoginButtonClick = () => {
+    globalUserInfoStore.setUserChecked(false);
+    loginPageStore.handleLogin(navigate, globalUserInfoStore);
+  };
+
   return (
     <div
       style={{
@@ -45,7 +50,7 @@ const LoginPage = () => {
           }}
           size="large"
           variant="contained"
-          onClick={() => loginPageStore.handleLogin(navigate, globalUserInfoStore)}
+          onClick={hanldeLoginButtonClick}
           color="primary">
           Login
         </Button>

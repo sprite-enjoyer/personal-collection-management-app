@@ -70,7 +70,11 @@ class ItemConfigStore {
 
   resetUserInputs() {
     this.name = "";
-    this.additionalFields = [];
+    this.setAdditionalFields(
+      this.additionalFields.map((field) => {
+        return { ...field, value: ItemConfigStore.getFieldDefaultValue(field.type, new Date()) };
+      })
+    );
     this.chosenTags = [];
   }
 

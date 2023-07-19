@@ -7,12 +7,13 @@ export const createItemHandler = async (req, res) => {
     const collection = await ItemCollection.findById(collectionID);
     if (!collection)
         return res.status(404).json({ success: false });
-    const trimStuff = (field) => field.value === "string" || field.value === "multiline" ? field.value.tring() : field.value;
+    const trimStuff = (field) => field.type === "string" || field.type === "multiline" ? field.value.trim() : field.value;
+    const trimmedAdditionalFields = additionalFields.filter(trimStuff);
     const newItem = await Item.create({
         name: itemName.trim(),
         owner: ownerID,
         containerCollection: collectionID,
-        additionalFields: additionalFields.map(trimStuff),
+        additionalFields: trimmedAdditionalFields,
         tags: tags.map((tag) => tag.trim()),
         createdAt: new Date(),
     });
@@ -68,6 +69,7 @@ export const getAllTagsHandler = async (req, res) => {
     const uniqueTags = [...new Set(itemTags.flat())];
     return res.status(200).json({ success: true, data: uniqueTags });
 };
+/** The reason this function is so big and ugly is that MongoDB free tier doesn't allow $where queries. */
 export const getSearchedItemsHandler = async (req, res) => {
     const { searchValues } = req.body;
     const regularInputs = [];
@@ -137,6 +139,6 @@ export const getSearchedItemsHandler = async (req, res) => {
     const itemsFromCommentResults = await Promise.all(commentsContainingSearchValuesItemIDs.map((id) => Item.findById(id).populate(["containerCollection", "owner"]).exec()));
     populatedItems.push(...itemsFromCommentResults);
     const finalIDs = Array.from(new Set(populatedItemIDs.map((item) => item._id)));
-    const uniqueResults = await Promise.all(finalIDs.map((id) => Item.findById(id).exec()));
+    const uniqueResults = await Promise.all(finalIDs.map((id) => Item.findById(id).populate(["owner", "containerCollection"]).exec()));
     return res.status(200).json({ data: uniqueResults.filter((item) => item !== null) });
 };

@@ -6,37 +6,28 @@ class ProfilePageStore {
 
   userName: string;
 
-  collectionConfigModalOpen = false;
-
-  constructor(userName: string) {
+  constructor(userName: string, collections: Collection[]) {
+    this.collections = collections;
     makeObservable(this, {
       collections: observable,
-      collectionConfigModalOpen: observable,
-      fetchCollections: action,
       setCollections: action,
-      setCollectionConfigModalOpen: action,
     });
 
     this.userName = userName;
-    this.fetchCollections();
-  }
-
-  setCollectionConfigModalOpen(newValue: boolean) {
-    this.collectionConfigModalOpen = newValue;
   }
 
   setCollections(newValue: Collection[]) {
     this.collections = newValue;
   }
 
-  async fetchCollections() {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getUserCollections/${this.userName}`, {
+  static async fetchCollections(userName: string) {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/collections/getUserCollections/${userName}`, {
       method: "GET",
     });
 
     const responseBody = (await response.json()) as { success: boolean; data: null | Collection[] };
     const { data } = responseBody;
-    this.setCollections(data ?? []);
+    return data;
   }
 }
 

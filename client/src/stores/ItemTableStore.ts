@@ -5,27 +5,19 @@ import CollectionPageStore from "./CollectionPageStore";
 class ItemTableStore {
   collection: Collection;
 
-  itemConfigModalShown = false;
-
   constructor(collection: Collection) {
     this.collection = collection;
 
     makeObservable(this, {
       collection: observable,
-      itemConfigModalShown: observable,
       setCollection: action,
       deleteItem: action,
-      setItemConfigModalShown: action,
       collectionTableColumns: computed,
     });
   }
 
   setCollection(newValue: Collection) {
     this.collection = newValue;
-  }
-
-  setItemConfigModalShown(newValue: boolean) {
-    this.itemConfigModalShown = newValue;
   }
 
   get collectionTableColumns() {

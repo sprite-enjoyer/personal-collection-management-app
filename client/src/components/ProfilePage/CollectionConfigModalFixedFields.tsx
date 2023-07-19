@@ -14,14 +14,14 @@ const CollectionConfigModalFixedFields = ({ collectionConfigStore, topics }: Col
         fullWidth
         label="Name"
         type="text"
-        value={collectionConfigStore.collectionName}
+        value={collectionConfigStore.collection.name}
         onChange={(e) => collectionConfigStore.setCollectionName(e.target.value)}
       />
       <TextField
         fullWidth
         label="Description"
         multiline
-        value={collectionConfigStore.collectionDescription}
+        value={collectionConfigStore.collection.description}
         type="text"
         onChange={(e) => collectionConfigStore.setCollectionDescription(e.target.value)}
       />
@@ -31,7 +31,7 @@ const CollectionConfigModalFixedFields = ({ collectionConfigStore, topics }: Col
           onChange={(e) => collectionConfigStore.setCollectionTopic(e.target.value)}
           labelId="select-topic"
           label="Topic"
-          value={collectionConfigStore.collectionTopic}
+          value={collectionConfigStore.collection.topic}
           defaultValue="Other">
           {topics.map((topic, i) => (
             <MenuItem

@@ -14,12 +14,20 @@ const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
   const [collectionPageStore] = useState(new CollectionPageStore(collection, userName));
   const [itemConfigStore] = useState(new ItemConfigStore(collection._id));
+  const [itemConfigModalOpen, setItemConfigModalOpen] = useState(false);
+  const [collectionConfigModalOpen, setCollectionConfigModalOpen] = useState(false);
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
+  useEffect(() => {
+    // const fetchItem = async () => await itemConfigStore.fetchItem();
+    if (!itemConfigModalOpen) {
+      itemConfigStore.resetUserInputs();
+    }
+  }, [itemConfigModalOpen]);
 
   const handleCollectionEditButtonClick = async () => {
-    collectionPageStore.setCollectionConfigModalOpen(true);
+    setCollectionConfigModalOpen(true);
   };
 
   return (
@@ -46,10 +54,12 @@ const CollectionPage = () => {
               <CollectionConfigModal
                 creatingCollection={false}
                 collectionPageStore={collectionPageStore}
+                collectionConfigModalOpen={collectionConfigModalOpen}
+                setCollectionConfigModalOpen={setCollectionConfigModalOpen}
               />
               <Button
                 variant="contained"
-                onClick={() => collectionPageStore.setItemConfigModalOpen(true)}>
+                onClick={() => setItemConfigModalOpen(true)}>
                 add item
               </Button>
             </>
@@ -72,6 +82,12 @@ const CollectionPage = () => {
         creatingItem={true}
         collectionPageStore={collectionPageStore}
         editingItemID={null}
+        itemConfigModalOpen={itemConfigModalOpen}
+        setItemConfigModalOpen={setItemConfigModalOpen}
+        handleButtonClick={async (updatedCollection: Collection) => {
+          setItemConfigModalOpen(false);
+          collectionPageStore.setCollection(updatedCollection);
+        }}
       />
     </>
   );

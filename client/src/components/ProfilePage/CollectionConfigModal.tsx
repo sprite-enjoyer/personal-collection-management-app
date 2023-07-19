@@ -16,12 +16,16 @@ export interface AddCollectionModalProps {
   creatingCollection: boolean;
   profilePageStore?: ProfilePageStore;
   collectionPageStore?: CollectionPageStore;
+  collectionConfigModalOpen: boolean;
+  setCollectionConfigModalOpen: (newValue: boolean) => void;
 }
 
 const CollectionConfigModal = ({
   creatingCollection,
   profilePageStore,
   collectionPageStore,
+  collectionConfigModalOpen,
+  setCollectionConfigModalOpen,
 }: AddCollectionModalProps) => {
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
@@ -39,26 +43,21 @@ const CollectionConfigModal = ({
   const handleButtonClick = async () => {
     if (creatingCollection) {
       await collectionConfigStore.createCollection();
-      profilePageStore?.fetchCollections();
+      const collections = await ProfilePageStore.fetchCollections(profilePageStore?.userName ?? "");
+      profilePageStore?.setCollections(collections ?? []);
     } else {
       if (!collectionID) return;
       await collectionConfigStore.editCollection();
       collectionPageStore?.setCollection(await CollectionPageStore.fetchCollection(collectionID));
     }
 
-    collectionPageStore?.setCollectionConfigModalOpen(false);
-  };
-
-  const handleModalClose = async () => {
-    collectionPageStore?.setCollectionConfigModalOpen(false);
-    profilePageStore?.setCollectionConfigModalOpen(false);
-    collectionConfigStore.resetUserInputs();
+    setCollectionConfigModalOpen(false);
   };
 
   return (
     <Modal
-      open={collectionPageStore?.collectionConfigModalOpen ?? profilePageStore?.collectionConfigModalOpen ?? false}
-      onClose={handleModalClose}
+      open={collectionConfigModalOpen}
+      onClose={() => setCollectionConfigModalOpen(false)}
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <Box sx={{ backgroundColor: "white", borderRadius: "10px", padding: "50px" }}>
         <Container

@@ -33,7 +33,7 @@ const CustomFieldInfoRow = ({ name, type }: CustomFieldInfoRowProps) => {
 const CustomFieldsList = ({ collectionConfigStore }: CustomFieldsListProps) => {
   return (
     <>
-      {collectionConfigStore.additionalFieldsInfo.map((info) => (
+      {collectionConfigStore.collection.additionalFieldsInfo.map((info) => (
         <CustomFieldInfoRow
           key={info.name}
           name={info.name}

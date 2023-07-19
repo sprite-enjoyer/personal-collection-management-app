@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import AdditionalFieldInput from "./CustomFields";
-import { TextField } from "@mui/material";
 
 interface CustomFieldsInputListProps {
   itemConfigStore: ItemConfigStore;

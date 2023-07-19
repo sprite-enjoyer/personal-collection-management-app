@@ -39,7 +39,7 @@ const TagCloud = ({ tags }: TagCloudProps) => {
           key={tag}
           size="medium"
           sx={{
-            color: `hsl(${130 + Math.floor(Math.random() * 125)}, 100%, 40%)`,
+            color: `hsl(${170 + Math.floor(Math.random() * 85)}, 100%, 40%)`,
             fontSize: "1.2em",
             margin: "5px",
           }}

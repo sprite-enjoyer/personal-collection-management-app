@@ -12,9 +12,12 @@ class GlobalUserInfoStore {
 
   currentlyViewingUser?: string;
 
+  userChecked = false;
+
   constructor() {
     makeObservable(this, {
       loggedIn: observable,
+      userChecked: observable,
       userName: observable,
       isAdmin: observable,
       currentlyViewingUser: observable,
@@ -25,12 +28,17 @@ class GlobalUserInfoStore {
       setBlocked: action,
       checkJWTAndSetUserStatus: action,
       setCurrentlyViewingUser: action,
+      setUserChecked: action,
       loggedInUserHasPermissionToEdit: computed,
     });
   }
 
   get loggedInUserHasPermissionToEdit() {
     return this.userName === this.currentlyViewingUser && this.loggedIn;
+  }
+
+  setUserChecked(newValue: boolean) {
+    this.userChecked = newValue;
   }
 
   setCurrentlyViewingUser(newValue: string) {
@@ -76,6 +84,8 @@ class GlobalUserInfoStore {
       this.setUserName(userName);
       this.setLoggedIn(true);
     }
+
+    this.setUserChecked(true);
 
     return null;
   }

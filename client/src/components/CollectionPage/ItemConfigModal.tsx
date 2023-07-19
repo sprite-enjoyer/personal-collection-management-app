@@ -7,6 +7,7 @@ import CustomFieldsInputList from "./CustomFieldsInputList";
 import ItemTableStore from "../../stores/ItemTableStore";
 import { toJS } from "mobx";
 import FixedFieldsInputList from "./FixedFieldsInputList";
+import { Collection } from "../../misc/types";
 
 export interface ItemConfigModalProps {
   itemConfigStore: ItemConfigStore;
@@ -14,6 +15,9 @@ export interface ItemConfigModalProps {
   editingItemID: string | null;
   collectionPageStore: CollectionPageStore;
   itemTableStore?: ItemTableStore;
+  itemConfigModalOpen: boolean;
+  setItemConfigModalOpen: (newValue: boolean) => void;
+  handleButtonClick: (updatedCollection: Collection) => void;
 }
 
 const ItemConfigModal = ({
@@ -22,6 +26,9 @@ const ItemConfigModal = ({
   editingItemID,
   itemTableStore,
   itemConfigStore,
+  itemConfigModalOpen,
+  setItemConfigModalOpen,
+  handleButtonClick,
 }: ItemConfigModalProps) => {
   useEffect(() => {
     if (creatingItem && collectionPageStore)
@@ -30,38 +37,23 @@ const ItemConfigModal = ({
       );
   }, [collectionPageStore, collectionPageStore?.collection.additionalFieldsInfo]);
 
-  useEffect(() => {
-    const fetchItemTemp = async () => await itemConfigStore.fetchItem();
-    fetchItemTemp();
-  }, [itemTableStore?.itemConfigModalShown, collectionPageStore?.itemConfigModalOpen]);
-
   const handleClick = async () => {
+    if (creatingItem && collectionPageStore)
+      await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
+    else if (editingItemID !== null && itemTableStore) await itemConfigStore.editItem(editingItemID);
+
     const updatedCollection = await CollectionPageStore.fetchCollection(
       itemTableStore?.collection._id ?? collectionPageStore.collection._id
     );
-
-    if (creatingItem && collectionPageStore) {
-      await itemConfigStore.createItem(collectionPageStore.collection._id, collectionPageStore.collection.owner);
-      collectionPageStore.setItemConfigModalOpen(false);
-      collectionPageStore.setCollection(updatedCollection);
-      itemTableStore?.setCollection(updatedCollection);
-    } else if (editingItemID !== null && itemTableStore) {
-      await itemConfigStore.editItem(editingItemID);
-      collectionPageStore.setCollection(updatedCollection);
-      itemConfigStore.setCollection(updatedCollection);
-      itemTableStore.setCollection(updatedCollection);
-      itemTableStore.setItemConfigModalShown(false);
-    }
+    handleButtonClick(updatedCollection);
   };
 
-  const handleModalClose = () => {
-    collectionPageStore?.setItemConfigModalOpen(false);
-    itemTableStore?.setItemConfigModalShown(false);
-  };
+  const handleModalClose = () => setItemConfigModalOpen(false);
 
   return (
     <Modal
-      open={itemTableStore?.itemConfigModalShown ?? collectionPageStore?.itemConfigModalOpen ?? false}
+      keepMounted={false}
+      open={itemConfigModalOpen}
       onClose={handleModalClose}
       sx={{ display: "flex", justifyContent: "center", alignItems: "center", overflow: "auto" }}>
       <Box

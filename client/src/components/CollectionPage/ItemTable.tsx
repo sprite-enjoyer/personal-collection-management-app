@@ -14,7 +14,7 @@ import { toJS } from "mobx";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ItemTableStore from "../../stores/ItemTableStore";
-import { Item } from "../../misc/types";
+import { Collection, Item } from "../../misc/types";
 import { useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
@@ -29,6 +29,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
   const navigate = useNavigate();
   const [itemTableStore] = useState(new ItemTableStore(collectionPageStore.collection ?? []));
   const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection._id));
+  const [itemConfigModalOpen, setItemConfigModalOpen] = useState(false);
 
   const deleteButtonHandler = async (id: string) => {
     await itemTableStore.deleteItem(id);
@@ -39,7 +40,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
   }, [collectionPageStore.collection]);
 
   const editButtonHandler = (item: Item) => {
-    itemTableStore.setItemConfigModalShown(true);
+    setItemConfigModalOpen(true);
     itemConfigStore.setName(item.name);
     itemConfigStore.setAdditionalFields([
       ...item.additionalFields.map((field) => {
@@ -48,6 +49,13 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
     ]);
     itemConfigStore.setEditingItemID(item._id);
     itemConfigStore.setChosenTags(item.tags);
+  };
+
+  const handleItemConfigModalButtonClick = async (updatedCollection: Collection) => {
+    collectionPageStore.setCollection(updatedCollection);
+    itemConfigStore.setCollection(updatedCollection);
+    itemTableStore.setCollection(updatedCollection);
+    setItemConfigModalOpen(false);
   };
 
   return (
@@ -115,11 +123,14 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
         </Table>
       </TableContainer>
       <ItemConfigModal
+        itemConfigModalOpen={itemConfigModalOpen}
+        setItemConfigModalOpen={setItemConfigModalOpen}
         editingItemID={itemConfigStore.editingItemID}
         itemConfigStore={itemConfigStore}
         creatingItem={false}
         itemTableStore={itemTableStore}
         collectionPageStore={collectionPageStore}
+        handleButtonClick={handleItemConfigModalButtonClick}
       />
     </>
   );

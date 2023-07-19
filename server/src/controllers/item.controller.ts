@@ -18,15 +18,15 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
   const { itemName, ownerID, collectionID, additionalFields, tags } = req.body;
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
-
   const trimStuff = (field: AdditionalField) =>
-    field.value === "string" || field.value === "multiline" ? field.value.tring() : field.value;
+    field.type === "string" || field.type === "multiline" ? field.value.trim() : field.value;
+  const trimmedAdditionalFields = additionalFields.filter(trimStuff);
 
   const newItem = await Item.create({
     name: itemName.trim(),
     owner: ownerID,
     containerCollection: collectionID,
-    additionalFields: additionalFields.map(trimStuff),
+    additionalFields: trimmedAdditionalFields,
     tags: tags.map((tag) => tag.trim()),
     createdAt: new Date(),
   });
@@ -186,6 +186,8 @@ export const getSearchedItemsHandler = async (req: Request, res: Response) => {
 
   populatedItems.push(...itemsFromCommentResults);
   const finalIDs = Array.from(new Set(populatedItemIDs.map((item) => item._id)));
-  const uniqueResults: any[] = await Promise.all(finalIDs.map((id) => Item.findById(id).exec()));
+  const uniqueResults: any[] = await Promise.all(
+    finalIDs.map((id) => Item.findById(id).populate(["owner", "containerCollection"]).exec())
+  );
   return res.status(200).json({ data: uniqueResults.filter((item: any) => item !== null) });
 };
