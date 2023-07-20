@@ -1,25 +1,11 @@
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, FormControlLabel, IconButton, Switch, Typography } from "@mui/material";
 import HeaderStore from "../../stores/HeaderStore";
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useThemeContext } from "../../misc/theme";
-import useColorTheme from "../../misc/useColorTheme";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Link } from "react-router-dom";
-import LanguageIcon from "@mui/icons-material/Language";
 import { useContext } from "react";
 import { LanguageContext } from "../../misc/language";
 interface RightSideProps {
@@ -33,59 +19,38 @@ const RightSide = ({ headerStore }: RightSideProps) => {
   return (
     <Box
       display={"flex"}
-      gap={"10px"}>
+      alignItems={"center"}
+      gap={"5px"}>
       <IconButton
         color="primary"
         onClick={toggleColorMode}
-        sx={{ aspectRatio: "1" }}>
-        {mode === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
+        sx={{ aspectRatio: "1", width: "40px", height: "40px" }}>
+        {mode === "dark" ? (
+          <DarkModeIcon sx={{ aspectRatio: "1", width: "40px" }} />
+        ) : (
+          <LightModeIcon sx={{ aspectRatio: "1", width: "40px" }} />
+        )}
       </IconButton>
-      <IconButton sx={{ aspectRatio: "1" }}>
-        <Link
-          to={"https://github.com/sprite-enjoyer/personal-collection-management-app"}
-          target="_blank">
-          <GitHubIcon sx={{ color: mode === "dark" ? "white" : "black" }} />
-        </Link>
-      </IconButton>
-      <FormControlLabel
-        sx={{ width: "150px" }}
-        id="language-label"
-        control={<Switch />}
-        checked={language === "ქართული"}
-        label={<Typography color={theme.palette.text.primary}>{language}</Typography>}
-        onChange={(_, checked) => {
-          if (checked) setLanguage("ქართული");
-          else setLanguage("English");
-        }}
-      />
-
       <Box
-        sx={{
-          backgroundColor: mode === "dark" ? "#2e333b" : "#acaeb0",
-          boxSizing: "border-box",
-          borderRadius: "5px",
-        }}
-        borderRadius={"5px"}
-        boxSizing={"border-box"}
         display={"flex"}
-        gap={"20px"}
-        width={"80px"}
+        flexDirection={"column"}
         alignItems={"center"}>
-        <Button
-          fullWidth
-          onClick={() => headerStore.setSearchModalOpen(true)}
-          sx={{ margin: "0", padding: "0", display: "flex", height: "100%", fontWeight: "500" }}>
-          <SearchIcon sx={{ flex: "1 1" }} />
-          <Divider
-            orientation="vertical"
-            flexItem
-          />
-          <kbd style={{ fontSize: "1.5em", flex: "1 1" }}>
-            <span>⌃</span>
-            <span>K</span>
-          </kbd>
-        </Button>
+        <Typography color={theme.palette.text.primary}>{language.substring(0, 3)}</Typography>
+        <Switch
+          onChange={(_, checked) => {
+            if (checked) setLanguage("ქართული");
+            else setLanguage("English");
+          }}
+        />
       </Box>
+      <IconButton
+        onClick={() => headerStore.setSearchModalOpen(true)}
+        sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
+        <SearchIcon
+          sx={{ width: "40px", aspectRatio: "1" }}
+          color="primary"
+        />
+      </IconButton>
     </Box>
   );
 };

@@ -4,3 +4,13 @@
   margin: 0;
   color: #0072d6;
 }
+
+@media (max-width: 1200px) {
+  .typed-cursor {
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+    color: #0072d6;
+    margin-left: 15px;
+  }
+}

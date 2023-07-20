@@ -2,7 +2,7 @@ import { StaticTextObject } from "./englishTexts";
 
 const georgianTexts: StaticTextObject = {
   MainPage: {
-    header1: "შეაგროვე და დაათვალიერე",
+    header1: "შეაგროვე და ნახე",
     header2: "დიდი კოლექციები:",
     header3: "ახლახანს დამატებული ნივთები:",
   },

@@ -5,7 +5,6 @@ import { Box, IconButton, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
 interface LeftSideProps {
   globalUserInfoStore: GlobalUserInfoStore;
@@ -22,46 +21,55 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
   return (
     <Box
       display={"flex"}
-      gap={"10px"}>
-      <IconButton
-        size="large"
-        onClick={() => navigate("/")}
-        sx={{ width: "50px", height: "50px" }}>
-        <HomeIcon
-          color={"primary"}
-          sx={{ width: "50px", aspectRatio: "1" }}
-        />
-      </IconButton>
+      gap={"5px"}
+      alignItems={"center"}>
       {globalUserInfoStore.loggedIn ? (
         <Box
           display={"flex"}
-          gap={"15px"}>
+          gap={"5px"}>
           <IconButton
-            sx={{ width: "50px", height: "50px" }}
+            sx={{ width: "40px", height: "40px", aspectRatio: "1" }}
             onClick={async () => await globalUserInfoStore.signOut(globalUserInfoStore)}>
             <LogoutIcon
               color={"primary"}
-              sx={{ width: "50px", aspectRatio: "1" }}
+              sx={{ width: "40px", aspectRatio: "1" }}
             />
           </IconButton>
           <IconButton
             size="large"
             onClick={() => navigate(`/user/${globalUserInfoStore.userName}`)}
-            sx={{ width: "50px", height: "50px" }}>
+            sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
             <AccountCircle
               color={"primary"}
-              sx={{ width: "50px", aspectRatio: "1" }}
+              sx={{ width: "40px", aspectRatio: "1" }}
             />
           </IconButton>
         </Box>
       ) : (
         <Box
           display={"flex"}
-          gap={"10px"}>
-          <Button onClick={() => navigate("/login")}>{login}</Button>
-          <Button onClick={() => navigate("/register")}>{register}</Button>
+          flexDirection={"column"}>
+          <Button
+            size="small"
+            onClick={() => navigate("/login")}>
+            {login}
+          </Button>
+          <Button
+            size="small"
+            onClick={() => navigate("/register")}>
+            {register}
+          </Button>
         </Box>
       )}
+      <IconButton
+        size="large"
+        onClick={() => navigate("/")}
+        sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
+        <HomeIcon
+          color={"primary"}
+          sx={{ width: "40px", aspectRatio: "1" }}
+        />
+      </IconButton>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { Modal, Box, Container, Button } from "@mui/material";
+import { Modal, Box, Container, Button, IconButton } from "@mui/material";
 import { englishTopics } from "../../misc/constants";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
@@ -14,6 +14,8 @@ import CustomFieldCreator from "./CustomFieldCreator";
 import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
 import { toJS } from "mobx";
+import CloseIcon from "@mui/icons-material/Close";
+import { useScreenSizeContext } from "../../misc/screenSize";
 
 export interface AddCollectionModalProps {
   creatingCollection: boolean;
@@ -38,6 +40,7 @@ const CollectionConfigModal = ({
       CollectionConfigModal: { button2Create, button2Edit },
     },
   } = useLanguageContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   useEffect(() => {
     const fillValues = async () => {
@@ -72,7 +75,19 @@ const CollectionConfigModal = ({
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <Box sx={{ backgroundColor: theme.palette.background.default, borderRadius: "10px", padding: "50px" }}>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          borderRadius: "10px",
+          padding: userHasSmallScreen ? "40px 5px" : "50px",
+          position: "relative",
+          width: userHasSmallScreen ? "95%" : "auto",
+        }}>
+        <IconButton
+          onClick={() => setCollectionConfigModalOpen(false)}
+          sx={{ width: "30px", height: "30px", aspectRatio: "1", position: "absolute", top: "2%", right: "2%" }}>
+          <CloseIcon sx={{ width: "30px", height: "30px", aspectRatio: "1", color: "#c23636" }} />
+        </IconButton>
         <Container
           sx={{
             display: "flex",
@@ -110,7 +125,7 @@ const CollectionConfigModal = ({
               <Button
                 variant="contained"
                 onClick={() => collectionConfigStore.setDeleteCollectionDialogOpen(true)}
-                sx={{ position: "absolute", right: "0" }}>
+                sx={{ position: "absolute", right: userHasSmallScreen ? "5px" : "20px" }}>
                 <DeleteSharpIcon />
               </Button>
             )}

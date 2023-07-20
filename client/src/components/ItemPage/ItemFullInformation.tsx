@@ -4,6 +4,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
+import { useScreenSizeContext } from "../../misc/screenSize";
 
 interface ItemFullInformationProps {
   item: Item;
@@ -18,6 +19,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
       ItemPage: { owner, fromCollection, tags, additionalFields, none },
     },
   } = useLanguageContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   return (
     <Box
@@ -25,12 +27,15 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
         padding: "5%",
         display: "flex",
         flexDirection: "column",
-        width: "50%",
+        width: userHasSmallScreen ? "100%" : "50%",
         boxSizing: "border-box",
+        overflow: userHasSmallScreen ? "initial" : "auto",
+        height: userHasSmallScreen ? "fit-content" : "auto",
+        backgroundColor: theme.palette.background.default,
       }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
         <Typography
-          variant={item.name.length > 70 ? "h5" : "h3"}
+          variant={item.name.length > 70 || userHasSmallScreen ? "h5" : "h3"}
           maxHeight={"150px"}
           overflow="auto"
           sx={{ color: theme.palette.text.primary }}>
@@ -87,8 +92,6 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
       <List
         sx={{
           width: "100%",
-          maxHeight: "60%",
-          overflow: "auto",
           paddingLeft: "0",
         }}>
         {item.additionalFields.map((field) => (

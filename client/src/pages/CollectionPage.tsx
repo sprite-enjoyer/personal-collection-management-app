@@ -39,7 +39,14 @@ const CollectionPage = () => {
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", overflow: "auto" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflowY: "auto",
+          overflowX: "clip",
+        }}>
         <Box
           sx={{
             display: "flex",
@@ -84,7 +91,7 @@ const CollectionPage = () => {
             </Typography>
           </Container>
         )}
-      </div>
+      </Box>
       <ItemConfigModal
         itemConfigStore={itemConfigStore}
         creatingItem={true}

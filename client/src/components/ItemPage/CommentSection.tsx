@@ -6,6 +6,7 @@ import { GlobalUserInfoStoreContext } from "../../App";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { io } from "socket.io-client";
 import { useThemeContext } from "../../misc/theme";
+import { useScreenSizeContext } from "../../misc/screenSize";
 
 interface CommentSectionProps {
   itemID: string;
@@ -15,6 +16,7 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const [commentStore] = useState(new CommentStore(itemID, globalUserInfoStore));
   const { theme } = useThemeContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   useEffect(() => {
     const loadComments = async () => await commentStore.fetchComments();
@@ -37,21 +39,51 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
     <Box
       sx={{
         height: "100%",
-        width: "50%",
+        width: userHasSmallScreen ? "100%" : "50%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "flex-start",
         paddingLeft: "5%",
         gap: "20px",
+        backgroundColor: theme.palette.background.default,
       }}>
-      <Box sx={{ height: "70%", width: "80%", overflow: "auto", display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={
+          userHasSmallScreen
+            ? {
+                height: "500px",
+                width: "100%",
+                overflow: "auto",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                backgroundColor: theme.palette.background.default,
+              }
+            : {
+                height: "70%",
+                width: "80%",
+                overflow: "auto",
+                display: "flex",
+                justifyContent: "center",
+                backgroundColor: theme.palette.background.default,
+              }
+        }>
+        {userHasSmallScreen && (
+          <Typography
+            fontSize={"1.2em"}
+            color={theme.palette.text.primary}>
+            Comments:{" "}
+          </Typography>
+        )}
         <List
           sx={{
             width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            overflow: "auto",
+            maxHeight: "100%",
           }}>
           {commentStore.comments.map((comment) => (
             <ListItem
@@ -82,7 +114,13 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
           ))}
         </List>
       </Box>
-      <Box sx={{ height: "20%", width: "80%", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+      <Box
+        sx={{
+          width: userHasSmallScreen ? "100%" : "80%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}>
         <TextField
           fullWidth
           multiline
@@ -90,7 +128,7 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
           maxRows={5}
           value={commentStore.commentFieldValue}
           onChange={(e) => commentStore.setCommentFieldValue(e.target.value)}
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
           InputProps={{
             endAdornment: (
               <Button

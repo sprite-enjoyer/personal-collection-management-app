@@ -1,4 +1,4 @@
-import { AppBar, Box } from "@mui/material";
+import { AppBar, Box, Typography, useMediaQuery } from "@mui/material";
 import HeaderStore from "../stores/HeaderStore";
 import { useEffect, useState } from "react";
 import { routeBaseStyles } from "../misc/styleUtils";
@@ -9,8 +9,8 @@ import { useContext } from "react";
 import SearchModal from "./SearchModal";
 import LeftSide from "./Header/LeftSide";
 import RightSide from "./Header/RightSide";
-import useColorTheme from "../misc/useColorTheme";
 import { useThemeContext } from "../misc/theme";
+import { useScreenSizeContext } from "../misc/screenSize";
 
 interface HeaderProps {}
 
@@ -18,6 +18,7 @@ const Header = ({}: HeaderProps) => {
   const [headerStore] = useState(new HeaderStore());
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const { theme } = useThemeContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -57,10 +58,10 @@ const Header = ({}: HeaderProps) => {
             display: "flex",
             justifyContent: "center",
             padding: "2px 20px 2px 20px",
-            gap: "20px",
           }}>
           <Box
             display={"flex"}
+            alignItems={"center"}
             justifyContent={"space-between"}>
             <LeftSide globalUserInfoStore={globalUserInfoStore} />
             <RightSide headerStore={headerStore} />

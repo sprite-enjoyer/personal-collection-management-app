@@ -3,12 +3,14 @@ import { Collection, ItemCardItem } from "../misc/types";
 import axios from "axios";
 import LatestItemsList from "../components/MainPage/LatestItemsList";
 import CollectionList from "../components/CollectionList";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import ChangingHeader from "../components/MainPage/ChangingHeader";
 import { CSSProperties } from "@mui/material/styles/createMixins";
 import TagCloud from "../components/MainPage/TagCloud";
 import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
+import { useScreenSizeContext } from "../misc/screenSize";
+import { useMemo } from "react";
 
 export const fetchLatestItems = async () => {
   const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/getLatest/5`);
@@ -28,13 +30,6 @@ export const fetchAllTags = async () => {
   return data;
 };
 
-const headerTextStyles: CSSProperties = {
-  fontSize: "2.5em",
-  padding: "0",
-  margin: "0",
-  display: "inline",
-};
-
 const MainPage = () => {
   const [latestItems, largestCollections, tags] = useLoaderData() as [ItemCardItem[], Collection[], string[]];
   const { theme } = useThemeContext();
@@ -43,6 +38,16 @@ const MainPage = () => {
       MainPage: { header1, header2, header3 },
     },
   } = useLanguageContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
+
+  const headerTextStyles: CSSProperties = useMemo(() => {
+    return {
+      fontSize: userHasSmallScreen ? "1em" : "2.5em",
+      padding: "0",
+      margin: "0",
+      display: "inline",
+    };
+  }, [userHasSmallScreen]);
 
   return (
     <Box
@@ -57,9 +62,8 @@ const MainPage = () => {
       }}>
       <Box
         display={"flex"}
-        gap={"20px"}>
+        gap={userHasSmallScreen ? "5px" : "20px"}>
         <Typography
-          maxWidth={"50%"}
           color={theme.palette.text.primary}
           sx={headerTextStyles}>
           {header1}
@@ -67,9 +71,17 @@ const MainPage = () => {
         <ChangingHeader style={headerTextStyles} />
       </Box>
       <Box
-        sx={{
-          display: "flex",
-        }}>
+        sx={
+          userHasSmallScreen
+            ? {
+                display: "flex",
+                flexDirection: userHasSmallScreen ? "column" : "row",
+                alignItems: "center",
+              }
+            : {
+                display: "flex",
+              }
+        }>
         <Box
           sx={{
             display: "flex",
@@ -80,7 +92,7 @@ const MainPage = () => {
           <Typography
             maxWidth={"100%"}
             color={theme.palette.text.primary}
-            variant="h5">
+            variant={userHasSmallScreen ? "h6" : "h5"}>
             {header2}
           </Typography>
           <Box
@@ -99,7 +111,7 @@ const MainPage = () => {
           <Typography
             maxWidth={"100%"}
             color={theme.palette.text.primary}
-            variant="h5">
+            variant={userHasSmallScreen ? "h6" : "h5"}>
             {header3}
           </Typography>
           <Box
@@ -113,13 +125,17 @@ const MainPage = () => {
           </Box>
         </Box>
         <Box
-          sx={{
-            flex: "2 2",
-            maxWidth: "50%",
-            maxHeight: "100%",
-            padding: "5%",
-            overflow: "clip",
-          }}>
+          sx={
+            userHasSmallScreen
+              ? { marginTop: "50px" }
+              : {
+                  flex: "2 2",
+                  maxWidth: "50%",
+                  maxHeight: "100%",
+                  padding: "5%",
+                }
+          }>
+          {userHasSmallScreen && <Typography color={theme.palette.text.primary}>Tags:</Typography>}
           <TagCloud tags={tags} />
         </Box>
       </Box>

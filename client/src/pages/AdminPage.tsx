@@ -5,6 +5,7 @@ import { routeBaseStyles } from "../misc/styleUtils";
 import {
   Box,
   Button,
+  ButtonGroup,
   Checkbox,
   Container,
   Paper,
@@ -21,6 +22,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { GlobalUserInfoStoreContext } from "../App";
 import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
+import { useScreenSizeContext } from "../misc/screenSize";
 
 export interface AdminPageProps {}
 
@@ -33,6 +35,8 @@ const AdminPage = ({}: AdminPageProps) => {
     staticTextObject: { AdminPage },
     language,
   } = useLanguageContext();
+
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   if (!globalUserInfoStore.isAdmin) return <Navigate to={"/login"} />;
   const Columns = useCallback(() => {
@@ -108,12 +112,21 @@ const AdminPage = ({}: AdminPageProps) => {
     <Box style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
       <TableContainer
         component={Paper}
-        sx={{
-          margin: "50px",
-          height: "700px",
-          width: "1500px",
-          backgroundColor: theme.palette.background.default,
-        }}>
+        sx={
+          userHasSmallScreen
+            ? {
+                backgroundColor: theme.palette.background.default,
+                margin: "20px",
+                minHeight: "400px",
+                width: "95%",
+              }
+            : {
+                margin: "50px",
+                height: "700px",
+                width: "1500px",
+                backgroundColor: theme.palette.background.default,
+              }
+        }>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -129,38 +142,21 @@ const AdminPage = ({}: AdminPageProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Container
+      <ButtonGroup
+        orientation={userHasSmallScreen ? "vertical" : "horizontal"}
+        variant="contained"
         sx={{
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
+          gap: "2px",
         }}>
-        <Button
-          variant="contained"
-          onClick={() => adminPageStore.changeSelectedUsers(true, null)}>
-          {AdminPage.button1}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => adminPageStore.changeSelectedUsers(false, null)}>
-          {AdminPage.button2}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => adminPageStore.deleteSelectedUsers()}>
-          {AdminPage.button3}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => adminPageStore.changeSelectedUsers(null, true)}>
-          {AdminPage.button4}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => adminPageStore.changeSelectedUsers(null, false)}>
-          {AdminPage.button5}
-        </Button>
-      </Container>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(true, null)}>{AdminPage.button1}</Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(false, null)}>{AdminPage.button2}</Button>
+        <Button onClick={() => adminPageStore.deleteSelectedUsers()}>{AdminPage.button3}</Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(null, true)}>{AdminPage.button4}</Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(null, false)}>{AdminPage.button5}</Button>
+      </ButtonGroup>
     </Box>
   );
 };

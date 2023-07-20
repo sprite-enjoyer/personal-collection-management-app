@@ -9,6 +9,7 @@ import { GlobalUserInfoStoreContext } from "../App";
 import { Collection } from "../misc/types";
 import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
+import { useScreenSizeContext } from "../misc/screenSize";
 
 const ProfilePage = () => {
   const { userName } = useParams();
@@ -22,6 +23,7 @@ const ProfilePage = () => {
       ProfilePage: { header, button },
     },
   } = useLanguageContext();
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   if (!userName) return null;
   globalUserInfoStore.setCurrentlyViewingUser(userName);
@@ -41,7 +43,9 @@ const ProfilePage = () => {
             alignItems: "center",
             padding: "40px 0 40px 0",
             width: "80%",
+            flexDirection: userHasSmallScreen ? "column" : "row",
             justifyContent: "space-between",
+            gap: "20px",
           }}>
           <Typography
             variant="h3"

@@ -49,6 +49,7 @@ const FixedFieldsInputList = ({ itemConfigStore }: FixedFieldsInputListProps) =>
       <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
         <Autocomplete
           sx={{ flex: "1 1" }}
+          limitTags={4}
           multiple
           options={Array.from(new Set([...itemConfigStore.chosenTags, ...allTags]))}
           value={itemConfigStore.chosenTags}

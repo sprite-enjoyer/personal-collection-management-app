@@ -9,6 +9,7 @@ import { Box } from "@mui/material";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import { useThemeContext } from "../misc/theme";
+import { useScreenSizeContext } from "../misc/screenSize";
 
 interface ItemPageProps {}
 
@@ -20,6 +21,7 @@ const ItemPage = () => {
   };
   const [itemConfigStore] = useState(new ItemConfigStore(item.containerCollection));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  const { userHasSmallScreen } = useScreenSizeContext();
 
   useEffect(() => {
     const setViewingUser = async () => {
@@ -31,7 +33,15 @@ const ItemPage = () => {
   if (!item || !userName || !collection) return null;
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", overflow: "auto" }}>
+    <Box
+      sx={
+        userHasSmallScreen
+          ? {
+              display: "flex",
+              flexDirection: "column",
+            }
+          : { display: "flex", justifyContent: "space-between", overflow: "auto" }
+      }>
       <ItemFullInformation
         item={item}
         collectionName={itemConfigStore.collection.name}
