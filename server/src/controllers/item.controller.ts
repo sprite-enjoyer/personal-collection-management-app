@@ -191,3 +191,24 @@ export const getSearchedItemsHandler = async (req: Request, res: Response) => {
   );
   return res.status(200).json({ data: uniqueResults.filter((item: any) => item !== null) });
 };
+
+type LikeItemHandlerRequestBodyType = {
+  itemID: string;
+  userID: string;
+};
+
+export const likeItemHandler = async (req: Request<any, any, LikeItemHandlerRequestBodyType>, res: Response) => {
+  const { itemID, userID } = req.body;
+  const item = await Item.findByIdAndUpdate(itemID, { $addToSet: { usersWhoLikeItem: userID } }, { new: true });
+
+  if (!item) return res.status(500).json({ data: null });
+  return res.status(200).json({ data: item });
+};
+
+export const unLikeItemHandler = async (req: Request<any, any, LikeItemHandlerRequestBodyType>, res: Response) => {
+  const { itemID, userID } = req.body;
+  const item = await Item.findByIdAndUpdate(itemID, { $pull: { usersWhoLikeItem: userID } }, { new: true });
+
+  if (!item) return res.status(500).json({ data: null });
+  return res.status(200).json({ data: item });
+};

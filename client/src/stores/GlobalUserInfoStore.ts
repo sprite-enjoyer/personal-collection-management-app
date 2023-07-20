@@ -1,14 +1,9 @@
 import axios from "axios";
 import { action, computed, makeObservable, observable } from "mobx";
+import { User } from "../misc/types";
 
 class GlobalUserInfoStore {
-  loggedIn = false;
-
-  userName?: string;
-
-  isAdmin = false;
-
-  blocked = false;
+  user: User | null = null;
 
   currentlyViewingUser?: string;
 
@@ -16,25 +11,23 @@ class GlobalUserInfoStore {
 
   constructor() {
     makeObservable(this, {
-      loggedIn: observable,
       userChecked: observable,
-      userName: observable,
-      isAdmin: observable,
+      user: observable,
       currentlyViewingUser: observable,
-      blocked: observable,
-      setIsAdmin: action,
-      setLoggedIn: action,
-      setUserName: action,
-      setBlocked: action,
       checkJWTAndSetUserStatus: action,
       setCurrentlyViewingUser: action,
       setUserChecked: action,
+      setUser: action,
       loggedInUserHasPermissionToEdit: computed,
     });
   }
 
+  setUser(newValue: User | null) {
+    this.user = newValue;
+  }
+
   get loggedInUserHasPermissionToEdit() {
-    return this.userName === this.currentlyViewingUser && this.loggedIn;
+    return this.user && this.user.username === this.currentlyViewingUser;
   }
 
   setUserChecked(newValue: boolean) {
@@ -43,22 +36,6 @@ class GlobalUserInfoStore {
 
   setCurrentlyViewingUser(newValue: string) {
     this.currentlyViewingUser = newValue;
-  }
-
-  setLoggedIn(newValue: boolean) {
-    this.loggedIn = newValue;
-  }
-
-  setUserName(newValue?: string) {
-    this.userName = newValue;
-  }
-
-  setIsAdmin(newValue: boolean) {
-    this.isAdmin = newValue;
-  }
-
-  setBlocked(newValue: boolean) {
-    this.blocked = newValue;
   }
 
   async checkJWTAndSetUserStatus() {
@@ -79,10 +56,8 @@ class GlobalUserInfoStore {
     };
 
     if (userID && userName) {
-      this.setIsAdmin(isAdmin);
-      this.setBlocked(blocked);
-      this.setUserName(userName);
-      this.setLoggedIn(true);
+      const user = await GlobalUserInfoStore.fetchUser(userID);
+      this.setUser(user);
     }
 
     this.setUserChecked(true);
@@ -95,10 +70,13 @@ class GlobalUserInfoStore {
       withCredentials: true,
     });
     const { success } = (await response.data) as { success: boolean };
-    if (success) {
-      globalUserInfoStore.setLoggedIn(false);
-      globalUserInfoStore.setUserName();
-    }
+    if (success) globalUserInfoStore.setUser(null);
+  }
+
+  static async fetchUser(userID: string) {
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getUserById/${userID}`);
+    const { data } = (await response.data) as { data: User };
+    return data;
   }
 }
 

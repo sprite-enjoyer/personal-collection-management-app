@@ -25,8 +25,10 @@ const englishTexts = {
     owner: "Owner: ",
     fromCollection: "From Collection: ",
     tags: "Tags: ",
+    likes: "Likes: ",
     additionalFields: "Additional Fields: ",
     none: "none",
+    likeButton: "Like",
   },
   LoginPage: {
     inputLabel1: "Username",

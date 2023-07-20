@@ -45,11 +45,15 @@ class CommentStore {
   }
 
   async postComment() {
-    if (!this.globalUserInfoStore.loggedIn || !this.globalUserInfoStore.userName || this.commentFieldValue.length === 0)
+    if (
+      !this.globalUserInfoStore.user ||
+      !this.globalUserInfoStore.user.username ||
+      this.commentFieldValue.length === 0
+    )
       return;
     const comment: Omit<Comment, "_id"> = {
       item: this.itemID,
-      author: this.globalUserInfoStore.userName,
+      author: this.globalUserInfoStore.user.username,
       text: this.commentFieldValue,
     };
 

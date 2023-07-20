@@ -33,7 +33,7 @@ const DeleteCollectionDialog = ({ collectionConfigStore }: DeleteCollectinoDialo
           <Box marginTop={"20px"}>
             <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px" }}>
               <Button
-                onClick={() => collectionConfigStore.deleteCollection(navigate, globalUserInfoStore.userName)}
+                onClick={() => collectionConfigStore.deleteCollection(navigate, globalUserInfoStore.user?.username)}
                 size="small"
                 variant="contained">
                 yes

@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { NavigateFunction } from "react-router-dom";
 import GlobalUserInfoStore from "./GlobalUserInfoStore";
+import { User } from "../misc/types";
 
 class LoginPageStore {
   userName = "";
@@ -44,13 +45,10 @@ class LoginPageStore {
       },
     });
 
-    const { success, userName, blocked, isAdmin } = await response.json();
-    if (success) {
-      globalUserInfoStore.setLoggedIn(true);
-      globalUserInfoStore.setUserName(userName);
-      globalUserInfoStore.setBlocked(blocked);
-      globalUserInfoStore.setIsAdmin(isAdmin);
-      navigate(`/user/${userName}`);
+    const { success, data } = (await response.json()) as { success: boolean; data: User };
+    if (success && data) {
+      globalUserInfoStore.setUser(data);
+      navigate(`/user/${data.username}`);
     }
   }
 }

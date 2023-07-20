@@ -40,5 +40,9 @@ const itemSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    usersWhoLikeItem: {
+        type: [String],
+        default: [],
+    },
 });
 export default mongoose.model("Item", itemSchema);

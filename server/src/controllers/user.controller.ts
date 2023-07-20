@@ -49,7 +49,7 @@ export const sendUserJwtHandler = async (req: Request, res: Response) => {
       path: "/",
     })
     .status(200)
-    .json({ success: true, userName: user.username, blocked: user.blocked, isAdmin: user.isAdmin });
+    .json({ success: true, data: user });
 };
 
 export const checkUserJwtHandler = async (req: Request, res: Response, next: NextFunction) => {

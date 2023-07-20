@@ -40,7 +40,7 @@ const RoutesManager = () => {
             path="/"
             element={<MainPage />}
             loader={async () => {
-              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+              if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
 
               const latestItems = fetchLatestItems();
@@ -52,10 +52,11 @@ const RoutesManager = () => {
           <Route
             path="/item/:itemID"
             loader={async ({ params }) => {
-              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+              if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { itemID } = params;
               if (!itemID) return Promise.reject("item ID not provided!");
+
               const item = await ItemPageStore.fetchItem(itemID);
               const userName = await CollectionPageStore.fetchUserName(item.owner);
               const collection = await CollectionPageStore.fetchCollection(item.containerCollection);
@@ -70,9 +71,9 @@ const RoutesManager = () => {
           <Route
             path="/admin"
             loader={async () => {
-              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+              if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
-              if (!globalUserInfoStore.isAdmin) return redirect("/login");
+              if (!globalUserInfoStore.user?.isAdmin) return redirect("/login");
               return null;
             }}
             element={
@@ -84,7 +85,7 @@ const RoutesManager = () => {
           <Route
             path="/user/:userName"
             loader={async ({ params }) => {
-              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+              if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { userName } = params as { userName: string };
               if (!userName) return Promise.resolve({ collections: [] });
@@ -100,7 +101,7 @@ const RoutesManager = () => {
           <Route
             path="/collection/:collectionID"
             loader={async ({ params }) => {
-              if (!globalUserInfoStore.loggedIn && !globalUserInfoStore.userChecked)
+              if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { collectionID } = params;
               if (!collectionID) return Promise.reject("collection ID not provided!");

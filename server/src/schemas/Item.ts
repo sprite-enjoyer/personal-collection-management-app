@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, ObjectId, Schema, SchemaTypes } from "mongoose";
+import mongoose, { InferSchemaType, ObjectId, Schema, SchemaTypes, Types } from "mongoose";
 
 const additionalItemFieldSchema = new mongoose.Schema({
   name: {
@@ -41,6 +41,10 @@ const itemSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     required: true,
+  },
+  usersWhoLikeItem: {
+    type: [String],
+    default: [],
   },
 });
 

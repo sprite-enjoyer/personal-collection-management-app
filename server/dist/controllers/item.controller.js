@@ -142,3 +142,17 @@ export const getSearchedItemsHandler = async (req, res) => {
     const uniqueResults = await Promise.all(finalIDs.map((id) => Item.findById(id).populate(["owner", "containerCollection"]).exec()));
     return res.status(200).json({ data: uniqueResults.filter((item) => item !== null) });
 };
+export const likeItemHandler = async (req, res) => {
+    const { itemID, userID } = req.body;
+    const item = await Item.findByIdAndUpdate(itemID, { $addToSet: { usersWhoLikeItem: userID } }, { new: true });
+    if (!item)
+        return res.status(500).json({ data: null });
+    return res.status(200).json({ data: item });
+};
+export const unLikeItemHandler = async (req, res) => {
+    const { itemID, userID } = req.body;
+    const item = await Item.findByIdAndUpdate(itemID, { $pull: { usersWhoLikeItem: userID } }, { new: true });
+    if (!item)
+        return res.status(500).json({ data: null });
+    return res.status(200).json({ data: item });
+};

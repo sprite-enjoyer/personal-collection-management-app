@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
   blocked: boolean;
@@ -31,6 +31,7 @@ export interface Item {
   containerCollection: string;
   tags: string[];
   additionalFields: AdditionalField[];
+  usersWhoLikeItem: string[];
 }
 
 export interface ItemCardItem {

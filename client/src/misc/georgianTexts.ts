@@ -29,6 +29,8 @@ const georgianTexts: StaticTextObject = {
     tags: "იარლიყები: ",
     additionalFields: "დამატებითი ველები: ",
     none: "არ აქვს",
+    likes: "მოწონებები: ",
+    likeButton: "მოწონება",
   },
   LoginPage: {
     inputLabel1: "სახელი",

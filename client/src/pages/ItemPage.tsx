@@ -8,7 +8,6 @@ import CommentSection from "../components/ItemPage/CommentSection";
 import { Box } from "@mui/material";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
-import { useThemeContext } from "../misc/theme";
 import { useScreenSizeContext } from "../misc/screenSize";
 
 interface ItemPageProps {}
@@ -22,6 +21,7 @@ const ItemPage = () => {
   const [itemConfigStore] = useState(new ItemConfigStore(item.containerCollection));
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const { userHasSmallScreen } = useScreenSizeContext();
+  const [currentItem, setCurrentItem] = useState(item);
 
   useEffect(() => {
     const setViewingUser = async () => {
@@ -43,9 +43,10 @@ const ItemPage = () => {
           : { display: "flex", justifyContent: "space-between", overflow: "auto" }
       }>
       <ItemFullInformation
-        item={item}
         collectionName={itemConfigStore.collection.name}
         ownerUserName={userName}
+        currentItem={currentItem}
+        setCurrentItem={setCurrentItem}
       />
       <CommentSection itemID={item._id} />
     </Box>

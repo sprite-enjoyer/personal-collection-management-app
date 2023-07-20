@@ -45,7 +45,7 @@ class AdminPageStore {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ blocked: blocked, isAdmin: isAdmin, userIDs: this.selectedUsers.map((u) => u.id) }),
+      body: JSON.stringify({ blocked: blocked, isAdmin: isAdmin, userIDs: this.selectedUsers.map((u) => u._id) }),
     });
     this.fetchUsers();
   }
@@ -53,7 +53,7 @@ class AdminPageStore {
   async deleteSelectedUsers() {
     await fetch(`${import.meta.env.VITE_SERVER_URL}/users/delete`, {
       method: "DELETE",
-      body: JSON.stringify({ userIDs: this.selectedUsers.map((u) => u.id) }),
+      body: JSON.stringify({ userIDs: this.selectedUsers.map((u) => u._id) }),
       headers: {
         "Content-Type": "application/json",
       },

@@ -23,7 +23,7 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
       display={"flex"}
       gap={"5px"}
       alignItems={"center"}>
-      {globalUserInfoStore.loggedIn ? (
+      {globalUserInfoStore.user ? (
         <Box
           display={"flex"}
           gap={"5px"}>
@@ -37,7 +37,7 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
           </IconButton>
           <IconButton
             size="large"
-            onClick={() => navigate(`/user/${globalUserInfoStore.userName}`)}
+            onClick={() => navigate(`/user/${globalUserInfoStore.user?.username}`)}
             sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
             <AccountCircle
               color={"primary"}

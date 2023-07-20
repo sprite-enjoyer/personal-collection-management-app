@@ -1,7 +1,6 @@
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import AdminPageStore from "../stores/AdminPageStore";
 import { observer } from "mobx-react";
-import { routeBaseStyles } from "../misc/styleUtils";
 import {
   Box,
   Button,
@@ -18,8 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { User } from "../misc/types";
-import { Navigate, useNavigate } from "react-router-dom";
-import { GlobalUserInfoStoreContext } from "../App";
+import { useNavigate } from "react-router-dom";
 import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
 import { useScreenSizeContext } from "../misc/screenSize";
@@ -27,7 +25,6 @@ import { useScreenSizeContext } from "../misc/screenSize";
 export interface AdminPageProps {}
 
 const AdminPage = ({}: AdminPageProps) => {
-  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
   const [adminPageStore] = useState(new AdminPageStore());
   const navigate = useNavigate();
   const { theme, mode } = useThemeContext();
@@ -38,7 +35,6 @@ const AdminPage = ({}: AdminPageProps) => {
 
   const { userHasSmallScreen } = useScreenSizeContext();
 
-  if (!globalUserInfoStore.isAdmin) return <Navigate to={"/login"} />;
   const Columns = useCallback(() => {
     const firstUser = adminPageStore.users[0];
     if (!firstUser) return null;
@@ -68,14 +64,14 @@ const AdminPage = ({}: AdminPageProps) => {
           <TableRow key={user.username + i.toString()}>
             <TableCell>
               <Checkbox
-                checked={shouldRowCheckboxBeChecked(user.id)}
+                checked={shouldRowCheckboxBeChecked(user._id)}
                 onChange={(e) => handleUserCheckboxChange(e, user)}
               />
             </TableCell>
             {Object.values(users[i]).map((value, i) => (
               <TableCell
                 sx={{ color: theme.palette.text.primary }}
-                key={user.id + i}>
+                key={user._id + i}>
                 <Typography>{value.toString()}</Typography>
               </TableCell>
             ))}
@@ -95,7 +91,7 @@ const AdminPage = ({}: AdminPageProps) => {
   const handleUserCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, user: User) => {
     const { checked } = e.target;
     if (checked) adminPageStore.setSelectedUsers([...adminPageStore.selectedUsers, user]);
-    else adminPageStore.setSelectedUsers(adminPageStore.selectedUsers.filter((u) => u.id !== user.id));
+    else adminPageStore.setSelectedUsers(adminPageStore.selectedUsers.filter((u) => u._id !== user._id));
   };
 
   const handleHeaderCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +101,7 @@ const AdminPage = ({}: AdminPageProps) => {
   };
 
   const shouldRowCheckboxBeChecked = (userID: string) => {
-    return adminPageStore.selectedUsers.map((u) => u.id).includes(userID);
+    return adminPageStore.selectedUsers.map((u) => u._id).includes(userID);
   };
 
   return (
