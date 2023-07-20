@@ -20,6 +20,7 @@ import { User } from "../misc/types";
 import { Navigate, useNavigate } from "react-router-dom";
 import { GlobalUserInfoStoreContext } from "../App";
 import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 export interface AdminPageProps {}
 
@@ -28,6 +29,10 @@ const AdminPage = ({}: AdminPageProps) => {
   const [adminPageStore] = useState(new AdminPageStore());
   const navigate = useNavigate();
   const { theme, mode } = useThemeContext();
+  const {
+    staticTextObject: { AdminPage },
+    language,
+  } = useLanguageContext();
 
   if (!globalUserInfoStore.isAdmin) return <Navigate to={"/login"} />;
   const Columns = useCallback(() => {
@@ -74,14 +79,14 @@ const AdminPage = ({}: AdminPageProps) => {
               <Button
                 variant="outlined"
                 onClick={() => navigate(`/user/${user.username}`)}>
-                Visit User
+                {AdminPage.tableButton}
               </Button>
             </TableCell>
           </TableRow>
         ))}
       </>
     );
-  }, [adminPageStore.users, mode, theme]);
+  }, [adminPageStore.users, mode, theme, language, AdminPage]);
 
   const handleUserCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, user: User) => {
     const { checked } = e.target;
@@ -133,27 +138,27 @@ const AdminPage = ({}: AdminPageProps) => {
         <Button
           variant="contained"
           onClick={() => adminPageStore.changeSelectedUsers(true, null)}>
-          block
+          {AdminPage.button1}
         </Button>
         <Button
           variant="contained"
           onClick={() => adminPageStore.changeSelectedUsers(false, null)}>
-          unblock
+          {AdminPage.button2}
         </Button>
         <Button
           variant="contained"
           onClick={() => adminPageStore.deleteSelectedUsers()}>
-          delete
+          {AdminPage.button3}
         </Button>
         <Button
           variant="contained"
           onClick={() => adminPageStore.changeSelectedUsers(null, true)}>
-          give admin permissions
+          {AdminPage.button4}
         </Button>
         <Button
           variant="contained"
           onClick={() => adminPageStore.changeSelectedUsers(null, false)}>
-          remove admin permissions
+          {AdminPage.button5}
         </Button>
       </Container>
     </Box>

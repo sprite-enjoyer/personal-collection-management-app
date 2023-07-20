@@ -8,6 +8,7 @@ import CollectionList from "../components/CollectionList";
 import { GlobalUserInfoStoreContext } from "../App";
 import { Collection } from "../misc/types";
 import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 const ProfilePage = () => {
   const { userName } = useParams();
@@ -16,6 +17,12 @@ const ProfilePage = () => {
   const [profilePageStore] = useState(new ProfilePageStore(userName ?? "", collections));
   const [collectionConfigModalOpen, setCollectionConfigModalOpen] = useState(false);
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      ProfilePage: { header, button },
+    },
+  } = useLanguageContext();
+
   if (!userName) return null;
   globalUserInfoStore.setCurrentlyViewingUser(userName);
 
@@ -39,7 +46,8 @@ const ProfilePage = () => {
           <Typography
             variant="h3"
             color={theme.palette.text.primary}>
-            {userName}'s collections
+            {userName}
+            {header}
           </Typography>
           {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
             <>
@@ -49,7 +57,7 @@ const ProfilePage = () => {
                 sx={{
                   color: theme.palette.text.primary,
                 }}>
-                create collection
+                {button}
               </Button>
               <CollectionConfigModal
                 profilePageStore={profilePageStore}

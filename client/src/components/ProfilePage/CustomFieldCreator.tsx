@@ -3,6 +3,7 @@ import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Button } from "@mui/material";
 import { AdditionalFieldTypeString } from "../../misc/types";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 interface CustomFieldCreatorProps {
   collectionConfigStore: CollectionConfigStore;
@@ -10,6 +11,11 @@ interface CustomFieldCreatorProps {
 
 const CustomFieldCreator = ({ collectionConfigStore }: CustomFieldCreatorProps) => {
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      CollectionConfigModal: { inputLabel4, inputLabel5, button1 },
+    },
+  } = useLanguageContext();
   return (
     <>
       <Box
@@ -21,15 +27,16 @@ const CustomFieldCreator = ({ collectionConfigStore }: CustomFieldCreatorProps) 
         }}>
         <TextField
           onChange={(e) => collectionConfigStore.setCustomFieldToBeAddedName(e.target.value)}
-          label="Name"
+          label={inputLabel4}
           value={collectionConfigStore.additionalFieldToBeAddedName}
           InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+          InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <FormControl>
           <InputLabel
             sx={{ color: theme.palette.text.secondary }}
             id="field-type">
-            Type
+            {inputLabel5}
           </InputLabel>
           <Select
             onChange={(e) =>
@@ -66,7 +73,7 @@ const CustomFieldCreator = ({ collectionConfigStore }: CustomFieldCreatorProps) 
         <Button
           variant="outlined"
           onClick={() => collectionConfigStore.addCustomField()}>
-          add custom field
+          {button1}
         </Button>
       </Box>
     </>

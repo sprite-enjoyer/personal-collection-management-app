@@ -6,6 +6,7 @@ import { KeyboardEventHandler, useRef, useState } from "react";
 import { toJS } from "mobx";
 import { observer } from "mobx-react";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 interface FixedFieldsInputListProps {
   itemConfigStore: ItemConfigStore;
@@ -16,6 +17,11 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
   const [textFieldValue, setTextFieldValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      ItemConfigModal: { inputLabel1, inputLabel2, inputLabel3 },
+    },
+  } = useLanguageContext();
 
   const handleTagAddition = () => {
     itemConfigStore.addChosenTag(textFieldValue.trim());
@@ -31,9 +37,10 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
     <>
       <TextField
         value={itemConfigStore.name}
-        label="name"
+        label={inputLabel1}
         onChange={(e) => itemConfigStore.setName(e.target.value)}
         InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+        InputProps={{ sx: { color: theme.palette.text.primary } }}
       />
       <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
         <Autocomplete
@@ -52,8 +59,9 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
               {...params}
               variant="outlined"
               placeholder="Item Tags"
-              label="Item Tags"
+              label={inputLabel2}
               InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+              InputProps={{ sx: { color: theme.palette.text.primary } }}
             />
           )}
         />
@@ -62,7 +70,7 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
           onKeyDown={handleInputKeyDown}
           value={textFieldValue}
           onChange={(e) => setTextFieldValue(e.target.value)}
-          label={"Add a new tag"}
+          label={inputLabel3}
           InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
           sx={{ flex: "1 1" }}
           InputProps={{
@@ -71,6 +79,9 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
                 <AddIcon />
               </Button>
             ),
+            sx: {
+              color: theme.palette.text.primary,
+            },
           }}
         />
       </Box>

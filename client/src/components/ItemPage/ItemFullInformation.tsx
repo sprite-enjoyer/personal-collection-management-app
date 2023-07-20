@@ -3,6 +3,7 @@ import { Item } from "../../misc/types";
 import MDEditor from "@uiw/react-md-editor";
 import { Link } from "react-router-dom";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 interface ItemFullInformationProps {
   item: Item;
@@ -12,6 +13,11 @@ interface ItemFullInformationProps {
 
 const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullInformationProps) => {
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      ItemPage: { owner, fromCollection, tags, additionalFields, none },
+    },
+  } = useLanguageContext();
 
   return (
     <Box
@@ -34,7 +40,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
           overflow="auto"
           variant="h5"
           sx={{ color: theme.palette.text.secondary }}>
-          Owner:{" "}
+          {owner}
           <Link
             target="_blank"
             to={`/user/${ownerUserName}`}
@@ -46,7 +52,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
           overflow="auto"
           variant="h5"
           sx={{ color: theme.palette.text.secondary }}>
-          From Collection:{" "}
+          {fromCollection}
           <Link
             target="_blank"
             style={{ color: theme.palette.text.primary }}
@@ -57,7 +63,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
         <Typography
           variant="h5"
           sx={{ color: theme.palette.text.secondary }}>
-          Tags:
+          {tags}
         </Typography>
         <Box
           display={"flex"}
@@ -75,7 +81,7 @@ const ItemFullInformation = ({ item, collectionName, ownerUserName }: ItemFullIn
         <Typography
           variant="h5"
           sx={{ color: theme.palette.text.secondary }}>
-          Additional Fields: {item.additionalFields.length === 0 && "none"}
+          {additionalFields} {item.additionalFields.length === 0 && none}
         </Typography>
       </Box>
       <List

@@ -9,6 +9,8 @@ import ItemConfigModal from "../components/CollectionPage/ItemConfigModal";
 import { GlobalUserInfoStoreContext } from "../App";
 import { Collection } from "../misc/types";
 import ItemConfigStore from "../stores/ItemConfigStore";
+import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
@@ -17,10 +19,15 @@ const CollectionPage = () => {
   const [itemConfigModalOpen, setItemConfigModalOpen] = useState(false);
   const [collectionConfigModalOpen, setCollectionConfigModalOpen] = useState(false);
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      CollectionPage: { noItemsHeader, button1, button2 },
+    },
+  } = useLanguageContext();
 
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
   useEffect(() => {
-    // const fetchItem = async () => await itemConfigStore.fetchItem();
     if (!itemConfigModalOpen) {
       itemConfigStore.resetUserInputs();
     }
@@ -49,7 +56,7 @@ const CollectionPage = () => {
                   alignSelf: "flex-end",
                 }}
                 onClick={handleCollectionEditButtonClick}>
-                edit collection
+                {button1}
               </Button>
               <CollectionConfigModal
                 creatingCollection={false}
@@ -60,7 +67,7 @@ const CollectionPage = () => {
               <Button
                 variant="contained"
                 onClick={() => setItemConfigModalOpen(true)}>
-                add item
+                {button2}
               </Button>
             </>
           )}
@@ -71,8 +78,9 @@ const CollectionPage = () => {
           <Container sx={{ marginTop: "100px" }}>
             <Typography
               align="center"
+              color={theme.palette.text.primary}
               variant="h3">
-              No items in this collection yet!
+              {noItemsHeader}
             </Typography>
           </Container>
         )}

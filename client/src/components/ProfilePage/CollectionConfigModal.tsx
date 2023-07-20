@@ -1,5 +1,5 @@
 import { Modal, Box, Container, Button } from "@mui/material";
-import { topics } from "../../misc/constants";
+import { englishTopics } from "../../misc/constants";
 import { observer } from "mobx-react";
 import { useEffect, useState } from "react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
@@ -12,6 +12,7 @@ import DeleteCollectionDialog from "../CollectionPage/DeleteCollectionDialog";
 import CollectionConfigModalFixedFields from "./CollectionConfigModalFixedFields";
 import CustomFieldCreator from "./CustomFieldCreator";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 export interface AddCollectionModalProps {
   creatingCollection: boolean;
@@ -31,6 +32,11 @@ const CollectionConfigModal = ({
   const { userName, collectionID } = useParams() as { userName?: string; collectionID?: string };
   const [collectionConfigStore] = useState(new CollectionConfigStore(creatingCollection, userName, collectionID));
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      CollectionConfigModal: { button2Create, button2Edit },
+    },
+  } = useLanguageContext();
 
   useEffect(() => {
     const fillValues = async () => {
@@ -76,7 +82,7 @@ const CollectionConfigModal = ({
           }}>
           <CollectionConfigModalFixedFields
             collectionConfigStore={collectionConfigStore}
-            topics={topics}
+            topics={englishTopics}
           />
           <CustomFieldCreator collectionConfigStore={collectionConfigStore} />
           <Box
@@ -97,7 +103,7 @@ const CollectionConfigModal = ({
             <Button
               variant="contained"
               onClick={handleButtonClick}>
-              {creatingCollection ? "add collection" : "edit collection"}
+              {creatingCollection ? button2Create : button2Edit}
             </Button>
             {!creatingCollection && (
               <Button

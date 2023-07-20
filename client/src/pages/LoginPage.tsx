@@ -4,11 +4,19 @@ import LoginPageStore from "../stores/LoginPageStore";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalUserInfoStoreContext } from "../App";
+import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 const LoginPage = () => {
   const [loginPageStore] = useState(new LoginPageStore());
   const navigate = useNavigate();
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+  const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      LoginPage: { inputLabel1, inputLabel2, button },
+    },
+  } = useLanguageContext();
 
   const hanldeLoginButtonClick = () => {
     globalUserInfoStore.setUserChecked(false);
@@ -34,15 +42,19 @@ const LoginPage = () => {
           padding: "20px",
         }}>
         <TextField
-          label="Username"
+          label={inputLabel1}
           fullWidth
           onChange={(e) => loginPageStore.setUserName(e.target.value)}
+          InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+          InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <TextField
-          label="Password"
+          label={inputLabel2}
           type="password"
           fullWidth
           onChange={(e) => loginPageStore.setPassword(e.target.value)}
+          InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+          InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <Button
           sx={{
@@ -52,7 +64,7 @@ const LoginPage = () => {
           variant="contained"
           onClick={hanldeLoginButtonClick}
           color="primary">
-          Login
+          {button}
         </Button>
       </Container>
     </Box>

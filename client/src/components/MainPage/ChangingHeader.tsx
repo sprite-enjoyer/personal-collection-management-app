@@ -1,16 +1,19 @@
 import { useEffect, useRef } from "react";
 import Typed from "typed.js";
-import { topics } from "../../misc/constants";
+import { englishTopics } from "../../misc/constants";
+import { georgianTopics } from "../../misc/constants";
 import { CSSProperties } from "@mui/material/styles/createMixins";
 import { Typography } from "@mui/material";
 import "./cursor.css";
+import { useLanguageContext } from "../../misc/language";
 
 interface ChangingHeaderProps {
   style: CSSProperties;
 }
-const strings = topics.slice(0, -1);
 const ChangingHeader = ({ style }: ChangingHeaderProps) => {
   const ref = useRef<HTMLSpanElement | null>(null);
+  const { language } = useLanguageContext();
+  const strings = (language === "English" ? englishTopics : georgianTopics).slice(0, -1);
 
   useEffect(() => {
     const typed = new Typed(ref.current, {
@@ -24,7 +27,7 @@ const ChangingHeader = ({ style }: ChangingHeaderProps) => {
     });
 
     return () => typed.destroy();
-  }, []);
+  }, [language]);
 
   return (
     <Typography

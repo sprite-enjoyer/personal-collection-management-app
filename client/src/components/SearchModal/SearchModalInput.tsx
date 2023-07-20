@@ -3,6 +3,7 @@ import SearchModalStore from "../../stores/SearchModalStore";
 import { observer } from "mobx-react";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useRef } from "react";
+import { useThemeContext } from "../../misc/theme";
 
 interface SearchModalInputProps {
   searchModalStore: SearchModalStore;
@@ -10,6 +11,7 @@ interface SearchModalInputProps {
 
 const SearchModalInput = ({ searchModalStore }: SearchModalInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -60,7 +62,7 @@ const SearchModalInput = ({ searchModalStore }: SearchModalInputProps) => {
           overflow: "auto",
           maxWidth: "50%",
           maxHeight: "80px",
-          backgroundColor: "#ededed",
+          backgroundColor: theme.palette.background.default,
           width: "50%",
           minHeight: "50px",
           borderRadius: "5px",
@@ -68,6 +70,7 @@ const SearchModalInput = ({ searchModalStore }: SearchModalInputProps) => {
         }}>
         {searchModalStore.searchValues.map((value) => (
           <Chip
+            sx={{ color: theme.palette.text.primary }}
             key={value}
             label={value}
             onDelete={() => handleSearchValueRemove(value)}

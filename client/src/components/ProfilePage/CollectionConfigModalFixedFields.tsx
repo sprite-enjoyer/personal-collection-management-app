@@ -2,6 +2,7 @@ import { FormControl, InputLabel, MenuItem, Select, TextField, Typography } from
 import { observer } from "mobx-react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 interface CollectionConfigModalFixedFieldsProps {
   collectionConfigStore: CollectionConfigStore;
@@ -10,35 +11,42 @@ interface CollectionConfigModalFixedFieldsProps {
 
 const CollectionConfigModalFixedFields = ({ collectionConfigStore, topics }: CollectionConfigModalFixedFieldsProps) => {
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      CollectionConfigModal: { inputLabel1, inputLabel2, inputLabel3, inputLabel4 },
+    },
+  } = useLanguageContext();
+
   return (
     <>
       <TextField
         fullWidth
-        label="Name"
+        label={inputLabel1}
         type="text"
         value={collectionConfigStore.collection.name}
         onChange={(e) => collectionConfigStore.setCollectionName(e.target.value)}
         InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+        InputProps={{ sx: { color: theme.palette.text.primary } }}
       />
       <TextField
         fullWidth
-        label="Description"
+        label={inputLabel2}
         multiline
         value={collectionConfigStore.collection.description}
         type="text"
         onChange={(e) => collectionConfigStore.setCollectionDescription(e.target.value)}
         InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
+        InputProps={{ sx: { color: theme.palette.text.primary } }}
       />
       <FormControl sx={{ width: "100%" }}>
         <InputLabel
           sx={{ color: theme.palette.text.secondary, backgroundColor: theme.palette.background.default }}
           id="select-topic">
-          Topic
+          {inputLabel3}
         </InputLabel>
         <Select
           onChange={(e) => collectionConfigStore.setCollectionTopic(e.target.value)}
           labelId="select-topic"
-          label="Topic"
           value={collectionConfigStore.collection.topic}
           defaultValue="Other"
           inputProps={{

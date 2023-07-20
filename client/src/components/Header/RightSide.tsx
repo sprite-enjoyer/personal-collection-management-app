@@ -1,4 +1,16 @@
-import { Box, Button, Divider, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Switch,
+  Typography,
+} from "@mui/material";
 import HeaderStore from "../../stores/HeaderStore";
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
@@ -8,12 +20,16 @@ import useColorTheme from "../../misc/useColorTheme";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Link } from "react-router-dom";
 import LanguageIcon from "@mui/icons-material/Language";
+import { useContext } from "react";
+import { LanguageContext } from "../../misc/language";
 interface RightSideProps {
   headerStore: HeaderStore;
 }
 
 const RightSide = ({ headerStore }: RightSideProps) => {
   const { mode, theme, toggleColorMode } = useThemeContext();
+  const { language, setLanguage } = useContext(LanguageContext);
+
   return (
     <Box
       display={"flex"}
@@ -31,15 +47,18 @@ const RightSide = ({ headerStore }: RightSideProps) => {
           <GitHubIcon sx={{ color: mode === "dark" ? "white" : "black" }} />
         </Link>
       </IconButton>
-      <Button>
-        <Box
-          display={"flex"}
-          gap={"10px"}
-          color={theme.palette.text.primary}>
-          English
-          <LanguageIcon />
-        </Box>
-      </Button>
+      <FormControlLabel
+        sx={{ width: "150px" }}
+        id="language-label"
+        control={<Switch />}
+        checked={language === "ქართული"}
+        label={<Typography color={theme.palette.text.primary}>{language}</Typography>}
+        onChange={(_, checked) => {
+          if (checked) setLanguage("ქართული");
+          else setLanguage("English");
+        }}
+      />
+
       <Box
         sx={{
           backgroundColor: mode === "dark" ? "#2e333b" : "#acaeb0",

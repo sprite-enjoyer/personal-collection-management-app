@@ -6,12 +6,18 @@ import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 interface LeftSideProps {
   globalUserInfoStore: GlobalUserInfoStore;
 }
 
 const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
   const navigate = useNavigate();
+  const {
+    staticTextObject: {
+      Header: { login, register },
+    },
+  } = useLanguageContext();
 
   return (
     <Box
@@ -52,8 +58,8 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
         <Box
           display={"flex"}
           gap={"10px"}>
-          <Button onClick={() => navigate("/login")}>login</Button>
-          <Button onClick={() => navigate("/register")}>register</Button>
+          <Button onClick={() => navigate("/login")}>{login}</Button>
+          <Button onClick={() => navigate("/register")}>{register}</Button>
         </Box>
       )}
     </Box>

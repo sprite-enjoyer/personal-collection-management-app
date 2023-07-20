@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toJS } from "mobx";
 import SearchModalInput from "./SearchModal/SearchModalInput";
 import ItemCard from "./MainPage/ItemCard";
+import { useThemeContext } from "../misc/theme";
 
 export interface SearchModalProps {
   initialSearchValues: string[];
@@ -14,6 +15,7 @@ export interface SearchModalProps {
 
 const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModalProps) => {
   const [searchModalStore] = useState(new SearchModalStore());
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     searchModalStore.setSearchValues(initialSearchValues);
@@ -41,7 +43,7 @@ const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModal
       <Box
         sx={{
           borderRadius: "5px",
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.default,
           minWidth: "max(400px, 50%)",
           minHeight: "max(500px, 70%)",
           maxHeight: "600px",
@@ -53,7 +55,13 @@ const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModal
           overflow: "auto",
         }}>
         <SearchModalInput searchModalStore={searchModalStore} />
-        {searchModalStore.results.length !== 0 && <Typography variant="h6">Results:</Typography>}
+        {searchModalStore.results.length !== 0 && (
+          <Typography
+            variant="h6"
+            color={theme.palette.text.primary}>
+            Results:
+          </Typography>
+        )}
         <Box
           display={"flex"}
           flexWrap={"wrap"}

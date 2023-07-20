@@ -24,7 +24,11 @@ const DeleteCollectionDialog = ({ collectionConfigStore }: DeleteCollectinoDialo
       onClose={handleClose}
       open={collectionConfigStore.deleteCollectionDialogOpen}>
       <Box sx={{ backgroundColor: theme.palette.background.default }}>
-        <DialogTitle textAlign={"center"}>delete this collection?</DialogTitle>
+        <DialogTitle
+          textAlign={"center"}
+          color={theme.palette.text.primary}>
+          delete this collection?
+        </DialogTitle>
         {collectionConfigStore.deleteCollectionDialogOpen && (
           <Box marginTop={"20px"}>
             <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", padding: "20px" }}>

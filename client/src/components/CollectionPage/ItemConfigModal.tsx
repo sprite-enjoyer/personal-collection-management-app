@@ -9,6 +9,7 @@ import { toJS } from "mobx";
 import FixedFieldsInputList from "./FixedFieldsInputList";
 import { Collection } from "../../misc/types";
 import { useThemeContext } from "../../misc/theme";
+import { useLanguageContext } from "../../misc/language";
 
 export interface ItemConfigModalProps {
   itemConfigStore: ItemConfigStore;
@@ -39,6 +40,11 @@ const ItemConfigModal = ({
   }, [collectionPageStore, collectionPageStore?.collection.additionalFieldsInfo]);
 
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      ItemConfigModal: { button1Create, button1Edit },
+    },
+  } = useLanguageContext();
 
   const handleClick = async () => {
     if (creatingItem && collectionPageStore)
@@ -81,7 +87,7 @@ const ItemConfigModal = ({
         <Button
           onClick={handleClick}
           variant="contained">
-          {creatingItem ? "add item" : "edit item"}
+          {creatingItem ? button1Create : button1Edit}
         </Button>
       </Box>
     </Modal>

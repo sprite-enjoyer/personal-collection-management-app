@@ -3,11 +3,12 @@ import { Collection, ItemCardItem } from "../misc/types";
 import axios from "axios";
 import LatestItemsList from "../components/MainPage/LatestItemsList";
 import CollectionList from "../components/CollectionList";
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ChangingHeader from "../components/MainPage/ChangingHeader";
 import { CSSProperties } from "@mui/material/styles/createMixins";
 import TagCloud from "../components/MainPage/TagCloud";
 import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 export const fetchLatestItems = async () => {
   const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/items/getLatest/5`);
@@ -28,7 +29,7 @@ export const fetchAllTags = async () => {
 };
 
 const headerTextStyles: CSSProperties = {
-  fontSize: "4em",
+  fontSize: "2.5em",
   padding: "0",
   margin: "0",
   display: "inline",
@@ -36,13 +37,17 @@ const headerTextStyles: CSSProperties = {
 
 const MainPage = () => {
   const [latestItems, largestCollections, tags] = useLoaderData() as [ItemCardItem[], Collection[], string[]];
-  const navigate = useNavigate();
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      MainPage: { header1, header2, header3 },
+    },
+  } = useLanguageContext();
 
   return (
     <Box
       style={{
-        padding: "0px 5% 0px 5%",
+        padding: "0px 5% 50px 5%",
         boxSizing: "border-box",
         overflow: "auto",
         width: "100%",
@@ -54,10 +59,10 @@ const MainPage = () => {
         display={"flex"}
         gap={"20px"}>
         <Typography
-          maxWidth={"100%"}
+          maxWidth={"50%"}
           color={theme.palette.text.primary}
           sx={headerTextStyles}>
-          Collect and view
+          {header1}
         </Typography>
         <ChangingHeader style={headerTextStyles} />
       </Box>
@@ -75,8 +80,8 @@ const MainPage = () => {
           <Typography
             maxWidth={"100%"}
             color={theme.palette.text.primary}
-            variant="h4">
-            Here are some huge collections:
+            variant="h5">
+            {header2}
           </Typography>
           <Box
             sx={{
@@ -94,8 +99,8 @@ const MainPage = () => {
           <Typography
             maxWidth={"100%"}
             color={theme.palette.text.primary}
-            variant="h4">
-            Recently added items:
+            variant="h5">
+            {header3}
           </Typography>
           <Box
             sx={{

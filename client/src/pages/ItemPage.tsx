@@ -29,6 +29,7 @@ const ItemPage = () => {
   }, []);
 
   if (!item || !userName || !collection) return null;
+
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between", overflow: "auto" }}>
       <ItemFullInformation

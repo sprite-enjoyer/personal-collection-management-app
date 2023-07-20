@@ -19,23 +19,23 @@ const RoutesManager = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route
-          path="/login"
-          element={
-            <Suspense fallback={null}>
-              <LazyLoginPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <Suspense fallback={null}>
-              <LazyRegisterPage />
-            </Suspense>
-          }
-        />
         <Route element={<Header />}>
+          <Route
+            path="/login"
+            element={
+              <Suspense fallback={null}>
+                <LazyLoginPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Suspense fallback={null}>
+                <LazyRegisterPage />
+              </Suspense>
+            }
+          />
           <Route
             path="/"
             element={<MainPage />}

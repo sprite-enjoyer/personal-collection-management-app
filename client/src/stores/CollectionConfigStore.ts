@@ -1,5 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
-import { topics } from "../misc/constants";
+import { englishTopics } from "../misc/constants";
 import { Collection, AdditionalFieldInfo, AdditionalFieldTypeString } from "../misc/types";
 import { NavigateFunction } from "react-router-dom";
 
@@ -98,7 +98,7 @@ class CollectionConfigStore {
   }
 
   setCollectionTopic(newValue: string) {
-    if (!topics.includes(newValue)) throw new Error("Not in the list of predefined topics!");
+    if (!englishTopics.includes(newValue)) throw new Error("Not in the list of predefined topics!");
     else this.collection.topic = newValue;
   }
 
