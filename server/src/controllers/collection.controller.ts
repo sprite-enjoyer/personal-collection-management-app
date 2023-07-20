@@ -56,7 +56,29 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
       })
   );
 
-  await Item.updateMany({}, { $addToSet: { additionalFields: newFields } });
+  const removedFields = collection.additionalFieldsInfo
+    .toObject()
+    .filter((info: { name: string }) => !additionalFieldsInfo.map((info) => info.name).includes(info.name))
+    .map((res: any) => {
+      return { ...res, value: null };
+    });
+
+  await Item.updateMany({ containerCollection: id }, { $addToSet: { additionalFields: newFields } });
+  const items = await Item.find({ containerCollection: id });
+  const modifiedItems: any[] = [];
+
+  items.forEach(async (item) => {
+    const newAdditionalFields = new Types.DocumentArray<AdditionalField>(
+      item.additionalFields.filter(
+        (field) => !removedFields.map((field: { name: any }) => field.name).includes(field.name)
+      )
+    );
+    console.log(newAdditionalFields, ": new additional fields");
+    item.additionalFields = newAdditionalFields;
+    modifiedItems.push(item);
+  });
+
+  await Promise.all(modifiedItems.map((item) => item.save()));
 
   collection.name = name;
   collection.description = description;

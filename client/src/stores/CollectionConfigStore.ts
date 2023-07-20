@@ -25,6 +25,8 @@ class CollectionConfigStore {
 
   userName?: string;
 
+  idCounter = "0";
+
   constructor(creatingCollection: boolean, userName?: string, collectionID?: string) {
     this.creatingCollection = creatingCollection;
     this.collection._id = collectionID ?? "";
@@ -32,6 +34,7 @@ class CollectionConfigStore {
 
     makeObservable(this, {
       collection: observable,
+      idCounter: observable,
       additionalFieldToBeAddedName: observable,
       additionalFieldToBeAddedType: observable,
       deleteCollectionDialogOpen: observable,
@@ -45,7 +48,20 @@ class CollectionConfigStore {
       setDeleteCollectionDialogOpen: action,
       setAdditionalFieldsInfo: action,
       deleteCollection: action,
+      removeAdditionalFieldById: action,
+      incrementIdCounter: action,
     });
+  }
+
+  incrementIdCounter() {
+    const id = parseInt(this.idCounter);
+    if (isNaN(id)) throw new Error("incrementIdCount error: can't cast id into a number");
+
+    this.idCounter = (id + 1).toString();
+  }
+
+  removeAdditionalFieldById(_id: string) {
+    this.setAdditionalFieldsInfo(this.collection.additionalFieldsInfo.filter((info) => info._id !== _id));
   }
 
   setDeleteCollectionDialogOpen(newValue: boolean) {
@@ -83,10 +99,11 @@ class CollectionConfigStore {
     this.collection.additionalFieldsInfo.push({
       name: this.additionalFieldToBeAddedName,
       type: this.additionalFieldToBeAddedType,
-      _id: "",
+      _id: this.idCounter,
     });
     this.additionalFieldToBeAddedName = "";
     this.additionalFieldToBeAddedType = "string";
+    this.incrementIdCounter();
   }
 
   setCollectionName(newValue: string) {

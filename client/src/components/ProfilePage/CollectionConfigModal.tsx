@@ -13,6 +13,7 @@ import CollectionConfigModalFixedFields from "./CollectionConfigModalFixedFields
 import CustomFieldCreator from "./CustomFieldCreator";
 import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
+import { toJS } from "mobx";
 
 export interface AddCollectionModalProps {
   creatingCollection: boolean;
@@ -61,6 +62,8 @@ const CollectionConfigModal = ({
 
     setCollectionConfigModalOpen(false);
   };
+
+  console.log(toJS(collectionConfigStore.collection.additionalFieldsInfo));
 
   return (
     <Modal

@@ -1,8 +1,9 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { observer } from "mobx-react";
 import { toJS } from "mobx";
 import { useThemeContext } from "../../misc/theme";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 interface CustomFieldsListProps {
   collectionConfigStore: CollectionConfigStore;
@@ -11,9 +12,10 @@ interface CustomFieldsListProps {
 interface CustomFieldInfoRowProps {
   name: string;
   type: string;
+  deleteField: () => void;
 }
 
-const CustomFieldInfoRow = ({ name, type }: CustomFieldInfoRowProps) => {
+const CustomFieldInfoRow = ({ name, type, deleteField }: CustomFieldInfoRowProps) => {
   const { theme } = useThemeContext();
   return (
     <Box
@@ -21,9 +23,13 @@ const CustomFieldInfoRow = ({ name, type }: CustomFieldInfoRowProps) => {
       sx={{
         display: "flex",
         justifyContent: "center",
+        gap: "20px",
         color: theme.palette.text.secondary,
       }}>
-      <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+      <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: "10px" }}>
+        <IconButton onClick={deleteField}>
+          <RemoveCircleOutlineIcon sx={{ color: "#c23636" }} />
+        </IconButton>
         <Typography fontSize={"1.2em"}>{name}:</Typography>
       </Box>
       <Box sx={{ flex: "1 1", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -38,9 +44,9 @@ const CustomFieldsList = ({ collectionConfigStore }: CustomFieldsListProps) => {
     <>
       {collectionConfigStore.collection.additionalFieldsInfo.map((info) => (
         <CustomFieldInfoRow
-          key={info.name}
-          name={info.name}
-          type={info.type}
+          key={info._id}
+          {...info}
+          deleteField={() => collectionConfigStore.removeAdditionalFieldById(info._id)}
         />
       ))}
     </>
