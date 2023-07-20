@@ -73,7 +73,6 @@ export const updateCollectionHandler = async (req: Request<any, any, EditCollect
         (field) => !removedFields.map((field: { name: any }) => field.name).includes(field.name)
       )
     );
-    console.log(newAdditionalFields, ": new additional fields");
     item.additionalFields = newAdditionalFields;
     modifiedItems.push(item);
   });

@@ -32,7 +32,21 @@ export const updateCollectionHandler = async (req, res) => {
         .map((info) => {
         return { value: null, ...info };
     }));
-    await Item.updateMany({}, { $addToSet: { additionalFields: newFields } });
+    const removedFields = collection.additionalFieldsInfo
+        .toObject()
+        .filter((info) => !additionalFieldsInfo.map((info) => info.name).includes(info.name))
+        .map((res) => {
+        return { ...res, value: null };
+    });
+    await Item.updateMany({ containerCollection: id }, { $addToSet: { additionalFields: newFields } });
+    const items = await Item.find({ containerCollection: id });
+    const modifiedItems = [];
+    items.forEach(async (item) => {
+        const newAdditionalFields = new Types.DocumentArray(item.additionalFields.filter((field) => !removedFields.map((field) => field.name).includes(field.name)));
+        item.additionalFields = newAdditionalFields;
+        modifiedItems.push(item);
+    });
+    await Promise.all(modifiedItems.map((item) => item.save()));
     collection.name = name;
     collection.description = description;
     //@ts-ignore

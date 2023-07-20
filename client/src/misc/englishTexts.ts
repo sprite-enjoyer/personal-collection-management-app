@@ -54,7 +54,6 @@ const englishTexts = {
   ItemConfigModal: {
     inputLabel1: "Name",
     inputLabel2: "Item Tags",
-    inputLabel3: "Add a new tag",
     button1Create: "add item",
     button1Edit: "edit item",
   },

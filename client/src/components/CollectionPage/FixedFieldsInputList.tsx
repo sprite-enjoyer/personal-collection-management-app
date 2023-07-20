@@ -1,36 +1,40 @@
 import { TextField, Autocomplete, Box, Button } from "@mui/material";
 import ItemConfigStore from "../../stores/ItemConfigStore";
-import CollectionPageStore from "../../stores/CollectionPageStore";
 import AddIcon from "@mui/icons-material/Add";
-import { KeyboardEventHandler, useRef, useState } from "react";
-import { toJS } from "mobx";
+import { KeyboardEventHandler, useEffect, useRef, useState } from "react";
+import { toJS, values } from "mobx";
 import { observer } from "mobx-react";
 import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
+import { fetchAllTags } from "../../pages/MainPage";
 
 interface FixedFieldsInputListProps {
   itemConfigStore: ItemConfigStore;
-  collectionPageStore?: CollectionPageStore;
 }
 
-const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFieldsInputListProps) => {
-  const [textFieldValue, setTextFieldValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+const FixedFieldsInputList = ({ itemConfigStore }: FixedFieldsInputListProps) => {
+  const [allTags, setAllTags] = useState<string[]>([]);
+  const [autoCompleteInputValue, setAutoCompleteInputValue] = useState("");
   const { theme } = useThemeContext();
   const {
     staticTextObject: {
-      ItemConfigModal: { inputLabel1, inputLabel2, inputLabel3 },
+      ItemConfigModal: { inputLabel1, inputLabel2 },
     },
   } = useLanguageContext();
 
-  const handleTagAddition = () => {
-    itemConfigStore.addChosenTag(textFieldValue.trim());
-    setTextFieldValue("");
+  useEffect(() => {
+    const getTags = async () => setAllTags(await fetchAllTags());
+    getTags();
+  }, [itemConfigStore.editingItemID]);
+
+  const handleTagAddition = (setState: (newValue: string) => void, value: string) => {
+    itemConfigStore.addChosenTag(value.trim());
+    setState("");
   };
 
-  const handleInputKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
-    if (e.key !== "Enter" || textFieldValue.length === 0) return;
-    handleTagAddition();
+  const handleAutoCompleteKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key !== "Enter" || autoCompleteInputValue.length === 0) return;
+    handleTagAddition(setAutoCompleteInputValue, autoCompleteInputValue);
   };
 
   return (
@@ -46,43 +50,19 @@ const FixedFieldsInputList = ({ itemConfigStore, collectionPageStore }: FixedFie
         <Autocomplete
           sx={{ flex: "1 1" }}
           multiple
-          autoComplete
-          autoHighlight
-          id="tags"
-          limitTags={4}
-          options={[...itemConfigStore.chosenTags]}
+          options={Array.from(new Set([...itemConfigStore.chosenTags, ...allTags]))}
           value={itemConfigStore.chosenTags}
+          onKeyDown={handleAutoCompleteKeyDown}
           onChange={(_, v) => itemConfigStore.setChosenTags(v)}
-          getOptionLabel={(v) => v}
           renderInput={(params) => (
             <TextField
               {...params}
-              variant="outlined"
-              placeholder="Item Tags"
+              value={autoCompleteInputValue}
+              onChange={(e) => setAutoCompleteInputValue(e.target.value)}
+              variant="standard"
               label={inputLabel2}
-              InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
-              InputProps={{ sx: { color: theme.palette.text.primary } }}
             />
           )}
-        />
-        <TextField
-          inputRef={inputRef}
-          onKeyDown={handleInputKeyDown}
-          value={textFieldValue}
-          onChange={(e) => setTextFieldValue(e.target.value)}
-          label={inputLabel3}
-          InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
-          sx={{ flex: "1 1" }}
-          InputProps={{
-            endAdornment: (
-              <Button onClick={handleTagAddition}>
-                <AddIcon />
-              </Button>
-            ),
-            sx: {
-              color: theme.palette.text.primary,
-            },
-          }}
         />
       </Box>
     </>

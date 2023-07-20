@@ -63,8 +63,6 @@ const CollectionConfigModal = ({
     setCollectionConfigModalOpen(false);
   };
 
-  console.log(toJS(collectionConfigStore.collection.additionalFieldsInfo));
-
   return (
     <Modal
       open={collectionConfigModalOpen}

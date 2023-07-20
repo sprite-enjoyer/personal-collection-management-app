@@ -52,6 +52,7 @@ class ItemConfigStore {
     });
 
     const getCollection = async () => await this.updateCollectionFromDB(collecitonID);
+
     getCollection();
   }
 

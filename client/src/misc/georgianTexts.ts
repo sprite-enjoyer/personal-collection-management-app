@@ -56,7 +56,6 @@ const georgianTexts: StaticTextObject = {
   ItemConfigModal: {
     inputLabel1: "სახელი",
     inputLabel2: "იარლიყები",
-    inputLabel3: "იარლიყის დამატება",
     button1Create: "ნივთის დამატება",
     button1Edit: "ნივთის შეცვლა",
   },

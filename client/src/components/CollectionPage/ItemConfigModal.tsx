@@ -39,6 +39,13 @@ const ItemConfigModal = ({
       );
   }, [collectionPageStore, collectionPageStore?.collection.additionalFieldsInfo]);
 
+  useEffect(() => {
+    if (!creatingItem) {
+      const fetchItem = async () => await itemConfigStore.fetchItem();
+      fetchItem();
+    }
+  }, [itemConfigStore.editingItemID]);
+
   const { theme } = useThemeContext();
   const {
     staticTextObject: {
@@ -79,10 +86,7 @@ const ItemConfigModal = ({
           maxWidth: "60%",
           width: "fit-content",
         }}>
-        <FixedFieldsInputList
-          itemConfigStore={itemConfigStore}
-          collectionPageStore={collectionPageStore}
-        />
+        <FixedFieldsInputList itemConfigStore={itemConfigStore} />
         <CustomFieldsInputList itemConfigStore={itemConfigStore} />
         <Button
           onClick={handleClick}
