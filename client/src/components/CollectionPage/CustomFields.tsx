@@ -41,6 +41,23 @@ const DateInputField = observer(({ itemConfigStore, field }: SpecificInputFieldT
         label={<Typography color={theme.palette.text.secondary}>{field.name}</Typography>}
         onAccept={(e: { $d: Date } | null) => itemConfigStore.setFieldValue(field.name, e?.$d ?? new Date())}
         value={{ $d: field.value }}
+        slotProps={{
+          openPickerButton: {
+            sx: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
+          },
+          digitalClockSectionItem: {
+            sx: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
+          },
+          desktopPaper: {
+            sx: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
+          },
+          day: {
+            sx: { color: theme.palette.text.primary },
+          },
+          mobilePaper: {
+            sx: { backgroundColor: theme.palette.background.default, color: theme.palette.text.primary },
+          },
+        }}
       />
     </LocalizationProvider>
   );

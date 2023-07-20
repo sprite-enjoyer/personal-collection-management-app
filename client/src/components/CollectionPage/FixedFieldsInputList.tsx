@@ -44,7 +44,7 @@ const FixedFieldsInputList = ({ itemConfigStore }: FixedFieldsInputListProps) =>
         label={inputLabel1}
         onChange={(e) => itemConfigStore.setName(e.target.value)}
         InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
-        InputProps={{ sx: { color: theme.palette.text.primary } }}
+        InputProps={{ sx: { color: theme.palette.text.secondary } }}
       />
       <Box sx={{ display: "flex", width: "100%", gap: "10px" }}>
         <Autocomplete
@@ -53,6 +53,7 @@ const FixedFieldsInputList = ({ itemConfigStore }: FixedFieldsInputListProps) =>
           options={Array.from(new Set([...itemConfigStore.chosenTags, ...allTags]))}
           value={itemConfigStore.chosenTags}
           onKeyDown={handleAutoCompleteKeyDown}
+          ChipProps={{ sx: { color: theme.palette.text.primary } }}
           onChange={(_, v) => itemConfigStore.setChosenTags(v)}
           renderInput={(params) => (
             <TextField
