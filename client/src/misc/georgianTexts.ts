@@ -82,6 +82,10 @@ const georgianTexts: StaticTextObject = {
   Custom404: {
     header1: "ეს გვერდი არ არსებობს!",
   },
+  Blocked: {
+    header1: "შენ ხარ დაბლოკილი!",
+    header3: "შეგიძლია შექმნა ახალი პროფილი: ",
+  },
 };
 
 export default georgianTexts;

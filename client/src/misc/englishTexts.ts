@@ -80,6 +80,10 @@ const englishTexts = {
   Custom404: {
     header1: "This link doesn't exist!",
   },
+  Blocked: {
+    header1: "You have been blocked!",
+    header3: "You can create a new account: ",
+  },
 };
 
 export type StaticTextObject = typeof englishTexts;

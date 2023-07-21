@@ -57,6 +57,7 @@ class GlobalUserInfoStore {
 
     if (userID && userName) {
       const user = await GlobalUserInfoStore.fetchUser(userID);
+      user.blocked = blocked;
       this.setUser(user);
     }
 

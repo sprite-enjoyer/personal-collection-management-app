@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import AdminPageStore from "../stores/AdminPageStore";
 import { observer } from "mobx-react";
 import {
@@ -21,6 +21,7 @@ import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
 import { useScreenSizeContext } from "../misc/screenSize";
 import { CSVDownload } from "react-csv";
+import { GlobalUserInfoStoreContext } from "../App";
 
 interface AdminPageProps {}
 
@@ -37,6 +38,7 @@ const AdminPage = ({}: AdminPageProps) => {
   } = useLanguageContext();
   const { userHasSmallScreen } = useScreenSizeContext();
   const [exportStatus, setExportStatus] = useState(false);
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   const Columns = useCallback(() => {
     const firstUser = adminPageStore.users[0];
@@ -150,11 +152,19 @@ const AdminPage = ({}: AdminPageProps) => {
           alignItems: "center",
           gap: "2px",
         }}>
-        <Button onClick={() => adminPageStore.changeSelectedUsers(true, null)}>{AdminPage.button1}</Button>
-        <Button onClick={() => adminPageStore.changeSelectedUsers(false, null)}>{AdminPage.button2}</Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(true, null, navigate, globalUserInfoStore)}>
+          {AdminPage.button1}
+        </Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(false, null, navigate, globalUserInfoStore)}>
+          {AdminPage.button2}
+        </Button>
         <Button onClick={() => adminPageStore.deleteSelectedUsers()}>{AdminPage.button3}</Button>
-        <Button onClick={() => adminPageStore.changeSelectedUsers(null, true)}>{AdminPage.button4}</Button>
-        <Button onClick={() => adminPageStore.changeSelectedUsers(null, false)}>{AdminPage.button5}</Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(null, true, navigate, globalUserInfoStore)}>
+          {AdminPage.button4}
+        </Button>
+        <Button onClick={() => adminPageStore.changeSelectedUsers(null, false, navigate, globalUserInfoStore)}>
+          {AdminPage.button5}
+        </Button>
         <Button onClick={() => setExportStatus((prev) => !prev)}>{exportText}</Button>
         {exportStatus && (
           <>

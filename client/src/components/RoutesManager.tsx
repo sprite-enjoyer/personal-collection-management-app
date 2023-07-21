@@ -1,5 +1,5 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
-import { Suspense, lazy, useContext } from "react";
+import { Suspense, lazy, useContext, useEffect } from "react";
 import { GlobalUserInfoStoreContext } from "../App";
 import CollectionPageStore from "../stores/CollectionPageStore";
 import ItemPageStore from "../stores/ItemPageStore";
@@ -8,6 +8,7 @@ import Header from "./Header";
 import ProfilePageStore from "../stores/ProfilePageStore";
 import ErrorComponent from "./ErrorComponent";
 import Custom404 from "./Custom404";
+import UserBlocked from "./UserBlocked";
 
 const LazyLoginPage = lazy(async () => await import("../pages/LoginPage"));
 const LazyRegisterPage = lazy(async () => await import("../pages/RegisterPage"));
@@ -18,6 +19,7 @@ const LazyItemPage = lazy(async () => await import("../pages/ItemPage"));
 
 const RoutesManager = () => {
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -46,7 +48,6 @@ const RoutesManager = () => {
             loader={async () => {
               if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
-
               const latestItems = fetchLatestItems();
               const largestCollections = fetchLargestCollection();
               const tags = fetchAllTags();
@@ -61,6 +62,7 @@ const RoutesManager = () => {
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
               const { itemID } = params;
               if (!itemID) return Promise.reject("item ID not provided!");
+              if (globalUserInfoStore.user?.blocked) return redirect("/blocked");
 
               const item = await ItemPageStore.fetchItem(itemID);
               const userName = await CollectionPageStore.fetchUserName(item.owner);
@@ -79,6 +81,8 @@ const RoutesManager = () => {
             loader={async () => {
               if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (globalUserInfoStore.user?.blocked) return redirect("/blocked");
+
               if (!globalUserInfoStore.user?.isAdmin) return redirect("/login");
               return null;
             }}
@@ -94,6 +98,8 @@ const RoutesManager = () => {
             loader={async ({ params }) => {
               if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (globalUserInfoStore.user?.blocked) return redirect("/blocked");
+
               const { userName } = params as { userName: string };
               if (!userName) return Promise.resolve({ collections: [] });
               const collections = await ProfilePageStore.fetchCollections(userName);
@@ -111,6 +117,8 @@ const RoutesManager = () => {
             loader={async ({ params }) => {
               if (!globalUserInfoStore.user && !globalUserInfoStore.userChecked)
                 await globalUserInfoStore.checkJWTAndSetUserStatus();
+              if (globalUserInfoStore.user?.blocked) return redirect("/blocked");
+
               const { collectionID } = params;
               if (!collectionID) return Promise.reject("collection ID not provided!");
               const collection = await CollectionPageStore.fetchCollection(collectionID);
@@ -125,6 +133,11 @@ const RoutesManager = () => {
             errorElement={<ErrorComponent />}
           />
           <Route
+            path="/blocked"
+            element={<UserBlocked />}
+            errorElement={<ErrorComponent />}
+          />
+          <Route
             path="*"
             element={<Custom404 />}
           />
@@ -132,7 +145,7 @@ const RoutesManager = () => {
       </>
     )
   );
-  return <RouterProvider router={router} />;
+  return globalUserInfoStore.user?.blocked ? null : <RouterProvider router={router} />;
 };
 
 export default RoutesManager;
