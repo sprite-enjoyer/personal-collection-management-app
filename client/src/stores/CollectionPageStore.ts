@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable, toJS } from "mobx";
-import { Collection, User } from "../misc/types";
+import { Collection, Item, User } from "../misc/types";
 
 class CollectionPageStore {
   collection: Collection;
@@ -17,6 +17,7 @@ class CollectionPageStore {
       setUserName: action,
       shouldRenderTable: computed,
       tags: computed,
+      csvData: computed,
     });
   }
 
@@ -48,6 +49,21 @@ class CollectionPageStore {
 
   get tags() {
     return [...new Set(this.collection.items.map((item) => item.tags).flat())];
+  }
+
+  get csvData() {
+    const csvCollectionItems: Item[] = JSON.parse(JSON.stringify(this.collection.items));
+    const csvCollectionItemAdditionalFields = csvCollectionItems.map((item) =>
+      item.additionalFields.map((field) => field.value)
+    );
+
+    csvCollectionItems.forEach((item, i) => {
+      item.additionalFields.forEach((_, j) => {
+        csvCollectionItems[i].additionalFields[j] = csvCollectionItemAdditionalFields[i][j] as unknown as any;
+      });
+    });
+
+    return csvCollectionItems;
   }
 }
 

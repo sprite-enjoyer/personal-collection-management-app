@@ -20,6 +20,7 @@ const englishTexts = {
     noItemsHeader: "No items in this collection yet!",
     button1: "Edit collection",
     button2: "Add item",
+    exportText: "Export to CSV",
   },
   ItemPage: {
     owner: "Owner: ",

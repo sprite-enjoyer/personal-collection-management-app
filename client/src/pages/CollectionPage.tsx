@@ -11,6 +11,7 @@ import { Collection } from "../misc/types";
 import ItemConfigStore from "../stores/ItemConfigStore";
 import { useThemeContext } from "../misc/theme";
 import { useLanguageContext } from "../misc/language";
+import { CSVDownload } from "react-csv";
 
 const CollectionPage = () => {
   const { collection, userName } = useLoaderData() as { collection: Collection; userName: string };
@@ -22,9 +23,11 @@ const CollectionPage = () => {
   const { theme } = useThemeContext();
   const {
     staticTextObject: {
-      CollectionPage: { noItemsHeader, button1, button2 },
+      CollectionPage: { noItemsHeader, button1, button2, exportText },
     },
   } = useLanguageContext();
+
+  const [exportStatus, setExportStatus] = useState(false);
 
   useEffect(() => globalUserInfoStore.setCurrentlyViewingUser(userName), []);
   useEffect(() => {
@@ -80,7 +83,15 @@ const CollectionPage = () => {
           )}
         </Box>
         {collectionPageStore.shouldRenderTable ? (
-          <ItemTable collectionPageStore={collectionPageStore} />
+          <>
+            <ItemTable collectionPageStore={collectionPageStore} />
+            <Button onClick={() => setExportStatus((prev) => !prev)}>{exportText}</Button>
+            {exportStatus && (
+              <>
+                <CSVDownload data={collectionPageStore.csvData} />
+              </>
+            )}
+          </>
         ) : (
           <Container sx={{ marginTop: "100px" }}>
             <Typography

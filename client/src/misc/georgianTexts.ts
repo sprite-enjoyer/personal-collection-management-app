@@ -22,6 +22,7 @@ const georgianTexts: StaticTextObject = {
     noItemsHeader: "ამ კოლექციაში ჯერ არ არის ნივთები!",
     button1: "კოლექციის მოდიფიკაცია",
     button2: "ნივთის დამატება",
+    exportText: "CSV-ს გადმოტვირთვა",
   },
   ItemPage: {
     owner: "მფლობელი: ",
