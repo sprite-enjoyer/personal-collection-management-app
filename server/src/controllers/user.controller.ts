@@ -78,18 +78,18 @@ export const checkUserJwtHandler = async (req: Request, res: Response, next: Nex
 
 export const getUsersHandler = async (req: Request, res: Response) => {
   const users = (await User.find({})).map((u) => {
-    const { username, isAdmin, email, password, blocked, collections, _id } = u;
+    const { username, isAdmin, email, blocked, collections, _id } = u;
     const publicUser = {
-      id: _id,
-      userName: username,
-      email: email,
-      blocked: blocked,
-      isAdmin: isAdmin,
-      collections: collections,
+      _id: _id.toString(),
+      username,
+      email,
+      blocked,
+      isAdmin,
+      collections,
     };
     return publicUser;
   });
-  res.json({ users: users });
+  res.json({ data: users });
 };
 
 export const getUserById = async (req: Request, res: Response) => {

@@ -63,7 +63,9 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
         </Box>
       )}
       {globalUserInfoStore.user?.isAdmin && (
-        <IconButton sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
+        <IconButton
+          onClick={() => navigate("/admin")}
+          sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
           <AdminPanelSettingsIcon
             color={"primary"}
             sx={{ width: "40px", aspectRatio: "1" }}

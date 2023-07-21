@@ -33,9 +33,8 @@ class AdminPageStore {
       },
       credentials: "include",
     });
-
-    const users = (await response.json()).users as User[];
-    this.setUsers(users);
+    const { data } = (await response.json()) as { data: User[] };
+    this.setUsers(data);
   }
 
   async changeSelectedUsers(blocked: boolean | null, isAdmin: boolean | null) {

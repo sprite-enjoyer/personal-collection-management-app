@@ -118,7 +118,7 @@ const MainPage = () => {
             sx={{
               display: "flex",
               maxWidth: "90%",
-              gap: "10px 30px",
+              gap: "40px 40px",
               flexWrap: "wrap",
             }}>
             <LatestItemsList items={latestItems} />
