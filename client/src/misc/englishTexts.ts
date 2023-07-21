@@ -70,6 +70,16 @@ const englishTexts = {
   SearchModal: {
     results: "Results: ",
   },
+  ErrorComponent: {
+    header1: "What? An Oopsie happened... 😳",
+    header2: "You can go to the ",
+    header3: "If you're new, you're welcome to try ",
+    link1text: "HomePage",
+    link2text: "Register Page",
+  },
+  Custom404: {
+    header1: "This link doesn't exist!",
+  },
 };
 
 export type StaticTextObject = typeof englishTexts;

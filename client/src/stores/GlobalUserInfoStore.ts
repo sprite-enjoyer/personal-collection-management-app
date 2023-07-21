@@ -27,7 +27,7 @@ class GlobalUserInfoStore {
   }
 
   get loggedInUserHasPermissionToEdit() {
-    return this.user && this.user.username === this.currentlyViewingUser;
+    return (this.user && this.user.username === this.currentlyViewingUser) || (this.user && this.user.isAdmin);
   }
 
   setUserChecked(newValue: boolean) {

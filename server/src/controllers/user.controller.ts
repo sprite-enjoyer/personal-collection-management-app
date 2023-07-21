@@ -3,7 +3,6 @@ import User from "../schemas/User.js";
 import { compare, genSalt, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { UserInfo } from "../types.js";
 
 export const registerUserHandler = async (req: Request, res: Response) => {
   const { userName, email, password, admin } = req.body;

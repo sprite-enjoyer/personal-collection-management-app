@@ -6,6 +6,8 @@ import ItemPageStore from "../stores/ItemPageStore";
 import MainPage, { fetchAllTags, fetchLargestCollection, fetchLatestItems } from "../pages/MainPage";
 import Header from "./Header";
 import ProfilePageStore from "../stores/ProfilePageStore";
+import ErrorComponent from "./ErrorComponent";
+import Custom404 from "./Custom404";
 
 const LazyLoginPage = lazy(async () => await import("../pages/LoginPage"));
 const LazyRegisterPage = lazy(async () => await import("../pages/RegisterPage"));
@@ -27,6 +29,7 @@ const RoutesManager = () => {
                 <LazyLoginPage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/register"
@@ -35,6 +38,7 @@ const RoutesManager = () => {
                 <LazyRegisterPage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/"
@@ -48,6 +52,7 @@ const RoutesManager = () => {
               const tags = fetchAllTags();
               return await Promise.all([latestItems, largestCollections, tags]);
             }}
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/item/:itemID"
@@ -67,6 +72,7 @@ const RoutesManager = () => {
                 <LazyItemPage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/admin"
@@ -81,6 +87,7 @@ const RoutesManager = () => {
                 <LazyAdminPage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/user/:userName"
@@ -97,6 +104,7 @@ const RoutesManager = () => {
                 <LazyProfilePage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
           />
           <Route
             path="/collection/:collectionID"
@@ -114,6 +122,11 @@ const RoutesManager = () => {
                 <LazyCollectionPage />
               </Suspense>
             }
+            errorElement={<ErrorComponent />}
+          />
+          <Route
+            path="*"
+            element={<Custom404 />}
           />
         </Route>
       </>
