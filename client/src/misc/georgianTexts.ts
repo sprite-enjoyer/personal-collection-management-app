@@ -31,6 +31,7 @@ const georgianTexts: StaticTextObject = {
     none: "არ აქვს",
     likes: "მოწონებები: ",
     likeButton: "მოწონება",
+    comments: "კომენტარები: ",
   },
   LoginPage: {
     inputLabel1: "სახელი",
@@ -66,6 +67,9 @@ const georgianTexts: StaticTextObject = {
   Header: {
     login: "შესვლა",
     register: "რეგისტრაცია",
+  },
+  SearchModal: {
+    results: "ძიების შედეგი: ",
   },
 };
 

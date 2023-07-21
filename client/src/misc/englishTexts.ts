@@ -29,6 +29,7 @@ const englishTexts = {
     additionalFields: "Additional Fields: ",
     none: "none",
     likeButton: "Like",
+    comments: "Comments: ",
   },
   LoginPage: {
     inputLabel1: "Username",
@@ -61,10 +62,12 @@ const englishTexts = {
     button1Create: "add item",
     button1Edit: "edit item",
   },
-
   Header: {
     login: "login",
     register: "register",
+  },
+  SearchModal: {
+    results: "Results: ",
   },
 };
 

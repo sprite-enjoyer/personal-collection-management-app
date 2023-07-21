@@ -7,6 +7,7 @@ import AddCommentIcon from "@mui/icons-material/AddComment";
 import { io } from "socket.io-client";
 import { useThemeContext } from "../../misc/theme";
 import { useScreenSizeContext } from "../../misc/screenSize";
+import { useLanguageContext } from "../../misc/language";
 
 interface CommentSectionProps {
   itemID: string;
@@ -17,6 +18,11 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
   const [commentStore] = useState(new CommentStore(itemID, globalUserInfoStore));
   const { theme } = useThemeContext();
   const { userHasSmallScreen } = useScreenSizeContext();
+  const {
+    staticTextObject: {
+      ItemPage: { comments },
+    },
+  } = useLanguageContext();
 
   useEffect(() => {
     const loadComments = async () => await commentStore.fetchComments();
@@ -73,7 +79,7 @@ const CommentSection = ({ itemID }: CommentSectionProps) => {
           <Typography
             fontSize={"1.2em"}
             color={theme.palette.text.primary}>
-            Comments:{" "}
+            {comments}
           </Typography>
         )}
         <List

@@ -105,7 +105,7 @@ const MainPage = () => {
             }}>
             <CollectionList
               collections={largestCollections}
-              showImage={false}
+              showImage
             />
           </Box>
           <Typography

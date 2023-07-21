@@ -6,6 +6,7 @@ import { toJS } from "mobx";
 import SearchModalInput from "./SearchModal/SearchModalInput";
 import ItemCard from "./MainPage/ItemCard";
 import { useThemeContext } from "../misc/theme";
+import { useLanguageContext } from "../misc/language";
 
 export interface SearchModalProps {
   initialSearchValues: string[];
@@ -16,6 +17,11 @@ export interface SearchModalProps {
 const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModalProps) => {
   const [searchModalStore] = useState(new SearchModalStore());
   const { theme } = useThemeContext();
+  const {
+    staticTextObject: {
+      SearchModal: { results },
+    },
+  } = useLanguageContext();
 
   useEffect(() => {
     searchModalStore.setSearchValues(initialSearchValues);
@@ -59,7 +65,7 @@ const SearchModal = ({ initialSearchValues, open, onCloseCallback }: SearchModal
           <Typography
             variant="h6"
             color={theme.palette.text.primary}>
-            Results:
+            {results}
           </Typography>
         )}
         <Box
