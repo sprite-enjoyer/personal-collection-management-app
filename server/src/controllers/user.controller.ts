@@ -19,7 +19,7 @@ export const registerUserHandler = async (req: Request, res: Response) => {
 export const logInUserHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { userName, password }: { userName: string; password: string } = req.body;
   const user = await User.findOne({ username: userName });
-  if (!user) return res.status(404).json({ success: false });
+  if (!user) return res.status(401).json({ success: false });
 
   const hashedPassword = user.password;
   if (!hashedPassword) return res.status(500).json({ success: false });

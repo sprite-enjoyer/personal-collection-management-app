@@ -36,6 +36,8 @@ const RegisterPage = () => {
           padding: "20px",
         }}>
         <TextField
+          error={registerPageStore.errorTexts.userName.length !== 0}
+          helperText={registerPageStore.errorTexts.userName}
           label={inputLabel1}
           fullWidth
           onChange={(e) => registerPageStore.setUserName(e.target.value)}
@@ -43,6 +45,8 @@ const RegisterPage = () => {
           InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <TextField
+          error={registerPageStore.errorTexts.email.length !== 0}
+          helperText={registerPageStore.errorTexts.email}
           label={inputLabel2}
           type="email"
           fullWidth
@@ -51,9 +55,9 @@ const RegisterPage = () => {
           InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <TextField
+          error={registerPageStore.errorTexts.password.length !== 0}
+          helperText={registerPageStore.errorTexts.password}
           label={inputLabel3}
-          error={registerPageStore.error}
-          helperText={registerPageStore.error && "Passwords do not match!"}
           type="password"
           fullWidth
           onChange={(e) => registerPageStore.setPassword(e.target.value)}
@@ -61,10 +65,10 @@ const RegisterPage = () => {
           InputProps={{ sx: { color: theme.palette.text.primary } }}
         />
         <TextField
+          error={registerPageStore.errorTexts.repeatPassword.length !== 0}
+          helperText={registerPageStore.errorTexts.repeatPassword}
           label={inputLabel4}
           type="password"
-          error={registerPageStore.error}
-          helperText={registerPageStore.error && "Passwords do not match!"}
           fullWidth
           onChange={(e) => registerPageStore.setRepeatPassword(e.target.value)}
           InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}

@@ -16,7 +16,7 @@ export const logInUserHandler = async (req, res, next) => {
     const { userName, password } = req.body;
     const user = await User.findOne({ username: userName });
     if (!user)
-        return res.status(404).json({ success: false });
+        return res.status(401).json({ success: false });
     const hashedPassword = user.password;
     if (!hashedPassword)
         return res.status(500).json({ success: false });

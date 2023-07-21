@@ -19,7 +19,7 @@ const LoginPage = () => {
   } = useLanguageContext();
 
   const hanldeLoginButtonClick = () => {
-    globalUserInfoStore.setUserChecked(false);
+    globalUserInfoStore.setUserChecked(true);
     loginPageStore.handleLogin(navigate, globalUserInfoStore);
   };
 

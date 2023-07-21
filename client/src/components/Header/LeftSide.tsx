@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useLanguageContext } from "../../misc/language";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 interface LeftSideProps {
   globalUserInfoStore: GlobalUserInfoStore;
 }
@@ -60,6 +61,14 @@ const LeftSide = ({ globalUserInfoStore }: LeftSideProps) => {
             {register}
           </Button>
         </Box>
+      )}
+      {globalUserInfoStore.user?.isAdmin && (
+        <IconButton sx={{ width: "40px", height: "40px", aspectRatio: "1" }}>
+          <AdminPanelSettingsIcon
+            color={"primary"}
+            sx={{ width: "40px", aspectRatio: "1" }}
+          />
+        </IconButton>
       )}
       <IconButton
         size="large"
