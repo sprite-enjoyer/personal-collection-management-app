@@ -68,6 +68,7 @@ const ItemConfigModal = ({
   };
 
   const handleModalClose = () => setItemConfigModalOpen(false);
+  console.log(toJS(itemConfigStore.additionalFields));
 
   return (
     <Modal

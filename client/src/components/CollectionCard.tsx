@@ -29,10 +29,8 @@ const CollectionCard = ({ image, name, topic, id, showImage, ownerName }: Collec
       onClick={handleClick}
       sx={{
         cursor: "pointer",
-        maxHeight: "400px",
         display: "flex",
-        minHeight: "200px",
-        minWidth: "200px",
+        aspectRatio: "1",
         maxWidth: "300px",
         flexDirection: "column",
         justifyContent: "space-around",
@@ -44,7 +42,11 @@ const CollectionCard = ({ image, name, topic, id, showImage, ownerName }: Collec
         color={theme.palette.text.secondary}
         titleTypographyProps={{ variant: name.length < 30 ? "h5" : "h6", textAlign: "center" }}
       />
-      <Box padding={"0px 20px"}>
+      <Box
+        padding={"0px 20px"}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}>
         <Typography
           variant="h6"
           fontStyle={"italic"}
@@ -57,9 +59,10 @@ const CollectionCard = ({ image, name, topic, id, showImage, ownerName }: Collec
               borderBottomLeftRadius: "5px",
               borderBottomRightRadius: "5px",
               backgroundColor: theme.palette.background.default,
+              maxWidth: "60%",
+              maxHeight: "80%",
             }}
             component={"img"}
-            height={"80%"}
             image={!image || image.length === 0 ? NO_IMAGE : image}
           />
         )}

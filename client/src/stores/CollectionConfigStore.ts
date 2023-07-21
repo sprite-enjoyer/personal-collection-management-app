@@ -183,6 +183,7 @@ class CollectionConfigStore {
     this.setCollectionDescription(collection.description);
     this.setCollectionTopic(collection.topic);
     this.setAdditionalFieldsInfo(collection.additionalFieldsInfo);
+    this.setImageUrl(collection.image ?? "");
   }
 
   async deleteCollection(navigate: NavigateFunction, globalUserName?: string) {

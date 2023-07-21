@@ -7,7 +7,9 @@ export const createItemHandler = async (req, res) => {
     const collection = await ItemCollection.findById(collectionID);
     if (!collection)
         return res.status(404).json({ success: false });
-    const trimStuff = (field) => field.type === "string" || field.type === "multiline" ? field.value.trim() : field.value;
+    const trimStuff = (field) => field.type === "string" || field.type === "multiline"
+        ? { ...field, value: field.value.trim() }
+        : { ...field, value: field.value };
     const trimmedAdditionalFields = additionalFields.filter(trimStuff);
     const newItem = await Item.create({
         name: itemName.trim(),

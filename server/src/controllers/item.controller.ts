@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import Item, { AdditionalField, ItemType, SearchAdditionalField } from "../schemas/Item.js";
+import Item, { AdditionalField, SearchAdditionalField } from "../schemas/Item.js";
 import ItemCollection from "../schemas/ItemCollection.js";
-import { ObjectId, Schema, Types } from "mongoose";
-import Comment, { CommentType } from "../schemas/Comment.js";
-import { ProcessedItem } from "../types.js";
-import User from "../schemas/User.js";
+import { Types } from "mongoose";
+import Comment from "../schemas/Comment.js";
 
 interface CreateItemHandlerRequestBodyType {
   ownerID: string;
@@ -19,7 +17,9 @@ export const createItemHandler = async (req: Request<any, any, CreateItemHandler
   const collection = await ItemCollection.findById(collectionID);
   if (!collection) return res.status(404).json({ success: false });
   const trimStuff = (field: AdditionalField) =>
-    field.type === "string" || field.type === "multiline" ? field.value.trim() : field.value;
+    field.type === "string" || field.type === "multiline"
+      ? { ...field, value: field.value.trim() }
+      : { ...field, value: field.value };
   const trimmedAdditionalFields = additionalFields.filter(trimStuff);
 
   const newItem = await Item.create({
