@@ -15,12 +15,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ItemTableStore from "../../stores/ItemTableStore";
 import { Collection, Item } from "../../misc/types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ItemConfigStore from "../../stores/ItemConfigStore";
 import ItemConfigModal from "./ItemConfigModal";
 import CollectionPageStore from "../../stores/CollectionPageStore";
 import { useNavigate } from "react-router-dom";
 import { useThemeContext } from "../../misc/theme";
+import { GlobalUserInfoStoreContext } from "../../App";
 
 interface ItemTableProps {
   collectionPageStore: CollectionPageStore;
@@ -32,6 +33,7 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
   const [itemConfigStore] = useState(new ItemConfigStore(collectionPageStore.collection._id));
   const [itemConfigModalOpen, setItemConfigModalOpen] = useState(false);
   const { theme } = useThemeContext();
+  const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
   const deleteButtonHandler = async (id: string) => {
     await itemTableStore.deleteItem(id);
@@ -75,16 +77,20 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{ backgroundColor: theme.palette.background.default }}
-                width={"50px"}
-                height={"50px"}
-              />
-              <TableCell
-                sx={{ backgroundColor: theme.palette.background.default }}
-                width={"50px"}
-                height={"50px"}
-              />
+              {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
+                <>
+                  <TableCell
+                    sx={{ backgroundColor: theme.palette.background.default }}
+                    width={"50px"}
+                    height={"50px"}
+                  />
+                  <TableCell
+                    sx={{ backgroundColor: theme.palette.background.default }}
+                    width={"50px"}
+                    height={"50px"}
+                  />
+                </>
+              )}
               {itemTableStore.collectionTableColumns.map((column, i) => (
                 <TableCell
                   sx={{
@@ -104,20 +110,25 @@ const ItemTable = ({ collectionPageStore }: ItemTableProps) => {
                 key={item._id}
                 hover
                 sx={{ maxHeight: "100px", overflowY: "auto", lineHeight: "100px", cursor: "pointer" }}>
-                <TableCell width={"30px"}>
-                  <Button
-                    sx={{ padding: "0", minWidth: "50px", height: "50px" }}
-                    onClick={() => deleteButtonHandler(item._id)}>
-                    <DeleteIcon />
-                  </Button>
-                </TableCell>
-                <TableCell width={"30px"}>
-                  <Button
-                    sx={{ padding: "0", minWidth: "50px", height: "50px" }}
-                    onClick={() => editButtonHandler(item)}>
-                    <EditIcon />
-                  </Button>
-                </TableCell>
+                {globalUserInfoStore.loggedInUserHasPermissionToEdit && (
+                  <>
+                    <TableCell width={"30px"}>
+                      <Button
+                        sx={{ padding: "0", minWidth: "50px", height: "50px" }}
+                        onClick={() => deleteButtonHandler(item._id)}>
+                        <DeleteIcon />
+                      </Button>
+                    </TableCell>
+                    <TableCell width={"30px"}>
+                      <Button
+                        sx={{ padding: "0", minWidth: "50px", height: "50px" }}
+                        onClick={() => editButtonHandler(item)}>
+                        <EditIcon />
+                      </Button>
+                    </TableCell>
+                  </>
+                )}
+
                 {ItemTableStore.getCollectionTableRowInformationArray(item).map((info, j) => (
                   <TableCell
                     onClick={() => navigate(`/item/${item._id}`)}
