@@ -95,17 +95,19 @@ export const getSearchedItemsHandler = async (req, res) => {
     });
     const itemsFilteredByFieldValues = processedItems.filter((item) => {
         const data = [
-            ...item.additionalFields,
+            ...item.additionalFields.map((field) => {
+                return { ...field, value: field.value.toString().toLowerCase() };
+            }),
             { name: "name", type: "string", value: item.name.trim() },
         ];
         for (let i = 0; i < data.length; i++)
-            if (regularInputs.includes(data[i].value.toLowerCase()))
+            if (regularInputs.includes(data[i].value))
                 return true;
         return false;
     });
     const itemsFilteredByTags = processedItems.filter((item) => {
         for (let i = 0; i < item.tags.length; i++)
-            if (tagInputs.includes(item.tags[i]))
+            if (tagInputs.includes(item.tags[i].toLowerCase()))
                 return true;
         return false;
     });
