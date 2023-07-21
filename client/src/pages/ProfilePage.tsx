@@ -57,10 +57,7 @@ const ProfilePage = () => {
             <>
               <Button
                 onClick={() => setCollectionConfigModalOpen(true)}
-                variant="contained"
-                sx={{
-                  color: theme.palette.text.primary,
-                }}>
+                variant="contained">
                 {button}
               </Button>
               <CollectionConfigModal

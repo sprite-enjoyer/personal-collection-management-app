@@ -32,8 +32,6 @@ const ItemFullInformation = ({
   const { userHasSmallScreen } = useScreenSizeContext();
   const globalUserInfoStore = useContext(GlobalUserInfoStoreContext);
 
-  console.log(currentItem.usersWhoLikeItem, ":users who like item");
-
   const userLikesItem = useMemo(() => {
     if (!globalUserInfoStore.user) return false;
     return currentItem.usersWhoLikeItem.includes(globalUserInfoStore.user._id);

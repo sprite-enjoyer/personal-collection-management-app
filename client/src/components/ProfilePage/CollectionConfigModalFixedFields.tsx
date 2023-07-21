@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import CollectionConfigStore from "../../stores/CollectionConfigStore";
 import { useThemeContext } from "../../misc/theme";
 import { useLanguageContext } from "../../misc/language";
+import ImageUploader from "./ImageUploader";
 
 interface CollectionConfigModalFixedFieldsProps {
   collectionConfigStore: CollectionConfigStore;
@@ -38,6 +39,7 @@ const CollectionConfigModalFixedFields = ({ collectionConfigStore, topics }: Col
         InputLabelProps={{ sx: { color: theme.palette.text.secondary } }}
         InputProps={{ sx: { color: theme.palette.text.primary } }}
       />
+      <ImageUploader collectionConfigStore={collectionConfigStore} />
       <FormControl sx={{ width: "100%" }}>
         <InputLabel
           sx={{ color: theme.palette.text.secondary, backgroundColor: theme.palette.background.default }}

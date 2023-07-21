@@ -52,6 +52,8 @@ const englishTexts = {
     button2Create: "add collection",
     button2Edit: "edit collection",
     deleteDialog: "Delete this collection?",
+    uploadImage: "Choose image",
+    uploadImageSubmit: "Submit",
   },
   ItemConfigModal: {
     inputLabel1: "Name",

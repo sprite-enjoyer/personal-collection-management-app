@@ -15,6 +15,8 @@ class CollectionConfigStore {
     items: [],
   };
 
+  imageUrl = "";
+
   additionalFieldToBeAddedName = "";
 
   additionalFieldToBeAddedType: AdditionalFieldTypeString = "string";
@@ -34,6 +36,7 @@ class CollectionConfigStore {
 
     makeObservable(this, {
       collection: observable,
+      imageUrl: observable,
       idCounter: observable,
       additionalFieldToBeAddedName: observable,
       additionalFieldToBeAddedType: observable,
@@ -50,7 +53,12 @@ class CollectionConfigStore {
       deleteCollection: action,
       removeAdditionalFieldById: action,
       incrementIdCounter: action,
+      setImageUrl: action,
     });
+  }
+
+  setImageUrl(newValue: string) {
+    this.imageUrl = newValue;
   }
 
   incrementIdCounter() {
@@ -130,7 +138,7 @@ class CollectionConfigStore {
         name: this.collection.name,
         description: this.collection.description,
         topic: this.collection.topic,
-        image: "", //TODO
+        image: this.imageUrl,
         additionalFieldsInfo: this.collection.additionalFieldsInfo.map((field) => {
           return { name: field.name, type: field.type };
         }),
@@ -151,7 +159,7 @@ class CollectionConfigStore {
         name: this.collection.name,
         description: this.collection.description,
         topic: this.collection.topic,
-        image: "", //TODO
+        image: this.imageUrl,
         additionalFieldsInfo: this.collection.additionalFieldsInfo.map((field) => {
           return { name: field.name, type: field.type };
         }),

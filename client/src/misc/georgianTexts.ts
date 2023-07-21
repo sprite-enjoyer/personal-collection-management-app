@@ -54,6 +54,8 @@ const georgianTexts: StaticTextObject = {
     button2Create: "კოლექციის შექმნა",
     button2Edit: "კოლექციის შეცვლა",
     deleteDialog: "მართლა გსურთ კოლექციის წაშლა?",
+    uploadImage: "ატვირთე სურათი",
+    uploadImageSubmit: "ატვირთვა",
   },
   ItemConfigModal: {
     inputLabel1: "სახელი",
